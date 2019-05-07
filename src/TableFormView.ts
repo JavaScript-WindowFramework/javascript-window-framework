@@ -10,7 +10,7 @@ export interface ITEM_OPTION{
 	events?:  {[key:string]:object}
 	options?:{
 		name: string;
-		value: string;
+		value: string|number;
 	}[]
 }
 export class TableFormView extends Window{
@@ -68,7 +68,7 @@ export class TableFormView extends Window{
 					for (const o of params.options) {
 						const option = document.createElement('option')
 						option.textContent = o.name
-						option.value = o.value
+						option.value = o.value.toString()
 						select.appendChild(option)
 					}
 					data.appendChild(select)
