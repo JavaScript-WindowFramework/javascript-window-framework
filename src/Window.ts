@@ -982,7 +982,7 @@ namespace JWF {
 
 
 			}
-			const animation = this.JData.animationEnable ? this.JData.animation['close'] : ''
+			const animation = this.JData.animationEnable ? this.JData.animation['close'] : null
 			if (animation) {
 				this.hNode.addEventListener("animationend", animationEnd)
 				this.hNode.style.animation = animation
