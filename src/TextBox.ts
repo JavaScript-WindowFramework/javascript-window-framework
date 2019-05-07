@@ -7,7 +7,7 @@ namespace JWF{
 		constructor(params?:{text?: string,label?:string,type?:string,image?:string}) {
 			super()
 
-			this.setJswStyle('TextBox')
+			this.setJwfStyle('TextBox')
 			this.setAutoSize(true)
 
 			let node = this.getClient()

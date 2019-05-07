@@ -5,7 +5,7 @@ export class SelectBox extends JWF.Window{
 	constructor(option: { label?:string,options: { name: string, value: string | number }[] }) {
 		super()
 
-		this.setJswStyle('SelectBox')
+		this.setJwfStyle('SelectBox')
 		this.setAutoSize(true)
 
 		let node = this.getClient()

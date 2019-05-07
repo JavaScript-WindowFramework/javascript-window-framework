@@ -19,7 +19,7 @@ export class TableFormView extends Window{
 	footer: HTMLDivElement
 	constructor(params?: WINDOW_PARAMS){
 		super(params)
-		this.setJswStyle('TableFormView')
+		this.setJwfStyle('TableFormView')
 		const table = document.createElement('div')
 		this.table = table
 		this.getClient().appendChild(table)

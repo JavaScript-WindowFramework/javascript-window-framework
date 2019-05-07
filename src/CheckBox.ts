@@ -7,7 +7,7 @@ namespace JWF{
 		constructor(params?:{text?: string,checked?:boolean}) {
 			super()
 
-			this.setJswStyle('CheckBox')
+			this.setJwfStyle('CheckBox')
 			this.setAutoSize(true)
 
 			let node = this.getClient()

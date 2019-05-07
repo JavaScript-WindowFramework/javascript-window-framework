@@ -16,7 +16,7 @@ namespace JWF {
 		selects: { [keys: string]: boolean } = {}
 		constructor() {
 			super()
-			this.setJswStyle('CalendarView')
+			this.setJwfStyle('CalendarView')
 			const weekString = "日月火水木金土";
 
 			const client = this.getClient()

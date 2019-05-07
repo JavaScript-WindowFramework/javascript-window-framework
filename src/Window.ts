@@ -103,7 +103,7 @@ namespace JWF {
 		constructor(params?: WINDOW_PARAMS) {
 			//ウインドウ用ノードの作成
 			let hNode = document.createElement('DIV') as JNode
-			hNode.Jsw = this
+			hNode.Jwf = this
 			this.hNode = hNode
 			hNode.dataset.jwf = "Window"
 			//位置を絶対位置指定
@@ -171,10 +171,10 @@ namespace JWF {
 		setOverlap(flag: boolean) {
 			this.hNode.style.position = flag ? 'fixed' : 'absolute'
 		}
-		setJswStyle(style: string) {
+		setJwfStyle(style: string) {
 			this.getClient().dataset.jwfStyle = style
 		}
-		getJswStyle(): string {
+		getJwfStyle(): string {
 			return this.getNode().dataset.jwfStyle
 		}
 		//フレーム追加処理
@@ -651,7 +651,7 @@ namespace JWF {
 					let nodes = node.querySelectorAll('[data-jwf="Window"]') as any as JNode[]
 					let count = nodes.length
 					for (let i = 0; i < count; i++) {
-						nodes[i].Jsw.layout()
+						nodes[i].Jwf.layout()
 					}
 					node.style.display = 'none';
 					node.removeEventListener("animationend", animationEnd)
@@ -719,8 +719,8 @@ namespace JWF {
 			if (node.style.position === 'fixed')
 				return window.innerWidth
 			let parent = node.parentNode as JNode
-			if (parent.Jsw)
-				return parent.Jsw.getWidth()
+			if (parent.Jwf)
+				return parent.Jwf.getWidth()
 			return parent.offsetWidth
 		}
 		/**
@@ -734,8 +734,8 @@ namespace JWF {
 			if (node.style.position === 'fixed')
 				return window.innerHeight
 			let parent = node.parentNode as JNode
-			if (parent.Jsw)
-				return parent.Jsw.getHeight()
+			if (parent.Jwf)
+				return parent.Jwf.getHeight()
 			return parent.offsetHeight
 		}
 		/**
@@ -760,7 +760,7 @@ namespace JWF {
 			for (let i = 0; i < client.childNodes.length; i++) {
 				let node = client.childNodes[i] as JNode
 				if (node.dataset && node.dataset.jwf === "Window")
-					(flag as any) |= node.Jsw.onMeasure(flag) as any
+					(flag as any) |= node.Jwf.onMeasure(flag) as any
 			}
 			if (!flag && !this.JData.redraw)
 				return false;
@@ -815,8 +815,8 @@ namespace JWF {
 			//配置順序リスト
 			nodes.sort(function (anode: JNode, bnode: JNode) {
 				const priority = { top: 10, bottom: 10, left: 8, right: 8, client: 5 }
-				const a = anode.Jsw.JData
-				const b = bnode.Jsw.JData
+				const a = anode.Jwf.JData
+				const b = bnode.Jwf.JData
 				return priority[b.style] - priority[a.style]
 			})
 
@@ -830,7 +830,7 @@ namespace JWF {
 
 			for (let i = 0; i < count; i++) {
 				let child: JNode = nodes[i]
-				let win = child.Jsw
+				let win = child.Jwf
 				if (child.dataset.visible === 'false')
 					continue
 				const margin = win.JData.margin
@@ -838,7 +838,7 @@ namespace JWF {
 				let py1 = y1 + margin.y1
 				let px2 = x2 - margin.x2
 				let py2 = y2 - margin.y2
-				switch (child.Jsw.JData.style) {
+				switch (child.Jwf.JData.style) {
 					case "top":
 						win.setPos(px1, py1)
 						win.setWidth(px2 - px1)
@@ -880,8 +880,8 @@ namespace JWF {
 			}
 			//重ね合わせソート
 			nodes.sort(function (anode: JNode, bnode: JNode) {
-				const a = anode.Jsw.JData
-				const b = bnode.Jsw.JData
+				const a = anode.Jwf.JData
+				const b = bnode.Jwf.JData
 				if (a.orderTop)
 					return 1
 				if (b.orderTop)
@@ -922,8 +922,8 @@ namespace JWF {
 					activeNodes.add(p)
 					p.dataset.jwfActive = 'true';
 					p.style.zIndex = '1000';
-					if (p.Jsw)
-						p.Jsw.callEvent('active', { active: true });
+					if (p.Jwf)
+						p.Jwf.callEvent('active', { active: true });
 				}
 				this.orderSort(p)
 			}
@@ -935,7 +935,7 @@ namespace JWF {
 					let w = activeWindows[i] as JNode
 					if (!activeNodes.has(w)) {
 						w.dataset.jwfActive = 'false'
-						w.Jsw.callEvent('active', { active: false })
+						w.Jwf.callEvent('active', { active: false })
 					}
 				}
 			}
@@ -973,7 +973,7 @@ namespace JWF {
 				let nodes = this.querySelectorAll('[data-jwf="Window"]') as JNode[]
 				let count = nodes.length
 				for (let i = 0; i < count; i++) {
-					nodes[i].Jsw.layout()
+					nodes[i].Jwf.layout()
 				}
 				if (this.parentNode)
 					this.parentNode.removeChild(this)
@@ -1147,7 +1147,7 @@ namespace JWF {
 			for (var i = childList.length - 1; i >= 0; i--) {
 				var child = childList[i] as JNode
 				if (child.dataset.jwf === "Window") {
-					child.Jsw.JData.parent = null;
+					child.Jwf.JData.parent = null;
 					client.removeChild(child);
 				}
 			}
@@ -1270,12 +1270,12 @@ namespace JWF {
 			this.hNode.addEventListener("animationend", function () { that.layout() })
 			if (this.hNode.dataset.jwfStat != 'minimize') {
 
-				//client.style.animation="Jswminimize 0.2s ease 0s 1 forwards"
+				//client.style.animation="Jwfminimize 0.2s ease 0s 1 forwards"
 				const animation = this.JData.animationEnable ? this.JData.animation['minimize'] : ''
 				this.hNode.style.animation = animation
 				this.hNode.dataset.jwfStat = 'minimize'
 			} else {
-				//client.style.animation="Jswrestore 0.2s ease 0s 1 backwards"
+				//client.style.animation="Jwfrestore 0.2s ease 0s 1 backwards"
 				const animation = this.JData.animationEnable ? this.JData.animation['restore'] : ''
 				this.hNode.style.animation = animation
 				this.hNode.dataset.jwfStat = 'normal'
