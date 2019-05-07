@@ -14,7 +14,7 @@
 		]
 	},
 	"typedocOptions": {
-		"name": "JSW",
+		"name": "JWF",
 		"json": "../doc/document.json",
 		"mode": "file",
 		"includeDeclarations": false,

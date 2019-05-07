@@ -28,8 +28,8 @@ namespace JWF {
 
 
 
-		constructor(scriptUrl: string, keyName?: string) {
-			this.scriptUrl = scriptUrl
+		constructor(scriptUrl?: string, keyName?: string) {
+			this.scriptUrl = scriptUrl||'./'
 			this.keyName = keyName || 'Session'
 		}
 
