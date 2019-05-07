@@ -1,0 +1,863 @@
+//Window用基本スタイル
+[data-jwf="Window"] {
+	$TITLE_COLOR: #aabbee;
+
+	box-sizing: border-box;
+
+	&[data-jwf-visible="false"] {
+		display: none;
+	}
+
+	&:not([data-jwf-type="Frame"]) {
+		overflow: hidden;
+	}
+
+	&[data-jwf-type="Frame"]:not([data-jwf-stat="maximize"]) {
+		border-radius: 10px 10px 0px 0px;
+		border: solid 1px;
+		box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.4);
+	}
+
+	>[data-jwf-type="border"] {
+		position: absolute;
+		user-select: none;
+	}
+
+	&[data-jwf-stat="maximize"]>[data-jwf-type="border"] {
+		display: none;
+		box-sizing: border-box;
+	}
+
+	&[data-jwf-active="true"]>[data-jwf-type="title"] {
+		background-color: darken($TITLE_COLOR, 20%);
+		color: white
+	}
+
+	>[data-jwf-type="title"] {
+		border-radius: 10px 10px 0px 0px;
+		display: flex;
+		position: absolute;
+		cursor: move;
+		background-color: $TITLE_COLOR;
+		overflow: hidden;
+
+		[data-jwf-type="text"] {
+			flex: 1;
+			overflow: hidden;
+			font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
+				"Lucida Sans", Arial, sans-serif;
+			padding: 0px 0.5em;
+			align-items: center;
+			display: flex;
+			white-space: nowrap;
+		}
+
+		>[data-jwf-type="icon"] {
+			display: inline-block;
+			cursor: default;
+			background-size: 100% 100%;
+
+			&:hover {
+				background-color: rgba(0, 0, 0, 0.2);
+			}
+
+			&[data-jwf-kind="min"] {
+				background-image: url("images/min.svg");
+			}
+
+			&[data-jwf-kind="restore"] {
+				background-image: url("images/min.svg");
+			}
+
+			&[data-jwf-kind="max"] {
+				background-image: url("images/max.svg");
+			}
+
+			&[data-jwf-kind="close"] {
+				background-image: url("images/close.svg");
+			}
+
+			&[data-jwf-kind="normal"] {
+				background-image: url("images/normal.svg");
+			}
+		}
+	}
+
+
+
+
+}
+
+[data-jwf-scale="auto"] {
+	white-space: normal;
+}
+
+[data-jwf-type="client"] {
+	position: absolute;
+	overflow: hidden;
+	background-color: whitesmoke;
+	top: 0px;
+	right: 0px;
+	bottom: 0px;
+	left: 0px;
+}
+
+@keyframes jwfminimize {
+	100% {
+		height: 0px;
+	}
+}
+
+@keyframes jwfrestore {
+	0% {
+		height: 0px;
+	}
+}
+
+@keyframes jwfmaximize {
+	10% {
+		transform: scale(0);
+	}
+
+	100% {
+		transform: scale(1);
+	}
+}
+
+@keyframes jwfmaxrestore {
+	0% {
+		transform: scale(2);
+	}
+
+	100% {
+		transform: scale(1);
+	}
+}
+
+@keyframes jwfclose {
+	100% {
+		opacity: 0;
+		transform: scale(0);
+	}
+}
+
+@keyframes jwfFrameShow {
+	0% {
+		opacity: 0;
+		transform: scale(0);
+	}
+
+	100% {
+		opacity: 1;
+		transform: scale(1);
+	}
+}
+
+
+
+/* Splitter用設定  */
+[data-jwf-style="SplitterView"] {
+	display: flex;
+
+	&[data-splitter-type='ew'] {
+		align-items: center;
+
+		[data-kind="SplitterMenu"] {
+			right: 0;
+		}
+	}
+
+	&[data-splitter-type='we'] {
+		align-items: center;
+	}
+
+	&[data-splitter-type='ns'] {
+		justify-content: center;
+	}
+
+	&[data-splitter-type='sn'] {
+		justify-content: center;
+
+		[data-kind="SplitterMenu"] {
+			bottom: 0;
+		}
+	}
+
+	[data-jwf-style="Splitter"] {
+		background-color: #aaaaaa;
+		border: outset 2px #b8b7b7;
+		user-select: none;
+	}
+
+	[data-kind="SplitterMenu"] {
+		position: absolute;
+		background-color: rgba(255, 255, 255, 0.7);
+		opacity: 0.7;
+		background-repeat: no-repeat;
+		width: 32px;
+		height: 32px;
+		margin: 2px;
+		cursor: pointer;
+		background-image: url("images/menu.svg");
+		flex-grow: 0;
+		flex-shrink: 0;
+		z-index: 100;
+	}
+
+	&[data-splitter-type="ns"] [data-jwf-style="Splitter"],
+	&[data-splitter-type="sn"] [data-jwf-style="Splitter"] {
+		cursor: ns-resize;
+	}
+
+	&[data-splitter-type="we"] [data-jwf-style="Splitter"],
+	&[data-splitter-type="ew"] [data-jwf-style="Splitter"] {
+		cursor: ew-resize;
+	}
+}
+
+/* TreeView用設定 */
+@keyframes treeOpen {
+	0% {
+		margin-top: -1.5em;
+		opacity: 0.2;
+	}
+
+	100% {
+		margin-top: 0%;
+	}
+}
+
+@keyframes treeClose {
+	0% {
+		margin-top: 0;
+		opacity: 0.6;
+	}
+
+	90% {
+		margin-top: -2em;
+		opacity: 0.6;
+	}
+
+	100% {
+		margin-top: -100%;
+		transform: scaleY(0);
+		opacity: 0;
+		visibility: hidden;
+	}
+}
+
+[data-jwf-style="TreeView"] {
+	overflow: auto !important;
+	user-select: none;
+
+	[data-kind="TreeItem"] {
+		display: flex;
+		flex-direction: column;
+		flex: 1;
+
+		>[data-kind="TreeRow"]:first-child:hover {
+			border-bottom: black 1px solid;
+		}
+
+		>[data-kind="TreeRow"][data-drag='over'] {
+			background-color: rgba(80, 233, 149, 0.2);
+		}
+
+		[data-kind="TreeItem"] {
+			padding-left: 1em;
+		}
+	}
+
+	[data-kind="TreeRow"]:first-child {
+		cursor: pointer;
+	}
+
+	[data-kind="TreeRow"] {
+		display: flex;
+	}
+
+	[data-kind="TreeChild"] {
+		flex: 1;
+	}
+
+	[data-kind="TreeBody"] {
+		flex: 1;
+	}
+
+	[data-kind="TreeItem"]>[data-kind="TreeRow"]:nth-child(2)>[data-kind="TreeChild"] {
+		overflow: hidden;
+	}
+
+	[data-kind="TreeItem"]>div>[data-kind="TreeIcon"] {
+		background-repeat: no-repeat;
+		width: 16px;
+		height: 16px;
+		margin: 2px;
+		vertical-align: middle;
+		cursor: default;
+		background-image: url("images/tclose.svg");
+		flex-grow: 0;
+		flex-shrink: 0;
+	}
+
+	[data-kind="TreeItem"][data-stat="close"]>[data-kind="TreeRow"]>[data-kind="TreeIcon"] {
+		background-image: url("images/tclose.svg");
+	}
+
+	[data-kind="TreeItem"][data-stat="open"]>[data-kind="TreeRow"]>[data-kind="TreeIcon"] {
+		background-image: url("images/topen.svg");
+	}
+
+	[data-kind="TreeItem"][data-stat="alone"]>[data-kind="TreeRow"]>[data-kind="TreeIcon"] {
+		background-image: url("images/talone.svg");
+	}
+
+	[data-kind="TreeItem"]>[data-kind="TreeRow"]:first-child {
+		cursor: pointer;
+	}
+
+	[data-kind="TreeItem"][data-select="true"]>[data-kind="TreeRow"]:first-child {
+		background-color: rgba(80, 80, 233, 0.2);
+		flex: 1;
+	}
+}
+
+
+
+/* Panel用設定 */
+[data-jwf-style="Panel"] {
+	box-sizing: border-box;
+	user-select: none;
+	background-color: darkgrey;
+	border-color: lightgray dimgrey dimgrey lightgray;
+}
+
+/*ListView用スタイル*/
+[data-jwf-style="ListView"] {
+	$HEADER_HEIGHT: 30px;
+	$ITEM_HEIGHT: 30px;
+	user-select: none;
+	overflow-x: auto !important;
+
+	>[data-kind="ListHeaderBack"] {
+		position: absolute;
+		height: 30px;
+		width: 100%;
+		min-width: 100%;
+		background-image: linear-gradient(180deg,
+				rgba(144, 197, 240, 0.9) 0%,
+				rgba(63, 164, 201, 0.9) 50%,
+				rgba(100, 122, 221, 0.9) 100%);
+	}
+
+	>[data-kind="ListHeaderArea"] {
+		position: relative;
+		right: 0px;
+		left: 0px;
+		height: $HEADER_HEIGHT;
+
+		>[data-kind="ListResizers"] {
+			overflow: hidden;
+			position: absolute;
+			pointer-events: none;
+			height: 100%;
+			width: 100%;
+		}
+
+		>[data-kind="ListResizers"] div {
+			position: absolute;
+			width: 10px;
+			height: 100%;
+			cursor: ew-resize;
+			pointer-events: all;
+		}
+
+		>[data-kind="ListHeaders"] {
+			display: flex;
+			align-items: center;
+			height: 100%;
+			flex-grow: 0;
+			flex-shrink: 0;
+			overflow-x: visible;
+
+			>div {
+				box-sizing: border-box;
+				display: flex;
+				border: rgb(46, 98, 158) 1px;
+				border-style: none solid none solid;
+				justify-content: center;
+				align-items: center;
+
+				width: 80px;
+				flex-grow: 0;
+				flex-shrink: 0;
+				overflow: hidden;
+				white-space: nowrap;
+			}
+
+			>div:hover {
+				background-color: rgba(255, 255, 255, 0.1);
+			}
+
+			>div[data-sort="asc"] {
+				border-top: 1px rgba(255, 100, 100, 0.8) double;
+			}
+
+			>div[data-sort="desc"] {
+				border-bottom: 1px rgba(255, 100, 100, 0.8) double;
+			}
+		}
+	}
+
+	>[data-kind="ListItemArea"] {
+		white-space: nowrap;
+		position: relative;
+		display: flex;
+		height: calc(100% - #{$ITEM_HEIGHT});
+		overflow-y: auto;
+		overflow-x: hidden;
+		width: 100%;
+
+		[data-kind="ListColumn"] {
+			flex-grow: 0;
+			flex-shrink: 0;
+			height: 100%;
+
+			>[data-kind="ListCell"] {
+				padding: 2px;
+				display: flex;
+				flex-wrap: nowrap;
+				align-items: center;
+
+				border: transparent solid 1px;
+				border-left: rgba(158, 155, 153, 0.2) solid 1px;
+				border-bottom: rgba(158, 155, 153, 0.5) solid 1px;
+				height: $ITEM_HEIGHT;
+				overflow: hidden;
+				white-space: nowrap;
+				transition: 0.1s;
+
+				&:nth-child(odd) {
+					background-color: rgba(63, 164, 201, 0.2);
+				}
+
+				&:nth-child(even) {
+					background-color: rgba(63, 201, 183, 0.2);
+				}
+
+				&[data-item-hover="true"],
+				&[data-drag="over"] {
+					&:nth-child(odd) {
+						background-color: rgba(63, 164, 201, 0.4);
+					}
+
+					&:nth-child(even) {
+						background-color: rgba(63, 201, 183, 0.4);
+					}
+
+				}
+
+				&[data-item-select="true"] {
+					&:nth-child(odd) {
+						background-color: rgba(64, 160, 250, 0.6);
+					}
+
+					&:nth-child(even) {
+						background-color: rgba(58, 180, 200, 0.6);
+					}
+				}
+
+				&[data-item-hover="true"][data-item-select="true"]:nth-child(odd) {
+					background-color: rgba(64, 160, 250, 0.7);
+				}
+
+				&[data-item-hover="true"][data-item-select="true"]:nth-child(even) {
+					background-color: rgba(58, 180, 200, 0.7);
+				}
+
+			}
+		}
+	}
+}
+
+$DRAWER_ITEM_SIZE: 2em;
+
+@keyframes nsDrawerShow {
+	0% {
+		transform: translateY(-100%);
+	}
+
+	100% {
+		transform: translateY(0);
+	}
+}
+
+@keyframes nsDrawerClose {
+	0% {
+		transform: translateY(0);
+	}
+
+	100% {
+		transform: translateY(-100%);
+	}
+}
+
+@keyframes snDrawerShow {
+	0% {
+		transform: translateY(100%);
+	}
+
+	100% {
+		transform: translateY(0);
+	}
+}
+
+@keyframes snDrawerClose {
+	0% {
+		transform: translateY(0);
+	}
+
+	100% {
+		transform: translateY(100%);
+	}
+}
+
+@keyframes weDrawerShow {
+	0% {
+		transform: translateX(-100%);
+	}
+
+	100% {
+		transform: translateX(0);
+	}
+}
+
+@keyframes weDrawerClose {
+	0% {
+		transform: translateX(0);
+	}
+
+	100% {
+		transform: translateX(-100%);
+	}
+}
+
+@keyframes ewDrawerShow {
+	0% {
+		transform: translateX(100%);
+	}
+
+	100% {
+		transform: translateX(0);
+	}
+}
+
+@keyframes ewDrawerClose {
+	0% {
+		transform: translateX(0);
+	}
+
+	100% {
+		transform: translateX(100%);
+	}
+}
+
+[data-kind="Drawer"] {
+	background-color: rgba(240, 240, 240, 0.6);
+}
+
+[data-kind="DrawerItem"] {
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	margin: 0.2em;
+	margin-bottom: 0.5em;
+	padding: 0.5em;
+	height: $DRAWER_ITEM_SIZE;
+
+	>[data-kind="DrawerIcon"] {
+		background-size: 100% 100%;
+		height: 100%;
+		width: 1.3em;
+		margin-right: 0.4em;
+	}
+
+	>[data-kind="DrawerText"] {
+		flex: 1;
+		font-size: $DRAWER_ITEM_SIZE;
+	}
+
+	&:hover {
+		background-color: #eeeeee;
+		color: #5c6bb6;
+	}
+}
+
+
+/* Button用設定 */
+[data-jwf-style="Button"] {
+	display: flex;
+	background-color: transparent;
+
+	>div {
+		cursor: pointer;
+		white-space: nowrap;
+		margin: 2px;
+		justify-content: center;
+		align-items: center;
+		user-select: none;
+		border-width: 1px;
+		border-style: solid;
+		border-color: gainsboro dimgrey dimgrey gainsboro;
+		border-radius: 10px;
+		color: white;
+
+		background-image: linear-gradient(120deg,
+				rgba(156, 159, 161, 0.9) 0%,
+				#74757a 100%);
+
+		&:hover,
+		&:focus {
+			background-image: linear-gradient(120deg,
+					rgba(108, 155, 194, 0.9) 0%,
+					#6275df 100%);
+			font-weight: bold;
+		}
+
+		&:active {
+			border-style: inset;
+		}
+
+		>span {
+			display: block;
+			padding: 2px 8px;
+			white-space: nowrap;
+
+		}
+
+		>img {
+			height: 100%;
+			width: 100%;
+		}
+	}
+
+}
+
+/* Label用設定 */
+[data-jwf-style="Label"] {
+	display: flex;
+	overflow: visible;
+	background-color: transparent;
+
+	>span {
+		white-space: nowrap;
+	}
+}
+
+/* TextBox用設定 */
+[data-jwf-style="TextBox"] {
+	border: inset;
+	display: flex;
+
+	>div {
+		flex: 1;
+		position: relative;
+
+		>input {
+			user-select: all;
+			position: absolute;
+			background-color: rgba(255, 255, 255, 0.8);
+			min-height: 2em;
+			padding: 0.2em;
+			border: none;
+			width: 100%;
+		}
+
+		>div {
+			white-space: nowrap;
+			position: absolute;
+			padding: 0.2em;
+		}
+	}
+
+	>img {
+		height: 100%;
+	}
+
+}
+
+/* CheckBox用設定 */
+[data-jwf-style="CheckBox"] {
+	display: flex;
+	white-space: nowrap;
+
+	>label:hover {
+		background-color: rgba(186, 190, 245, 0.274);
+	}
+}
+
+/*
+	TableForm
+*/
+[data-jwf-style="TableFormView"] {
+
+	display: flex;
+	flex-direction: column;
+	padding: 0.5em;
+	overflow: auto;
+
+	>div:first-child {
+		flex: 1;
+		justify-content: space-between;
+
+		>div:hover {
+			cursor: default;
+		}
+
+		>div {
+			width: 100%;
+			padding: 0.3em;
+			box-sizing: border-box;
+			display: table;
+			border-spacing: 0 0.3em;
+			border-collapse: separate;
+
+			>:hover {
+				background: #aabbee;
+			}
+
+			>div,
+			>label {
+				background: rgba(230, 230, 230, 0.4);
+				display: table-row;
+
+				>div {
+					vertical-align: middle;
+					display: table-cell;
+					padding: 0.3em 0.5em;
+
+					&:first-child {
+						white-space: nowrap;
+					}
+				}
+			}
+		}
+	}
+
+	>div:nth-child(2) {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		padding: 0.2em;
+	}
+}
+
+[data-jwf-style="CalendarView"] {
+	>table {
+		user-select: none;
+		table-layout: fixed;
+		border-collapse: collapse;
+		width: 100%;
+		height: 100%;
+		tr:first-child {
+			background-color: rgb(255, 224, 216);
+
+			td:nth-child(odd) {
+				text-align: center;
+				cursor: pointer;
+				background-color: rgb(195, 215, 216);
+			}
+			td:nth-child(even) {
+					text-align: center;
+			}
+		}
+		tr:nth-child(2){
+			td{
+				border: 2px solid #aaaaaa;
+				background-color: #eeeeee;
+
+				vertical-align: middle;
+				text-align: center;
+
+			}
+			td:first-child {
+				color: red;
+			}
+
+			td:last-child {
+				color: blue;
+			}
+		}
+		tr:nth-child(n+3) {
+			td[data-select=true]{
+				div:nth-child(3) {
+					top: 0px;
+					left: 0px;
+					margin: 1px;
+					box-sizing: border-box;
+					position: absolute;
+					width: calc(100% - 2px);
+					height: calc(100% - 2px);
+					border: #7567eb solid;
+					z-index: 100;
+				}
+			}
+			td {
+				position: relative;
+				border: 2px solid #aaaaaa;
+				background-color: antiquewhite;
+				text-align: right;
+				&:hover {
+					background-color: rgba(200, 200, 200, 0.3);
+				}
+				div:nth-child(1) {
+					padding-right: 0.2em;
+				}
+				div:nth-child(2){
+					font-weight: bold;
+					color: red;
+					background-color: rgb(253, 167, 135);
+					vertical-align: middle;
+					text-align: center;
+					overflow: hidden;
+					white-space: nowrap;
+					font-size: 80%;
+					height: 1.5em;
+				}
+
+			}
+		}
+	}
+
+
+.CellBody {
+	box-sizing: border-box;
+	position: relative;
+	width: 100%;
+	height: 100%;
+}
+
+.CellBody#now {
+	border: #7567eb solid;
+}
+
+
+
+.GUICalendar .Cell#Holiday .DayText {
+	background-color: rgb(253, 167, 135);
+}
+
+.GUICalendar .Cell:first-child .Day {
+	color: red;
+}
+
+.GUICalendar .Cell:last-child .Day {
+	color: red;
+}
+
+.GUICalendar .Cell#Holiday .Day {
+	color: red;
+}
+
+
+}
