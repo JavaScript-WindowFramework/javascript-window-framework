@@ -25,7 +25,7 @@ namespace JWF {
 		constructor(text?:string,value?:any){
 			super()
 			this.setAutoSize(true)
-			this.setJswStyle('Button')
+			this.setJwfStyle('Button')
 			this.nodeValue = value
 			//this.setAlign('center')
 
@@ -102,7 +102,7 @@ namespace JWF {
 			super()
 			this.setWidth(64)
 			//this.setAutoSize(true)
-			this.setJswStyle('Button')
+			this.setJwfStyle('Button')
 			//this.setAlign('center')
 
 			const button = document.createElement('div')

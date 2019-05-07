@@ -42,7 +42,7 @@ namespace JWF{
 		 */
 		constructor(splitPos?: number, splitType?: 'ns' | 'sn' | 'ew' | 'we') {
 			super()
-			this.setJswStyle('SplitterView')
+			this.setJwfStyle('SplitterView')
 			this.setSize(640, 480)
 			if(splitPos != null)
 				this.JDataSplit.splitterPos = splitPos
@@ -76,7 +76,7 @@ namespace JWF{
 
 			let splitter = new Window()
 			this.JDataSplit.splitter = splitter
-			splitter.setJswStyle('Splitter')
+			splitter.setJwfStyle('Splitter')
 			splitter.setOrderTop(true)
 			splitter.setNoActive(true)
 			super.addChild(splitter)

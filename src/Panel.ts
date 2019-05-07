@@ -11,7 +11,7 @@ namespace JWF{
 	export class Panel extends Window {
 		constructor() {
 			super()
-			this.setJswStyle('Panel')
+			this.setJwfStyle('Panel')
 			this.setHeight(32)
 		}
 	}

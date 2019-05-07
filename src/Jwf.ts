@@ -98,13 +98,13 @@ namespace JWF {
 	* @extends {HTMLElement}
 	*/
 	export interface JNode extends HTMLElement {
-		Jsw: Window	//ノードを保持しているWindow
+		Jwf: Window	//ノードを保持しているWindow
 	}
 	/**
 	 * ウインドウ等総合管理クラス
 	 *
 	 * @export
-	 * @class Jsw
+	 * @class Jwf
 	 */
 	export class WindowManager {
 		static nodeX: number
@@ -140,7 +140,7 @@ namespace JWF {
 		 *
 		 * @static
 		 * @param {HTMLElement} node
-		 * @memberof Jsw
+		 * @memberof Jwf
 		 */
 		static enableMove(node: HTMLElement) {
 			function mouseDown(e) {
@@ -168,7 +168,7 @@ namespace JWF {
 		 * @param {HTMLElement} node 対象ノード
 		 * @param {string} ename イベント名
 		 * @param {*} [params] イベント発生時にevent.paramsの形で送られる
-		 * @memberof Jsw
+		 * @memberof Jwf
 		 */
 		static callEvent(node: HTMLElement, ename: string, params?: any) {
 			node.dispatchEvent(WindowManager.createEvent(ename, params))
@@ -180,7 +180,7 @@ namespace JWF {
 		 * @param {string} ename イベント名
 		 * @param {*} [params] イベント発生時にevent.paramsの形で送られる
 		 * @returns {Event} 作成したイベント
-		 * @memberof Jsw
+		 * @memberof Jwf
 		 */
 
 		static createEvent(ename: string, params?: any): Event {
@@ -201,7 +201,7 @@ namespace JWF {
 		 * @param {string} tagName タグ名
 		 * @param {*} [params] タグパラメータ
 		 * @returns {HTMLElement} 作成したノード
-		 * @memberof Jsw
+		 * @memberof Jwf
 		 */
 		static createElement(tagName: string, params?: any): HTMLElement {
 			let tag = document.createElement(tagName)
@@ -222,7 +222,7 @@ namespace JWF {
 		 *
 		 * @static
 		 * @param {boolean} flag	true:全Window強制更新 false:更新の必要があるWindowのみ更新
-		 * @memberof Jsw
+		 * @memberof Jwf
 		 */
 		static layout(flag: boolean) {
 			WindowManager.layoutForced = WindowManager.layoutForced || flag
@@ -234,9 +234,9 @@ namespace JWF {
 					let count = nodes.length
 					for (let i = 0; i < count; i++) {
 						let node = nodes[i] as JNode
-						if (!node.Jsw.getParent())
-							node.Jsw.onMeasure(WindowManager.layoutForced)
-						node.Jsw.onLayout(WindowManager.layoutForced)
+						if (!node.Jwf.getParent())
+							node.Jwf.onMeasure(WindowManager.layoutForced)
+						node.Jwf.onLayout(WindowManager.layoutForced)
 					}
 
 					WindowManager.layoutForced = false
@@ -269,7 +269,7 @@ namespace JWF {
 		for (let i = 0, l = activeWindows.length; i < l; i++) {
 			let w = activeWindows[i] as JNode
 			w.dataset.jwfActive = 'false'
-			w.Jsw.callEvent('active',{active:false})
+			w.Jwf.callEvent('active',{active:false})
 		}
 	}
 

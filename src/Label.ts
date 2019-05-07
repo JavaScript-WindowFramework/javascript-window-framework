@@ -5,7 +5,7 @@ namespace JWF{
 		nodeText: HTMLSpanElement
 		constructor(text?: string) {
 			super()
-			this.setJswStyle('Label')
+			this.setJwfStyle('Label')
 			let node = this.getClient()
 
 			let nodeText = document.createElement('span')
