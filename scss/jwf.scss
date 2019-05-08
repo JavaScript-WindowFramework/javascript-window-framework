@@ -704,10 +704,10 @@ $DRAWER_ITEM_SIZE: 2em;
 	display: flex;
 	flex-direction: column;
 	padding: 0.5em;
-	overflow: auto;
 
 	>div:first-child {
 		flex: 1;
+		overflow: auto;
 		justify-content: space-between;
 
 		>div:hover {
@@ -812,17 +812,18 @@ $DRAWER_ITEM_SIZE: 2em;
 				}
 				div:nth-child(1) {
 					padding-right: 0.2em;
+					font-size: 0.7em;
 				}
 				div:nth-child(2){
+					font-size: 0.6em;
 					font-weight: bold;
 					color: red;
-					background-color: rgb(253, 167, 135);
+					background-color: rgb(255, 179, 152);
 					vertical-align: middle;
 					text-align: center;
 					overflow: hidden;
 					white-space: nowrap;
-					font-size: 80%;
-					height: 1.5em;
+					height: 1.2em;
 				}
 
 			}

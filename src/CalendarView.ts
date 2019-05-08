@@ -1,7 +1,7 @@
 /// <reference path="./Window.ts" />
 namespace JWF {
 	export interface CALENDARVIEW_EVENT_DATE_CLICK {
-		value: any
+		date: Date
 	}
 	export interface CalendarViewEventMap extends WINDOW_EVENT_MAP {
 		"date": CALENDARVIEW_EVENT_DATE_CLICK
@@ -14,8 +14,8 @@ namespace JWF {
 		endDate: Date
 		holidays:{[keys:string]:string} = {}
 		selects: { [keys: string]: boolean } = {}
-		constructor() {
-			super()
+		constructor(p?:WINDOW_PARAMS) {
+			super(p)
 			this.setJwfStyle('CalendarView')
 			const weekString = "日月火水木金土";
 
@@ -64,6 +64,7 @@ namespace JWF {
 					}
 				}
 			}
+			this.holidays[(new Date()).toDateString()] = 'あいうえ'
 			this.redraw()
 		}
 		moveMonth(month){
@@ -113,10 +114,13 @@ namespace JWF {
 				delete this.selects
 		}
 		private onCellClick(cell: HTMLDivElement) {
-			console.log((cell as any).date.toDateString())
+			this.callEvent('date', {date:(cell as any).date})
 		}
 		addEventListener<K extends keyof CalendarViewEventMap>(type: K, listener: (ev: CalendarViewEventMap[K]) => any): void {
 			super.addEventListener(type as any, listener)
+		}
+		callEvent<K extends keyof CalendarViewEventMap>(type: K, param: CalendarViewEventMap[K]){
+			super.callEvent(type, param)
 		}
 	}
 

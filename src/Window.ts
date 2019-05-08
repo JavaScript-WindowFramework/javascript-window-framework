@@ -370,7 +370,7 @@ namespace JWF {
 		 * @param {*} params パラメータ
 		 * @memberof Window
 		 */
-		callEvent(type: string, params) {
+		callEvent<K extends keyof WINDOW_EVENT_MAP>(type: K | string, params: WINDOW_EVENT_MAP[K]|any) {
 			const eventData = this.Events.get(type)
 			if (eventData) {
 				for (let ev of eventData) {
