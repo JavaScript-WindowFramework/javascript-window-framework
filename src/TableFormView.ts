@@ -1,16 +1,16 @@
 namespace JWF {
 	export interface ITEM_OPTION {
 		label?: string,
-		type?: 'textbox' | 'checkbox' | 'select' | 'submit',
+		type?: 'date'|'textbox' | 'checkbox' | 'select' | 'submit',
 		name?: string,
-		value?: string | number | boolean
+		value?: string | number | boolean | Date
 		link?: string
 		image?: string
 		image_width?: string
 		events?: { [key: string]: object }
 		options?: {
 			name: string;
-			value: string;
+			value: string|number;
 		}[]
 	}
 	export class TableFormView extends Window {
@@ -32,7 +32,14 @@ namespace JWF {
 			this.footer = footer
 			this.getClient().appendChild(footer)
 		}
-		addItem(params: ITEM_OPTION) {
+		addItem(params: ITEM_OPTION | ITEM_OPTION[]) {
+			//配列ならば分解し再入力
+			if (Array.isArray(params)){
+				for (const item of params)
+					this.addItem(item)
+				return
+			}
+
 			if (params.type === 'submit') {
 				const button = document.createElement('button')
 				button.textContent = params.label
@@ -55,6 +62,21 @@ namespace JWF {
 				row.appendChild(data)
 
 				switch (params.type) {
+					case 'date':
+						const textDate = document.createElement('input')
+						textDate.readOnly = true
+						textDate.type = 'text'
+						textDate.size = 10
+						textDate.name = params.name || ''
+						textDate.value = params.value ? (params.value as Date).toLocaleDateString():'-'
+						data.appendChild(textDate)
+						textDate.addEventListener('click',()=>{
+							const calendar = new JWF.CalendarView({frame:true})
+							calendar.addEventListener('date',(e)=>{
+								textDate.value = e.date.toLocaleDateString()
+							})
+						})
+						break
 					case 'textbox':
 						const textbox = document.createElement('input')
 						textbox.type = 'text'
@@ -76,7 +98,7 @@ namespace JWF {
 						for (const o of params.options) {
 							const option = document.createElement('option')
 							option.textContent = o.name
-							option.value = o.value
+							option.value = o.value as string
 							select.appendChild(option)
 						}
 						data.appendChild(select)
@@ -97,7 +119,7 @@ namespace JWF {
 								image.style.width = params.image_width
 							tag.appendChild(image)
 						} else {
-							tag.innerText = params.value.toString()
+							tag.innerText = params.value as string
 						}
 						data.appendChild(tag)
 						break
