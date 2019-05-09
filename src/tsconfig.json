@@ -1,0 +1,28 @@
+{
+	"compilerOptions": {
+		"sourceMap": true,
+		"target": "es5",
+		//"module": "commonjs",
+		"module": "amd",
+		"composite": true,
+		"declaration": true,
+		"outFile": "../dist/jwf.js",
+		//"outDir": "../dist/js",
+		"rootDir": "./",
+		"moduleResolution": "node",
+		"lib": [
+			"es2017",
+			"dom"
+		]
+	},
+	"include": [
+		"jwf/src/*","./*"
+	],
+	"typedocOptions": {
+		"name": "JWF",
+		"json": "../doc/document.json",
+		"mode": "file",
+		"includeDeclarations": false,
+		"hideGenerator": false
+	}
+}
