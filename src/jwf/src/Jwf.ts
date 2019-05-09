@@ -1,6 +1,5 @@
 /**
  * JavaScriptWindowフレームワーク用名前空間
- * namespaceの前に「export」を入れると、モジュールとして利用可能
 */
 namespace  JWF {
 	//---------------------------------------
