@@ -6,7 +6,7 @@
 		"module": "amd",
 		"composite": true,
 		"declaration": true,
-		"outFile": "../dist/jwf.js",
+		"outFile": "../dist/index.js",
 		//"outDir": "../dist/js",
 		"rootDir": "./",
 		"moduleResolution": "node",

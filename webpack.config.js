@@ -1,12 +1,11 @@
 const path = require('path');
-var glob = require("glob");
 module.exports = {
 	mode: 'production',
-	entry: "./src/jwf.ts",
+	entry: "./src/javascript-window-framework.ts",
 	output: {
-		library: 'JWF',
+		library: 'javascript-window-framework',
 		libraryTarget: 'amd',
-		filename: 'jwf.js',
+		filename: 'index.js',
 		path: path.resolve(__dirname, 'dist')
 	},
 	module: {
