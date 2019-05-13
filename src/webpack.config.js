@@ -1,20 +1,14 @@
 const path = require('path');
-
 class DtsBundlePlugin {
+	constructor(p) {
+		this.p = p
+	}
 	apply(compiler) {
-		var rootDir = path.resolve(__dirname);
-		compiler.plugin('done', function () {
+		compiler.hooks.done.tap('DtsBundlePlugin', () => {
 			var dts = require('dts-bundle');
-
-			dts.bundle({
-				name: 'javascript-window-framework',
-				main: rootDir + '/../dist/javascript-window-framework.d.ts',
-				out: rootDir + '/../dist/index.d.ts',
-				removeSource: true,
-				outputAsModuleFolder: true
-			});
-		});
-	};
+			dts.bundle(this.p)
+		})
+	}
 }
 
 module.exports = {
@@ -24,7 +18,7 @@ module.exports = {
 	],
 	output: {
 		library: 'javascript-window-framework',
-		libraryTarget: 'commonjs',
+		libraryTarget: 'amd',
 		filename: 'index.js',
 		path: path.resolve(__dirname, '../dist')
 	},
@@ -49,7 +43,13 @@ module.exports = {
 		extensions: ['.ts', '.js', '.scss'],
 	},
 	devtool: 'source-map',
-	plugins: [
-		new DtsBundlePlugin()
-	]
+	// plugins: [
+	// 	new DtsBundlePlugin({
+	// 		name: 'javascript-window-framework',
+	// 		main: path.resolve(__dirname,'../dist/javascript-window-framework.d.ts'),
+	// 		out: path.resolve(__dirname, '../dist/index.d.ts'),
+	// 		removeSource: true,
+	// 		outputAsModuleFolder: true
+	// 	})
+	// ]
 };
