@@ -1,4 +1,6 @@
 package-lock.json
 node_modules
-dist/
+*.d.ts
+*.js
+*.map
 !webpack.config.js
