@@ -43,13 +43,13 @@ module.exports = {
 		extensions: ['.ts', '.js', '.scss'],
 	},
 	devtool: 'source-map',
-	// plugins: [
-	// 	new DtsBundlePlugin({
-	// 		name: 'javascript-window-framework',
-	// 		main: path.resolve(__dirname,'../dist/javascript-window-framework.d.ts'),
-	// 		out: path.resolve(__dirname, '../dist/index.d.ts'),
-	// 		removeSource: true,
-	// 		outputAsModuleFolder: true
-	// 	})
-	// ]
+	plugins: [
+		new DtsBundlePlugin({
+			name: 'javascript-window-framework',
+			main: path.resolve(__dirname,'../dist/javascript-window-framework.d.ts'),
+			out: path.resolve(__dirname, '../dist/index.d.ts'),
+			removeSource: true,
+			outputAsModuleFolder: true
+		})
+	]
 };
