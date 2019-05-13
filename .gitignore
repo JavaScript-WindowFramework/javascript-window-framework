@@ -1,6 +1,10 @@
 package-lock.json
 node_modules
+<<<<<<< HEAD
 *.d.ts
 *.js
 *.map
+=======
+dist/
+>>>>>>> work
 !webpack.config.js

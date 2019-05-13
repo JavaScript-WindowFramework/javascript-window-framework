@@ -3,9 +3,17 @@
 	"version": "0.0.1",
 	"description": "JavaScript Window Framework",
 	"main": "dist/index.js",
+<<<<<<< HEAD
 	"types": "dist/javascript-window-framework.d.ts",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1"
+=======
+	"types": "dist/index.d.ts",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"build": "npx webpack --config ./src/webpack.config.js",
+		"build-none-module": "npx webpack --config ./src/none-module-webpack.config.js"
+>>>>>>> work
 	},
 	"keywords": [],
 	"author": "",
@@ -19,7 +27,12 @@
 		"ts-loader": "^6.0.0",
 		"typescript": "^3.4.5",
 		"webpack": "^4.30.0",
+<<<<<<< HEAD
 		"webpack-cli": "^3.3.2"
+=======
+		"webpack-cli": "^3.3.2",
+		"es6-promise": "^4.2.6"
+>>>>>>> work
 	},
 	"repository": {
 		"type": "git",
