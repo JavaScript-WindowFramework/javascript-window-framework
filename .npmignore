@@ -1,6 +1,4 @@
 package-lock.json
 node_modules
 *.tsbuildinfo
-!*.d.ts
-!*.js
-!*.map
+src
