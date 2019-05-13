@@ -1,6 +1,6 @@
 
-namespace JWF {
-export class SelectBox extends JWF.Window{
+import { Window } from "./Window"
+export class SelectBox extends Window{
 	select : HTMLSelectElement
 	constructor(option: { label?:string,options: { name: string, value: string | number }[] }) {
 		super()
@@ -21,5 +21,4 @@ export class SelectBox extends JWF.Window{
 		}
 		node.appendChild(select)
 	}
-}
 }
