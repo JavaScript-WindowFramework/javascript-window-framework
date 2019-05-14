@@ -1,4 +1,4 @@
-import { Window, WindowManager,MovePoint,WINDOW_EVENT_MAP } from "./Window"
+import { Window, WindowManager, JWFEvent, MovePoint,WINDOW_PARAMS,WINDOW_EVENT_MAP } from "./Window"
 
 
 export interface LISTVIEW_EVENT_ITEM_CLICK {
@@ -29,8 +29,7 @@ export class ListView extends Window {
 	headers: HTMLElement
 	resizers: HTMLElement
 	itemArea: HTMLElement
-	itemColumn: HTMLElement
-	overIndex: number
+	overIndex: number = -1
 	lastIndex: number = 0
 	selectIndexes: number[] = []
 	sortIndex: number = -1
@@ -44,7 +43,7 @@ export class ListView extends Window {
 	 * @param {*} [params] ウインドウ作成パラメータ
 	 * @memberof ListView
 	 */
-	constructor(params?) {
+	constructor(params?: WINDOW_PARAMS) {
 		super(params)
 		const that = this
 		var client = this.getClient()
@@ -85,12 +84,12 @@ export class ListView extends Window {
 			}
 		})
 
-		client.addEventListener('dragover', function () {
-			event.preventDefault()
+		client.addEventListener('dragover', function (e) {
+			e.preventDefault()
 		})
 		client.addEventListener('drop', function (e) {
 			that.callEvent('itemDrop', { itemIndex: -1, subItemIndex: -1, event: e })
-			event.preventDefault()
+			e.preventDefault()
 		})
 
 	}
@@ -196,15 +195,16 @@ export class ListView extends Window {
 			resize.index = index
 			resizers.appendChild(resize)
 			WindowManager.enableMove(resize)
-			resize.addEventListener("move", function (e) {
+			resize.addEventListener("move", function (this:HTMLElement,e: JWFEvent) {
+				const index = (this as any).index
 				let p = e.params as MovePoint
 				let x = p.nodePoint.x + p.nowPoint.x - p.basePoint.x
-				let h = headers.childNodes[this.index] as HTMLElement
+				let h = headers.childNodes[index] as HTMLElement
 				let width = x - h.offsetLeft
 				h.style.width = width + 'px'
-				that.columnWidth[this.index] = width
+				that.columnWidth[index] = width
 
-				for (let i = this.index, length = resizers.childElementCount; i < length; i++) {
+				for (let i = index, length = resizers.childElementCount; i < length; i++) {
 					let node = headers.children[i] as HTMLElement
 					var r = resizers.childNodes[i] as HTMLElement
 					r.style.left = node.offsetLeft + node.offsetWidth + 'px'
@@ -369,7 +369,9 @@ export class ListView extends Window {
 		return this.selectIndexes.indexOf(index) >= 0
 	}
 	private static getIndexOfNode(node: HTMLElement) {
-		return [].slice.call(node.parentNode.childNodes).indexOf(node)
+		if (node.parentNode)
+			return ([] as HTMLElement[]).slice.call(node.parentNode.childNodes).indexOf(node)
+		return -1
 	}
 	/**
 	 *アイテムを全て削除する
@@ -407,7 +409,7 @@ export class ListView extends Window {
 	 * @param {*} value 値
 	 * @memberof ListView
 	 */
-	setItemValue(index: number, value) {
+	setItemValue(index: number, value:any) {
 		let cell = this.getCell(index, 0)
 		if (cell)
 			cell.value = value
@@ -486,11 +488,11 @@ export class ListView extends Window {
 	 * @memberof ListView
 	 */
 	addItem(value: string | number | HTMLElement | ((string | number | HTMLElement)[]), itemValue?: any) {
-		const vector = { left: 'flex-start', center: 'center', right: 'flex-end' }
+		const vector:{[key:string]:string} = { left: 'flex-start', center: 'center', right: 'flex-end' }
 		let that = this
-		let columns = this.itemArea.childNodes as any
+		let columns = this.itemArea.childNodes as NodeListOf<HTMLElement>
 		for (let i = 0, length = columns.length; i < length; i++) {
-			let column = columns[i];
+			let column = columns[i] as any
 			let cell = document.createElement('div')
 			cell.draggable = true
 			cell.dataset.kind = 'ListCell'
@@ -503,11 +505,11 @@ export class ListView extends Window {
 				for (let i = 0, length = columns.length; i < length; i++) {
 					let column = columns[i]
 					if (that.overIndex != null && that.overIndex < column.childElementCount) {
-						let node = column.childNodes[that.overIndex]
+						let node = column.childNodes[that.overIndex] as HTMLElement
 						node.dataset.itemHover = 'false'
 						node.className = node.className //IE対策
 					}
-					let node2 = column.childNodes[index]
+					let node2 = column.childNodes[index] as HTMLElement
 					node2.dataset.itemHover = 'true'
 					node2.className = node2.className //IE対策
 				}
@@ -526,17 +528,17 @@ export class ListView extends Window {
 					cell.className = cell.className //IE対策
 				}
 			})
-			cell.addEventListener('dragenter', function () {
+			cell.addEventListener('dragenter', function (e) {
 				let index = ListView.getIndexOfNode(this)
 				let cells = that.getLineCells(index)
 				for (let cell of cells) {
 					cell.dataset.drag = 'over'
 					cell.className = cell.className //IE対策
 				}
-				event.preventDefault()
+				e.preventDefault()
 			})
-			cell.addEventListener('dragover', function () {
-				event.preventDefault()
+			cell.addEventListener('dragover', function (e) {
+				e.preventDefault()
 			})
 			cell.addEventListener('drop', function (e) {
 				let index = ListView.getIndexOfNode(this)
@@ -547,7 +549,7 @@ export class ListView extends Window {
 					cell.className = cell.className //IE対策
 				}
 				that.callEvent('itemDrop', { itemIndex: index, subItemIndex: index2, event: e })
-				event.preventDefault()
+				e.preventDefault()
 			})
 			cell.addEventListener('dragstart', function (e) {
 				let index = ListView.getIndexOfNode(this)
@@ -584,7 +586,7 @@ export class ListView extends Window {
 		}
 		if (columns.length === 0)
 			return -1
-		let index = columns[0].childElementCount - 1
+		let index = columns[0].childNodes.length - 1
 		if (value instanceof Array) {
 			for (let i = 0, l = value.length; i < l; i++) {
 				this.setItem(index, i, value[i])
@@ -672,11 +674,11 @@ export class ListView extends Window {
 		var resizers = this.resizers
 		var itemArea = this.itemArea
 		var lmitWidth = itemArea.clientWidth
-		for (let i = 0, length = headers.childElementCount; i < length; i++) {
+		for (let i = 0, length = headers.childNodes.length; i < length; i++) {
 			lmitWidth -= this.columnWidth[i]
 		}
 		const autoIndex = this.columnAutoIndex
-		for (let i = 0, length = headers.childElementCount; i < length; i++) {
+		for (let i = 0, length = headers.childNodes.length; i < length; i++) {
 			let node = headers.childNodes[i] as HTMLElement
 			let resize = resizers.childNodes[i] as HTMLElement
 			let column = itemArea.children[i] as HTMLElement

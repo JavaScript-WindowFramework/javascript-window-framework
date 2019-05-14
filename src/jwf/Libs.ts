@@ -9,7 +9,7 @@ export function Sleep(timeout: number): Promise<void> {
 //書式付文字列生成
 //	引数	format,・・・
 //	戻り値	生成文字列
-export function sprintf(format: string, ...args) {
+export function sprintf(format: string, ...args:any[]) {
 	if (args[0] == null)
 		return '';
 	var paramIndex = 0;

@@ -39,7 +39,7 @@ export class CheckBox extends Window {
 		const nodeText = this.nodeText
 		nodeText.textContent = text
 	}
-	getText(): string {
+	getText(): string|null {
 		const nodeText = this.nodeText
 		return nodeText.textContent
 	}

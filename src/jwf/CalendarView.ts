@@ -10,8 +10,8 @@ export class CalendarView extends Window {
 	titleCell: HTMLTableDataCellElement
 	dateCells: HTMLTableDataCellElement[]
 	calendarDate: Date = new Date()
-	startDate: Date
-	endDate: Date
+	startDate: Date|null = null
+	endDate: Date|null = null
 	holidays: { [keys: string]: string } = {}
 	selects: { [keys: string]: boolean } = {}
 	constructor(p?: WINDOW_PARAMS) {
@@ -67,7 +67,7 @@ export class CalendarView extends Window {
 		this.holidays[(new Date()).toDateString()] = 'あいうえ'
 		this.redraw()
 	}
-	moveMonth(month) {
+	moveMonth(month:number) {
 		var date = this.calendarDate;
 		this.calendarDate = new Date(date.getFullYear(), date.getMonth() + month)
 		this.redraw()
