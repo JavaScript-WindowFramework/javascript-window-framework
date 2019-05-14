@@ -26,7 +26,7 @@ export class Label extends Window {
 		let nodeText = this.nodeText
 		nodeText.textContent = text
 	}
-	getText(): string {
+	getText(): string|null {
 		return this.nodeText.textContent
 	}
 	getTextNode() {

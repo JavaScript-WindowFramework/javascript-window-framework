@@ -67,7 +67,7 @@ export class Button extends Window {
 		* @returns {string}
 		* @memberof Button
 		*/
-	getText(): string {
+	getText(): string|null {
 		return this.nodeText.textContent
 	}
 	setAlign(style: string) {

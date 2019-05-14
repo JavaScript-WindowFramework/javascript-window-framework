@@ -20,6 +20,7 @@ export class TextBox extends Window {
 
 		let nodeLabel = document.createElement('div')
 		textArea.appendChild(nodeLabel)
+		this.nodeLabel = nodeLabel
 		if (params && params.label)
 			nodeLabel.textContent = params.label
 
@@ -46,7 +47,7 @@ export class TextBox extends Window {
 		node.textContent = text
 	}
 	getLabel(): string {
-		return this.nodeLabel.textContent
+		return this.nodeLabel.textContent||''
 	}
 	getTextNode() {
 		return this.nodeText

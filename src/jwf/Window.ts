@@ -15,6 +15,9 @@ export interface Size {
 	height: number
 }
 
+export interface JWFEvent extends Event{
+	params:any
+}
 /**
  * ドラッグドロップ機能用
  *
@@ -26,7 +29,7 @@ export interface Size {
  * @param {Size} nodeSize ノード初期サイズ
  */
 export interface MovePoint {
-	event: MouseEvent
+	event: MouseEvent|TouchEvent
 	basePoint: Point
 	nowPoint: Point
 	nodePoint: Point
@@ -54,10 +57,10 @@ export class WindowManager {
 	static baseY: number
 	static nodeWidth: number
 	static nodeHeight: number
-	static moveNode: HTMLElement = null
-	static frame: any = null
+	static moveNode: HTMLElement|null = null
+	static frame: number|null = null
 	static layoutForced: boolean
-	static layoutHandler
+	static layoutHandler: NodeJS.Timeout|null
 
 
 
@@ -84,7 +87,7 @@ export class WindowManager {
 	 * @memberof Jwf
 	 */
 	static enableMove(node: HTMLElement) {
-		function mouseDown(e) {
+		function mouseDown(e: MouseEvent | TouchEvent) {
 			if (WindowManager.moveNode == null) {
 				WindowManager.moveNode = node
 				let p = WindowManager.getPos(e)
@@ -130,7 +133,7 @@ export class WindowManager {
 			event = document.createEvent('CustomEvent')
 			event.initCustomEvent(ename, false, false, null)
 		} else {
-			event = new CustomEvent(ename, null)
+			event = new CustomEvent(ename)
 		}
 		event.params = params
 		return event
@@ -145,7 +148,7 @@ export class WindowManager {
 		* @memberof Jwf
 		*/
 	static createElement(tagName: string, params?: any): HTMLElement {
-		let tag = document.createElement(tagName)
+		let tag:any = document.createElement(tagName)
 		for (let index in params) {
 			let p = params[index]
 			if (typeof p == 'object') {
@@ -220,7 +223,7 @@ function mouseUp() {
 	WindowManager.frame = null
 }
 //マウス移動時の処理
-function mouseMove(e: MouseEvent) {
+function mouseMove(e: MouseEvent|TouchEvent) {
 	if (WindowManager.moveNode) {
 		let node = WindowManager.moveNode;	//移動中ノード
 		let p = WindowManager.getPos(e);	//座標の取得
@@ -253,12 +256,12 @@ export interface JDATA {
 	frameSize: number
 	titleSize: number
 	redraw: boolean
-	parent: Window
+	parent: Window|null
 	orderTop: boolean
 	orderLayer: number
 	layoutFlag: boolean
-	clientArea: HTMLElement
-	style: string
+	clientArea: HTMLElement|null
+	style: string|null
 	visible: boolean
 	minimize: boolean
 	normalX: number
@@ -269,10 +272,10 @@ export interface JDATA {
 	padding: { x1: number, y1: number, x2: number, y2: number }
 	moveable: boolean
 	reshow: boolean
-	animation: {}
+	animation: { [key: string]: string }
 	animationEnable: boolean
 	noActive: boolean,
-	autoSizeNode: HTMLElement
+	autoSizeNode: HTMLElement|null
 }
 
 export interface WINDOW_EVENT_MAP {
@@ -391,7 +394,7 @@ export class Window {
 		//移動に備えて、必要な情報を収集
 		hNode.addEventListener("touchstart", this.onMouseDown.bind(this), { passive: false })
 		hNode.addEventListener("mousedown", this.onMouseDown.bind(this))
-		hNode.addEventListener('move', this.onMouseMove.bind(this))
+		hNode.addEventListener('move', (this.onMouseMove.bind(this)) as any)
 		//タイトルバーアイコンの機能設定
 		hNode.addEventListener("JWFclose", this.close.bind(this))
 		hNode.addEventListener("JWFmax", this.setMaximize.bind(this, true))
@@ -413,8 +416,8 @@ export class Window {
 	setJwfStyle(style: string) {
 		this.getClient().dataset.jwfStyle = style
 	}
-	getJwfStyle(): string {
-		return this.getNode().dataset.jwfStyle
+	getJwfStyle(): string|null {
+		return this.getNode().dataset.jwfStyle||null
 	}
 	//フレーム追加処理
 	private addFrame(titleFlag: boolean): void {
@@ -437,9 +440,9 @@ export class Window {
 
 
 		//フレームクリックイベントの処理
-		function onFrame() {
+		function onFrame(this:HTMLElement) {
 			if (WindowManager.frame == null)
-				WindowManager.frame = this.dataset.index
+				WindowManager.frame = this.dataset.index!=null?parseInt(this.dataset.index):null
 			//EDGEはここでイベントを止めないとテキスト選択が入る
 			//if (WindowManager.frame < 9)
 			//	if (e.preventDefault) e.preventDefault(); else e.returnValue = false
@@ -477,7 +480,7 @@ export class Window {
 
 	}
 
-	private onMouseDown(e) {
+	private onMouseDown(e: MouseEvent | TouchEvent) {
 		if (WindowManager.moveNode == null) {
 			this.foreground()
 			WindowManager.moveNode = this.hNode
@@ -494,7 +497,10 @@ export class Window {
 			e.preventDefault()
 		}
 	}
-	private onMouseMove(e) {
+	private onMouseMove(e:JWFEvent) {
+		if (WindowManager.frame==null)
+			return
+
 		let p = e.params as MovePoint
 		let x = this.getPosX()
 		let y = this.getPosY()
@@ -502,8 +508,9 @@ export class Window {
 		let width = this.getWidth()
 		let height = this.getHeight()
 
+
 		//選択されている場所によって挙動を変える
-		let frameIndex = parseInt(WindowManager.frame)
+		let frameIndex = WindowManager.frame
 		switch (frameIndex) {
 			case 0://上
 				y = p.nodePoint.y + p.nowPoint.y - p.basePoint.y
@@ -554,7 +561,9 @@ export class Window {
 		if (frameIndex < 9 || this.JData.moveable) {
 			p.event.preventDefault()
 			try{
-				window.getSelection().removeAllRanges()
+				const selection = window.getSelection()
+				if (selection)
+					selection.removeAllRanges()
 			}catch(e){}
 		}
 	}
@@ -703,7 +712,7 @@ export class Window {
 		* @returns {Window} 親ウインドウ
 		* @memberof Window
 		*/
-	getParent(): Window {
+	getParent(): Window|null {
 		return this.JData.parent
 	}
 	/**
@@ -759,8 +768,9 @@ export class Window {
 		this.JData.width = width
 		this.JData.height = height
 		this.layout()
-		if (this.getParent())
-			this.getParent().layout()
+		const parent = this.getParent()
+		if (parent)
+			parent.layout()
 	}
 	/**
 	 *ウインドウの幅の設定
@@ -774,8 +784,9 @@ export class Window {
 			return
 		this.JData.width = width
 		this.layout()
-		if (this.getParent())
-			this.getParent().layout()
+		const parent = this.getParent()
+		if (parent)
+			parent.layout()
 	}
 
 	/**
@@ -789,9 +800,9 @@ export class Window {
 		if (this.JData.height === height)
 			return
 		this.JData.height = height
-		this.layout()
-		if (this.getParent())
-			this.getParent().layout()
+		const parent = this.getParent()
+		if (parent)
+			parent.layout()
 	}
 
 	/**
@@ -804,15 +815,15 @@ export class Window {
 	 * @memberof Window
 	 */
 
-	setPadding(x1: number, y1: number, x2: number, y2: number)
-	setPadding(all: number)
-	setPadding(p1, p2?, p3?, p4?) {
+	setPadding(x1: number, y1: number, x2: number, y2: number):void
+	setPadding(all: number): void
+	setPadding(p1: number, p2?: number, p3?: number, p4?: number) {
 		if (typeof p2 === 'undefined') {
 			this.JData.padding.x1 = p1;
 			this.JData.padding.y1 = p1;
 			this.JData.padding.x2 = p1;
 			this.JData.padding.y2 = p1;
-		} else {
+		} else if (typeof p3 !== 'undefined' && typeof p4 !== 'undefined'){
 			this.JData.padding.x1 = p1;
 			this.JData.padding.y1 = p2;
 			this.JData.padding.x2 = p3;
@@ -828,15 +839,15 @@ export class Window {
 		* @param {number} y2
 		* @memberof Window
 		*/
-	setMargin(x1: number, y1: number, x2: number, y2: number)
-	setMargin(all: number)
-	setMargin(p1, p2?, p3?, p4?) {
+	setMargin(x1: number, y1: number, x2: number, y2: number): void
+	setMargin(all: number): void
+	setMargin(p1: number, p2?: number, p3?: number, p4?: number) {
 		if (typeof p2 === 'undefined') {
 			this.JData.margin.x1 = p1;
 			this.JData.margin.y1 = p1;
 			this.JData.margin.x2 = p1;
 			this.JData.margin.y2 = p1;
-		} else {
+		} else if (typeof p3 !== 'undefined' && typeof p4 !== 'undefined') {
 			this.JData.margin.x1 = p1;
 			this.JData.margin.y1 = p2;
 			this.JData.margin.x2 = p3;
@@ -852,8 +863,9 @@ export class Window {
 	isVisible(): boolean {
 		if (!this.JData.visible)
 			return false;
-		if (this.getParent())
-			return this.getParent().isVisible();
+		const parent = this.getParent()
+		if (parent)
+			return parent.isVisible();
 		return true;
 	}
 
@@ -905,8 +917,9 @@ export class Window {
 				animationEnd.bind(node)()
 			}
 		}
-		if (this.getParent())
-			this.getParent().layout();
+		const parent = this.getParent()
+		if (parent)
+			parent.layout();
 
 	}
 	/**
@@ -917,8 +930,9 @@ export class Window {
 		*/
 	setOrderTop(flag: boolean): void {
 		this.JData.orderTop = flag
-		if (this.getParent())
-			this.getParent().layout()
+		const parent = this.getParent()
+		if (parent)
+			parent.layout()
 	}
 	/**
 	 *ウインドウの重ね合わせ順位の設定
@@ -1043,20 +1057,20 @@ export class Window {
 		}
 
 		let client = this.getClient()
-		let nodes = []
+		let nodes: JNode[] = []
 		for (let i = 0; i < client.childNodes.length; i++) {
-			let node = client.childNodes[i] as HTMLElement
-			if (node.dataset && node.dataset.jwf === "Window")
+			let node = client.childNodes[i] as HTMLElement | JNode
+			if (('Jwf' in node) && node.dataset && node.dataset.jwf === "Window")
 				nodes.push(node)
 		}
 		let count = nodes.length
 
 		//配置順序リスト
 		nodes.sort(function (anode: JNode, bnode: JNode) {
-			const priority = { top: 10, bottom: 10, left: 8, right: 8, client: 5 }
-			const a = anode.Jwf.JData
-			const b = bnode.Jwf.JData
-			return priority[b.style] - priority[a.style]
+			const priority:{[key:string]:number} = { top: 10, bottom: 10, left: 8, right: 8, client: 5 }
+			const a = anode.Jwf.JData.style as string
+			const b = bnode.Jwf.JData.style as string
+			return priority[b] - priority[a]
 		})
 
 		const padding = this.JData.padding
@@ -1111,10 +1125,10 @@ export class Window {
 		this.callEvent('layouted', {})
 	}
 	private orderSort(client: HTMLElement) {
-		let nodes = []
+		let nodes:JNode[] = []
 		for (let i = 0; i < client.childNodes.length; i++) {
-			let node = client.childNodes[i] as HTMLElement
-			if (node.dataset && node.dataset.jwf === "Window")
+			let node = client.childNodes[i] as HTMLElement | JNode
+			if (('Jwf' in node) && node.dataset && node.dataset.jwf === "Window")
 				nodes.push(node)
 		}
 		//重ね合わせソート
@@ -1128,12 +1142,14 @@ export class Window {
 			let layer = a.orderLayer - b.orderLayer
 			if (layer)
 				return layer
-			return parseInt(anode.style.zIndex) - parseInt(bnode.style.zIndex)
+			const aIndex = (anode.style.zIndex) as string
+			const bIndex = (bnode.style.zIndex) as string
+			return parseInt(aIndex) - parseInt(bIndex)
 		})
 
 		//Zオーダーの再附番
 		for (let i = 0; i < nodes.length; i++) {
-			nodes[i].style.zIndex = i
+			nodes[i].style.zIndex = i.toString()
 		}
 	}
 	show(flag: boolean): void {
@@ -1208,8 +1224,8 @@ export class Window {
 		*/
 	close(): void {
 		const that = this
-		function animationEnd() {
-			let nodes = this.querySelectorAll('[data-jwf="Window"]') as JNode[]
+		function animationEnd(this:HTMLElement) {
+			let nodes: NodeListOf<JNode> = this.querySelectorAll('[data-jwf="Window"]')
 			let count = nodes.length
 			for (let i = 0; i < count; i++) {
 				nodes[i].Jwf.layout()
@@ -1246,8 +1262,8 @@ export class Window {
 		* @memberof Window
 		*/
 	getAbsX() {
-		var px = this.JData.x;
-		var parent: Window = this;
+		let px = this.JData.x;
+		let parent: Window|null = this;
 		while (parent = parent.getParent()) {
 			px += this.getClient().offsetLeft + parent.getClientX() + parent.JData.x;
 		}
@@ -1261,7 +1277,7 @@ export class Window {
 	*/
 	getAbsY() {
 		var py = this.JData.y;
-		var parent: Window = this;
+		var parent: Window|null = this;
 		while (parent = parent.getParent()) {
 			py += this.getClient().offsetTop + parent.getClientX() + parent.JData.y;
 		}
@@ -1276,7 +1292,7 @@ export class Window {
 		* @memberof Window
 		*/
 	getClient(): HTMLElement {
-		return this.JData.clientArea
+		return this.JData.clientArea as HTMLElement
 	}
 	/**
 	 *クライアント領域の基準位置を返す
@@ -1356,8 +1372,9 @@ export class Window {
 		* @param {('left' | 'right' | 'top' | 'bottom' | 'client' | null)} [style] ドッキング位置
 		* @memberof Window
 		*/
-	addChild(child: Window, style?: 'left' | 'right' | 'top' | 'bottom' | 'client' | null): void {
-		child.setChildStyle(style)
+	addChild(child: Window, style?: 'left' | 'right' | 'top' | 'bottom' | 'client' |null): void {
+		if (style)
+			child.setChildStyle(style)
 		child.JData.parent = this
 		this.getClient().appendChild(child.hNode)
 		this.layout()
@@ -1369,7 +1386,7 @@ export class Window {
 		* @param {('left' | 'right' | 'top' | 'bottom' | 'client' | null)} style ドッキング位置
 		* @memberof Window
 		*/
-	setChildStyle(style: 'left' | 'right' | 'top' | 'bottom' | 'client' | null): void {
+	setChildStyle(style: 'left' | 'right' | 'top' | 'bottom' | 'client'|null): void {
 		this.JData.style = style
 		let parent = this.getParent()
 		if (parent)
@@ -1444,7 +1461,7 @@ export class Window {
 		*/
 	getTitle(): string {
 		if (this.hNode.childNodes[9]) {
-			return this.hNode.childNodes[9].childNodes[0].textContent
+			return this.hNode.childNodes[9].childNodes[0].textContent||''
 		}
 		return ""
 	}
@@ -1457,7 +1474,7 @@ export class Window {
 		*/
 	setMaximize(flag: boolean): void {
 		let that = this
-		function animationEnd() {
+		function animationEnd(this:HTMLElement) {
 			this.style.minWidth = null
 			this.style.minHeight = that.JData.titleSize + "px";
 			this.removeEventListener("animationend", animationEnd)
@@ -1541,7 +1558,7 @@ export class Window {
 	* @extends {Window}
 	*/
 export class FrameWindow extends Window {
-	constructor(param?) {
+	constructor(param?: WINDOW_PARAMS) {
 		let p = { frame: true, title: true, layer: 10 }
 		if (param)
 			Object.assign(p, param)

@@ -43,8 +43,10 @@ export class TableFormView extends Window {
 
 		if (params.type === 'submit') {
 			const button = document.createElement('button')
-			button.textContent = params.label
-			button.name = params.name
+			if (params.label)
+				button.textContent = params.label
+			if (params.name)
+				button.name = params.name
 			this.footer.appendChild(button)
 			if (params.events) {
 				const events = params.events
@@ -58,7 +60,8 @@ export class TableFormView extends Window {
 
 			const label = document.createElement('div')
 			row.appendChild(label)
-			label.innerText = params.label
+			if (params.label)
+				label.innerText = params.label
 			const data = document.createElement('div')
 			row.appendChild(data)
 
@@ -96,13 +99,16 @@ export class TableFormView extends Window {
 					const select = document.createElement('select')
 					select.name = params.name || ''
 
-					for (const o of params.options) {
-						const option = document.createElement('option')
-						option.textContent = o.name
-						option.value = o.value as string
-						select.appendChild(option)
+					if (params.options){
+						for (const o of params.options) {
+							const option = document.createElement('option')
+							option.textContent = o.name
+							option.value = o.value as string
+							select.appendChild(option)
+						}
 					}
 					data.appendChild(select)
+
 					break
 				default:
 					let tag;

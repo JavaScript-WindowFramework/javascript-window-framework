@@ -30,7 +30,7 @@ export class MessageBox extends FrameWindow{
 			const b = new Button(name, buttons[name])
 			b.setAlign('center')
 			this.addChild(b, 'top')
-			b.addEventListener('buttonClick',function(){
+			b.addEventListener('buttonClick', function (this: Button){
 				that.callEvent('buttonClick',this.getValue())
 				that.close()
 			}.bind(b))

@@ -5,7 +5,7 @@
 		"module": "amd",
 		"composite": true,
 		"declaration": true,
-		//outFile": "../dist/index.js",
+		"strict": true,
 		"outDir": "../dist",
 		"rootDir": "./jwf",
 		"lib": [
