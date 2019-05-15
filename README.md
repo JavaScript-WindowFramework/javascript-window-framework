@@ -1,12 +1,15 @@
 # javascript-window-framework
 JavaScript用ウインドウフレームワーク npmモジュール版
 
+## 動作画面
+![Screen Shot](https://raw.githubusercontent.com/JavaScript-WindowFramework/javascript-window-framework/ScreenShot/ScreenShot.gif)
+
 ## ターゲット
 - TypeScript+ES5(JavaScript)
 - IE11で動作するレベルのDOM
 
 ## 更新履歴
-- 2019/05/14 0.03 tsコードをstrictに対応
+- 2019/05/14 0.04 tsコードをstrictに対応
 - 2019/05/13 0.02 モジュールの形式を変更
 - 2019/05/09 0.01 公開バージョン
 
