@@ -60,7 +60,7 @@ export class WindowManager {
 	static moveNode: HTMLElement|null = null
 	static frame: number|null = null
 	static layoutForced: boolean
-	static layoutHandler: NodeJS.Timeout|null
+	static layoutHandler: NodeJS.Timer|null
 
 
 
