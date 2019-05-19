@@ -1,4 +1,5 @@
-import { Window, WindowManager, JWFEvent, MovePoint,WINDOW_PARAMS,WINDOW_EVENT_MAP } from "./Window"
+import { Window,JWFEvent, MovePoint,WINDOW_PARAMS,WINDOW_EVENT_MAP, JNode } from "./Window"
+import { WindowManager } from "./WindowManager";
 
 
 export interface LISTVIEW_EVENT_ITEM_CLICK {
@@ -191,12 +192,12 @@ export class ListView extends Window {
 
 			//リサイズバーの設定
 			var resizers = this.resizers
-			let resize: any = document.createElement('div')
-			resize.index = index
+			let resize = document.createElement('div')
+			resize.dataset.index = index.toString()
 			resizers.appendChild(resize)
-			WindowManager.enableMove(resize)
-			resize.addEventListener("move", function (this:HTMLElement,e: JWFEvent) {
-				const index = (this as any).index
+			WindowManager.enableMove(resize);
+			(resize as any).addEventListener("move", function (this:HTMLElement,e: JWFEvent) {
+				const index = this.dataset.index?parseInt(this.dataset.index):0
 				let p = e.params as MovePoint
 				let x = p.nodePoint.x + p.nowPoint.x - p.basePoint.x
 				let h = headers.childNodes[index] as HTMLElement

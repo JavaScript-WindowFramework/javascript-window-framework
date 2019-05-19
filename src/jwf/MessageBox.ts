@@ -1,6 +1,7 @@
-import { FrameWindow, WINDOW_EVENT_MAP } from "./Window"
+import { WINDOW_EVENT_MAP } from "./Window"
 import {Label} from "./Label"
 import {Button} from "./Button"
+import { FrameWindow } from "./FrameWindow";
 export interface MESSAGEBOX_EVENT_ITEM_CLICK {
 	value: any
 }
