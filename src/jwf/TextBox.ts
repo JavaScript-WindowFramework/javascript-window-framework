@@ -1,4 +1,11 @@
 import { Window } from "./Window"
+
+/**
+ *テキストボックス
+ *
+ * @class TextBox
+ * @extends {JSW.Window}
+ */
 export class TextBox extends Window {
 	nodeLabel: HTMLElement
 	nodeText: HTMLInputElement
@@ -29,6 +36,11 @@ export class TextBox extends Window {
 			nodeText.type = params.type
 		textArea.appendChild(nodeText)
 		this.nodeText = nodeText
+
+		nodeText.addEventListener('keydown', (e)=> {
+			if (e.keyCode == 13)
+				this.callEvent('enter', e)
+		})
 
 		if (params && params.text)
 			this.setText(params.text)
