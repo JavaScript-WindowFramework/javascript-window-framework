@@ -1,6 +1,6 @@
 {
 	"name": "javascript-window-framework",
-	"version": "0.0.6",
+	"version": "0.0.7",
 	"description": "JavaScript Window Framework",
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
@@ -11,7 +11,13 @@
 	},
 	"keywords": [],
 	"author": "",
-	"license": "ISC",
+	"license": "MIT",
+	"bin": {
+		"init-jwf": "bin/init-jwf.js"
+	},
+	"dependencies": {
+		"fs-extra": "^8.0.1"
+	},
 	"devDependencies": {
 		"css-loader": "^2.1.1",
 		"dts-bundle": "^0.7.3",
