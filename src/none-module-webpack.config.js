@@ -11,8 +11,8 @@ class DtsBundlePlugin {
 	}
 }
 module.exports = {
-	//mode: 'production',
-	mode: 'development',
+	mode: 'production',
+	//mode: 'development',
 	entry: [
 		path.resolve(__dirname, 'jwf/javascript-window-framework.ts')
 	],
@@ -24,20 +24,25 @@ module.exports = {
 	},
 	module: {
 		rules: [{
-			test: /\.scss/,
-			use: [
-				'style-loader',
-				'css-loader',
-				'sass-loader'
-			],
-		}, {
-			test: /\.ts|\.tsx$/,
-			use: ['ts-loader']
-		}, {
-			test: /\.js$/,
-			use: ["source-map-loader"],
-			enforce: "pre"
-		}]
+				test: /\.ts|\.tsx$/,
+				use: ['ts-loader']
+			}, {
+				test: /\.js$/,
+				use: ["source-map-loader"],
+				enforce: "pre"
+			}, {
+				test: /\.scss/,
+				use: [
+					'style-loader',
+					'css-loader',
+					'sass-loader'
+				],
+			},
+			{
+				test: /\.(jpg|png|svg|gif)$/,
+				loaders: 'url-loader'
+			},
+		]
 	},
 	resolve: {
 		extensions: ['.ts', '.js', '.scss'],

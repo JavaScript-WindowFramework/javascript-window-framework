@@ -24,20 +24,25 @@ module.exports = {
 	},
 	module: {
 		rules: [{
-			test: /\.scss/,
-			use: [
-					'style-loader',
-					'css-loader',
-					'sass-loader'
-			],
-		}, {
 			test: /\.ts|\.tsx$/,
 			use: ['ts-loader']
 		}, {
 			test: /\.js$/,
 			use: ["source-map-loader"],
 			enforce: "pre"
-		}]
+		}, {
+			test: /\.scss/,
+			use: [
+				'style-loader',
+				'css-loader',
+				'sass-loader'
+			],
+		},
+		{
+			test: /\.(jpg|png|svg|gif)$/,
+			loaders: 'url-loader'
+		},
+		]
 	},
 	resolve: {
 		extensions: ['.ts', '.js', '.scss'],
@@ -46,7 +51,7 @@ module.exports = {
 	plugins: [
 		new DtsBundlePlugin({
 			name: 'javascript-window-framework',
-			main: path.resolve(__dirname,'../dist/javascript-window-framework.d.ts'),
+			main: path.resolve(__dirname, '../dist/javascript-window-framework.d.ts'),
 			out: path.resolve(__dirname, '../dist/index.d.ts'),
 			removeSource: true,
 			outputAsModuleFolder: true
