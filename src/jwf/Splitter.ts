@@ -74,7 +74,7 @@ export class Splitter extends Window {
 		splitter.setNoActive(true)
 		super.addChild(splitter)
 
-		let handle: NodeJS.Timeout|null = null
+		let handle: NodeJS.Timer|null = null
 		splitter.getNode().addEventListener("move", (e: any)=> {
 
 			let p = e.params as MovePoint
