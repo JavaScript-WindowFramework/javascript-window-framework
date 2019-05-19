@@ -18,6 +18,17 @@ interface AdapterFormat {
 	}[]
 }
 
+export interface AdapterResult {
+	value: { [keys: string]: any } | null
+	error: string | null
+}
+
+/**
+ *Ajax通信用アダプタ
+ *
+ * @export
+ * @class Adapter
+ */
 export class Adapter {
 	handle: number|null
 	scriptUrl: string
@@ -27,6 +38,12 @@ export class Adapter {
 
 
 
+	/**
+	 *Creates an instance of Adapter.
+	 * @param {string} [scriptUrl] 通信先アドレス
+	 * @param {string} [keyName] セッション情報記憶用キー
+	 * @memberof Adapter
+	 */
 	constructor(scriptUrl?: string, keyName?: string) {
 		this.scriptUrl = scriptUrl||'./'
 		this.keyName = keyName || 'Session'
@@ -34,8 +51,23 @@ export class Adapter {
 		this.globalHash = null
 	}
 
+	/**
+	 *複数のファンクションの実行
+	 *
+	 * @param {FunctionData[][]} functions
+	 * @returns {Promise<any>}
+	 * @memberof Adapter
+	 */
 	exec(functions: FunctionData[][]): Promise<any>
-	exec(funcName: string, ...params:any[]): Promise<any>
+	/**
+	 *単一ファンクションの実行
+	 *
+	 * @param {string} funcName ファンクション名
+	 * @param {...any[]} params パラメータ
+	 * @returns {Promise<any>}
+	 * @memberof Adapter
+	 */
+	exec(funcName: string, ...params:any[]): Promise<any[]>
 	exec(v1: FunctionData[][]|string, ...v2: any[]): Promise<any> {
 		let functionSet: FunctionSet
 		if (Array.isArray(v1)) {
@@ -56,12 +88,12 @@ export class Adapter {
 		this.callSend()
 		return promise
 	}
-	callSend() {
+	private callSend() {
 		if (!this.handle) {
 			this.handle = window.setTimeout(() => { this.send() }, 0)
 		}
 	}
-	send() {
+	private send() {
 		this.handle = null
 		const globalHash = localStorage.getItem(this.keyName)
 		const sessionHash = sessionStorage.getItem(this.keyName)
@@ -114,14 +146,14 @@ export class Adapter {
 			}
 		})
 	}
-	static sendJsonAsync(url: string, data?: any, headers?: { [key: string]: string }){
+	private static sendJsonAsync(url: string, data?: any, headers?: { [key: string]: string }){
 		return new Promise((resolve)=>{
 			Adapter.sendJson(url,data,(value:any)=>{
 				resolve(value)
 			}, headers)
 		})
 	}
-	static sendJson(url: string, data: any, proc: Function, headers?: { [key: string]: string }){
+	private static sendJson(url: string, data: any, proc: Function, headers?: { [key: string]: string }){
 		const req = new XMLHttpRequest()
 
 		//ネイティブでJSON変換が可能かチェック
