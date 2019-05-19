@@ -4,6 +4,10 @@ JavaScript用ウインドウフレームワーク npmモジュール版
 ## 動作画面
 ![Screen Shot](https://raw.githubusercontent.com/JavaScript-WindowFramework/javascript-window-framework/ScreenShot/ScreenShot.gif)
 
+## 関連リンク
+[リファレンスドキュメント](https://javascript-windowframework.github.io/TypeDocViewer/dist/)
+[サンプルプログラム](https://github.com/JavaScript-WindowFramework/jwf_sample01)
+
 ## ターゲット
 - TypeScript+ES5(JavaScript)
 - IE11で動作するレベルのDOM
