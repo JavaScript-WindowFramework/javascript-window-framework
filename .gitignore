@@ -1,4 +1,8 @@
 package-lock.json
 node_modules
 /dist/
+/dist-jwf/
 /doc/
+!/src/*
+!/bin/*
+!/resource/*
