@@ -45,7 +45,7 @@ module.exports = {
 		]
 	},
 	resolve: {
-		extensions: ['.ts', '.js', '.scss'],
+		extensions: ['.ts', '.js', '.scss','.svg'],
 	},
 	devtool: 'source-map',
 	plugins: [
