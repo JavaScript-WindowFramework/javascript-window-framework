@@ -3,3 +3,6 @@ node_modules
 *.tsbuildinfo
 /src/
 /doc/
+!/src/*
+!/bin/*
+!/resource/*
