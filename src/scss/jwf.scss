@@ -716,10 +716,10 @@ $DRAWER_ITEM_SIZE: 2em;
 	display: flex;
 	flex-direction: column;
 	padding: 0.5em;
+	overflow: auto;
 
 	>div:first-child {
 		flex: 1;
-		overflow: auto;
 		justify-content: space-between;
 
 		>div:hover {
