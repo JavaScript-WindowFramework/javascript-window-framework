@@ -25,12 +25,13 @@ module.exports = {
 					'sass-loader'
 				]
 			}, {
-				test: /\.(jpg|png|svg|gif)$/,
+				test: /\.(jpeg|jpg|png|svg|gif)$/,
 				loaders: 'url-loader'
 			},
 		]
 	},
 	resolve: {
+		extensions: ['.ts', '.js', '.scss', '.sass', '.jpeg', '.jpg', '.png', '.svg', '.gif'],
 		moduleExtensions: ['node_modules']
 	},
 	devServer: {
