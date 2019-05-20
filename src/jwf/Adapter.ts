@@ -146,7 +146,7 @@ export class Adapter {
 			}
 		})
 	}
-	private static sendJsonAsync(url: string, data?: any, headers?: { [key: string]: string }){
+	static sendJsonAsync(url: string, data?: any, headers?: { [key: string]: string }){
 		return new Promise((resolve)=>{
 			Adapter.sendJson(url,data,(value:any)=>{
 				resolve(value)
