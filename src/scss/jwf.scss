@@ -1,4 +1,3 @@
-
 //Window用基本スタイル
 [data-jwf="Window"] {
 	$TITLE_COLOR: #aabbee;
@@ -715,10 +714,10 @@ $DRAWER_ITEM_SIZE: 2em;
 
 	display: flex;
 	flex-direction: column;
-	padding: 0.5em;
-	overflow: auto;
 
 	>div:first-child {
+		padding: 0.5em;
+		overflow: auto;
 		flex: 1;
 		justify-content: space-between;
 
@@ -771,6 +770,7 @@ $DRAWER_ITEM_SIZE: 2em;
 		border-collapse: collapse;
 		width: 100%;
 		height: 100%;
+
 		tr:first-child {
 			background-color: rgb(255, 224, 216);
 
@@ -779,12 +779,14 @@ $DRAWER_ITEM_SIZE: 2em;
 				cursor: pointer;
 				background-color: rgb(195, 215, 216);
 			}
+
 			td:nth-child(even) {
-					text-align: center;
+				text-align: center;
 			}
 		}
-		tr:nth-child(2){
-			td{
+
+		tr:nth-child(2) {
+			td {
 				border: 2px solid #aaaaaa;
 				background-color: #eeeeee;
 
@@ -792,6 +794,7 @@ $DRAWER_ITEM_SIZE: 2em;
 				text-align: center;
 
 			}
+
 			td:first-child {
 				color: red;
 			}
@@ -800,8 +803,9 @@ $DRAWER_ITEM_SIZE: 2em;
 				color: blue;
 			}
 		}
+
 		tr:nth-child(n+3) {
-			td[data-select=true]{
+			td[data-select=true] {
 				div:nth-child(3) {
 					top: 0px;
 					left: 0px;
@@ -814,19 +818,23 @@ $DRAWER_ITEM_SIZE: 2em;
 					z-index: 100;
 				}
 			}
+
 			td {
 				position: relative;
 				border: 2px solid #aaaaaa;
 				background-color: antiquewhite;
 				text-align: right;
+
 				&:hover {
 					background-color: rgba(200, 200, 200, 0.3);
 				}
+
 				div:nth-child(1) {
 					padding-right: 0.2em;
 					font-size: 0.7em;
 				}
-				div:nth-child(2){
+
+				div:nth-child(2) {
 					font-size: 0.6em;
 					font-weight: bold;
 					color: red;
@@ -843,34 +851,34 @@ $DRAWER_ITEM_SIZE: 2em;
 	}
 
 
-.CellBody {
-	box-sizing: border-box;
-	position: relative;
-	width: 100%;
-	height: 100%;
-}
+	.CellBody {
+		box-sizing: border-box;
+		position: relative;
+		width: 100%;
+		height: 100%;
+	}
 
-.CellBody#now {
-	border: #7567eb solid;
-}
+	.CellBody#now {
+		border: #7567eb solid;
+	}
 
 
 
-.GUICalendar .Cell#Holiday .DayText {
-	background-color: rgb(253, 167, 135);
-}
+	.GUICalendar .Cell#Holiday .DayText {
+		background-color: rgb(253, 167, 135);
+	}
 
-.GUICalendar .Cell:first-child .Day {
-	color: red;
-}
+	.GUICalendar .Cell:first-child .Day {
+		color: red;
+	}
 
-.GUICalendar .Cell:last-child .Day {
-	color: red;
-}
+	.GUICalendar .Cell:last-child .Day {
+		color: red;
+	}
 
-.GUICalendar .Cell#Holiday .Day {
-	color: red;
-}
+	.GUICalendar .Cell#Holiday .Day {
+		color: red;
+	}
 
 
 }
