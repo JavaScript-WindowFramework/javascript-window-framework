@@ -1,1 +1,13 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="179.56mm" height="179.56mm" viewBox="0 0 509 509"><title>close</title><path d="M101,401.73,400.73,102Z" transform="translate(0 0)" style="fill:none;stroke:#000;stroke-linecap:round;stroke-linejoin:round;stroke-width:40px"/><line x1="98.5" y1="99.5" x2="402" y2="403" style="fill:none;stroke:#000;stroke-linecap:round;stroke-linejoin:round;stroke-width:40px"/><rect width="509" height="509" style="fill:none"/></svg>
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 23.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="レイヤー_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px"
+	 y="0px" width="128px" height="128px" viewBox="0 0 128 128" style="enable-background:new 0 0 128 128;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill:none;stroke:#000000;stroke-width:10.0592;stroke-linecap:round;stroke-linejoin:round;}
+	.st1{fill:none;}
+</style>
+<title>close</title>
+<path class="st0" d="M25.4,101l75.4-75.4L25.4,101z"/>
+<line class="st0" x1="24.8" y1="25" x2="101.1" y2="101.3"/>
+<rect class="st1" width="128" height="128"/>
+</svg>

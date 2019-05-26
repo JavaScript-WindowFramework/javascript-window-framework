@@ -98,7 +98,10 @@ export interface WINDOW_EVENT_MAP {
 	layout: {}
 	layouted: {}
 }
-
+export declare class MoveElement extends HTMLElement {
+	addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+	addEventListener(type: 'move', listener: (this: HTMLDivElement, e: JWFEvent) => any): void
+}
 /**
  *ウインドウ作成用パラメータ
  * frame Frameを作成するか
@@ -113,6 +116,7 @@ export interface WINDOW_PARAMS {
 	title?: boolean,
 	layer?: number,
 	overlap?: boolean
+	visible?:boolean
 }
 
 
@@ -199,6 +203,10 @@ export class Window {
 			if (params.overlap) {
 				this.setOverlap(params.overlap)
 			}
+			if (params.visible === false){
+				this.hNode.style.visibility = 'hidden'
+				this.JData.visible = false
+			}
 		}
 
 
@@ -227,6 +235,9 @@ export class Window {
 	}
 	setOverlap(flag: boolean) {
 		this.hNode.style.position = flag ? 'fixed' : 'absolute'
+	}
+	isOverlap():boolean{
+		return this.hNode.style.position === 'fixed'
 	}
 	setJwfStyle(style: string) {
 		this.getClient().dataset.jwfStyle = style
@@ -580,12 +591,16 @@ export class Window {
 		height = parseInt(height as any)
 		if (this.JData.width === width && this.JData.height === height)
 			return
+
+		const parent = this.getParent()
+		if (parent){
+			parent.layout()
+
+		}
 		this.JData.width = width
 		this.JData.height = height
 		this.layout()
-		const parent = this.getParent()
-		if (parent)
-			parent.layout()
+
 	}
 	/**
 	 *ウインドウの幅の設定
@@ -692,7 +707,14 @@ export class Window {
 	*/
 	setVisible(flag: boolean) {
 		const node = this.getNode()
-		this.JData.visible = flag;
+		if (!node.parentNode){
+			document.body.appendChild(node)
+		}
+		if(this.isVisible() === flag)
+			return
+		this.JData.visible = flag
+		if (flag)
+			this.hNode.style.visibility = ''
 
 		if (flag) {
 			node.style.display = '';
@@ -822,11 +844,13 @@ export class Window {
 		//表示状態の更新
 		if (this.JData.reshow) {
 			this.JData.reshow = false
-			this.hNode.style.visibility = ''
+			if(this.JData.visible){
+				this.hNode.style.visibility = ''
 
-			const animation = this.JData.animationEnable ? this.JData.animation['show'] : ''
-			if (animation)
-				this.hNode.style.animation = animation
+				const animation = this.JData.animationEnable ? this.JData.animation['show'] : ''
+				if (animation)
+					this.hNode.style.animation = animation
+			}
 		}
 
 		let client = this.getClient()
@@ -862,6 +886,25 @@ export class Window {
 	*/
 	onLayout(flag: boolean): void {
 		if (flag || this.JData.redraw) {
+			const JData = this.JData
+			if (this.isOverlap()) {
+				const pwidth = window.innerWidth
+				const pheight = window.innerHeight
+				if (JData.width > pwidth)
+					JData.width = pwidth
+				if (JData.height > pheight)
+					JData.height = pheight
+
+				if (JData.x < 0)
+					JData.x = 0
+				if (JData.y < 0)
+					JData.y = 0
+				if (JData.x + JData.width > pwidth)
+					JData.x = pwidth - JData.width
+				if (JData.y + JData.height > pheight)
+					JData.y = pheight - JData.height
+			}
+
 			//this.onMeasure(true)			//直下の子リスト
 			if (this.hNode.dataset.jwfStat == 'maximize') {
 				this.setPos(0, 0)
