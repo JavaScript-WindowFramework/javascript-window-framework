@@ -1,4 +1,4 @@
-import { Window, WINDOW_PARAMS} from "./Window"
+import { Window, WINDOW_PARAMS, WINDOW_EVENT_MAP} from "./Window"
 import {CalendarView} from "./CalendarView"
 export interface ITEM_OPTION {
 	label?: string,
@@ -14,6 +14,10 @@ export interface ITEM_OPTION {
 		value: string | number;
 	}[]
 }
+export interface TableFormViewMap extends WINDOW_EVENT_MAP {
+	"itemChange": HTMLDivElement
+}
+
 export class TableFormView extends Window {
 	table: HTMLDivElement
 	items: HTMLDivElement
@@ -32,6 +36,9 @@ export class TableFormView extends Window {
 		const footer = document.createElement('div')
 		this.footer = footer
 		this.getClient().appendChild(footer)
+	}
+	addEventListener<K extends keyof TableFormViewMap>(type: K | string, listener: (this: Window, ev: TableFormViewMap[K]) => any): void{
+		super.addEventListener(type, listener)
 	}
 	addItem(params: ITEM_OPTION | ITEM_OPTION[]) {
 		//配列ならば分解し再入力
@@ -56,6 +63,7 @@ export class TableFormView extends Window {
 			}
 			return button
 		} else {
+			const that = this
 			const row = document.createElement(params.type === 'checkbox' ? 'label' : 'div')
 
 			const label = document.createElement('div')
@@ -98,6 +106,9 @@ export class TableFormView extends Window {
 				case 'select':
 					const select = document.createElement('select')
 					select.name = params.name || ''
+					select.addEventListener('change',function(){
+						that.callEvent('itemChange',this)
+					})
 
 					if (params.options){
 						for (const o of params.options) {
@@ -176,4 +187,5 @@ export class TableFormView extends Window {
 			}
 		}
 	}
+
 }

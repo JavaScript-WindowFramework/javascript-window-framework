@@ -1,4 +1,5 @@
-import { MovePoint, JNode, Point } from "./Window";
+import { MovePoint, JNode, Point} from "./Window";
+
 
 /**
  * ウインドウ等総合管理クラス
@@ -16,7 +17,7 @@ export class WindowManager {
 	static moveNode: HTMLElement | null = null
 	static frame: number | null = null
 	static layoutForced: boolean
-	static layoutHandler: NodeJS.Timer | null
+	static layoutHandler: NodeJS.Timeout | number | null
 
 
 

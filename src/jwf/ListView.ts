@@ -1,4 +1,4 @@
-import { Window,JWFEvent, MovePoint,WINDOW_PARAMS,WINDOW_EVENT_MAP, JNode } from "./Window"
+import { Window,JWFEvent, MovePoint,WINDOW_PARAMS,WINDOW_EVENT_MAP, JNode, MoveElement } from "./Window"
 import { WindowManager } from "./WindowManager";
 
 
@@ -114,7 +114,7 @@ export class ListView extends Window {
 	 * @memberof ListView
 	 */
 	setColumnStyle(col: number, style: 'left' | 'right' | 'center') {
-		let columns = this.itemArea.childNodes as any
+		let columns = this.itemArea.childNodes as NodeListOf<HTMLElement>
 		let column = columns[col]
 		column.style.justifyContent = style
 	}
@@ -125,7 +125,7 @@ export class ListView extends Window {
 	 * @memberof ListView
 	 */
 	setColumnStyles(styles: ('left' | 'right' | 'center')[]) {
-		let columns = this.itemArea.childNodes as any
+		let columns = this.itemArea.childNodes as NodeListOf<HTMLElement&{ vector:typeof styles[0] }>
 		for (let i = 0, l = styles.length; i < l; i++) {
 			let column = columns[i]
 			column.vector = styles[i]
@@ -192,11 +192,11 @@ export class ListView extends Window {
 
 			//リサイズバーの設定
 			var resizers = this.resizers
-			let resize = document.createElement('div')
+			let resize: MoveElement = document.createElement('div')
 			resize.dataset.index = index.toString()
 			resizers.appendChild(resize)
 			WindowManager.enableMove(resize);
-			(resize as any).addEventListener("move", function (this:HTMLElement,e: JWFEvent) {
+			resize.addEventListener("move", function (this:HTMLElement,e: JWFEvent) {
 				const index = this.dataset.index?parseInt(this.dataset.index):0
 				let p = e.params as MovePoint
 				let x = p.nodePoint.x + p.nowPoint.x - p.basePoint.x
@@ -245,17 +245,17 @@ export class ListView extends Window {
 
 		index = this.sortIndex
 		order = this.sortVector
-		let columns = this.itemArea.childNodes as any
+		let columns = this.itemArea.childNodes
 		let column = columns[index]
-		let items = column.childNodes
+		let items: NodeListOf<ChildNode & { keyValue?: number | string }> = column.childNodes
 		//ソートリストの作成
 		let sortList = []
 		for (let i = 0, length = items.length; i < length; i++) {
 			sortList.push(i)
 		}
 		sortList.sort(function (a, b) {
-			let v1 = items[a].keyValue != null ? items[a].keyValue : items[a].textContent
-			let v2 = items[b].keyValue != null ? items[b].keyValue : items[b].textContent
+			let v1 = typeof items[a].keyValue || items[a].textContent || ''
+			let v2 = typeof items[b].keyValue || items[b].textContent || ''
 			return (v1 > v2 ? 1 : -1) * (order ? 1 : -1)
 		})
 		//ソート処理
@@ -290,11 +290,11 @@ export class ListView extends Window {
 	 * @memberof ListView
 	 */
 	clearSelectItem() {
-		let columns = this.itemArea.childNodes as any
+		let columns = this.itemArea.childNodes
 		for (let i = 0, length = columns.length; i < length; i++) {
 			let column = columns[i]
 			for (let j = 0, l = this.selectIndexes.length; j < l; j++) {
-				let node = column.childNodes[this.selectIndexes[j]]
+				let node = column.childNodes[this.selectIndexes[j]] as HTMLElement
 				node.dataset.itemSelect = 'false'
 				node.className = node.className //IE11対策
 			}
@@ -311,12 +311,12 @@ export class ListView extends Window {
 		let indexes = (index instanceof Array ? index : [index]) as number[]
 		Array.prototype.push.apply(this.selectIndexes, indexes);
 
-		let columns = this.itemArea.childNodes as any
+		let columns = this.itemArea.childNodes
 		for (let i = 0, length = columns.length; i < length; i++) {
 			let column = columns[i]
 
 			for (let j = 0, l = this.selectIndexes.length; j < l; j++) {
-				let node = column.childNodes[this.selectIndexes[j]]
+				let node = column.childNodes[this.selectIndexes[j]] as HTMLElement
 				node.dataset.itemSelect = 'true'
 				node.className = node.className //IE11対策
 			}

@@ -8,7 +8,7 @@ export interface CalendarViewEventMap extends WINDOW_EVENT_MAP {
 }
 export class CalendarView extends Window {
 	titleCell: HTMLTableDataCellElement
-	dateCells: HTMLTableDataCellElement[]
+	dateCells: (HTMLTableDataCellElement & {date?:Date})[]
 	calendarDate: Date = new Date()
 	startDate: Date|null = null
 	endDate: Date|null = null
@@ -89,7 +89,7 @@ export class CalendarView extends Window {
 			const day = cell.childNodes[0] as HTMLDivElement
 			const text = cell.childNodes[1] as HTMLDivElement
 			day.innerText = date.getDate().toString();
-			(cell as any).date = new Date(date)
+			cell.date = new Date(date)
 			date.setDate(date.getDate() + 1)
 			cell.dataset.select = this.selects[date.toDateString()] ? 'true' : ''
 
@@ -113,8 +113,9 @@ export class CalendarView extends Window {
 		else
 			delete this.selects
 	}
-	private onCellClick(cell: HTMLDivElement) {
-		this.callEvent('date', { date: (cell as any).date })
+	private onCellClick(cell: HTMLDivElement & { date?: Date }) {
+		if (cell.date)
+			this.callEvent('date', { date: cell.date })
 	}
 	addEventListener<K extends keyof CalendarViewEventMap>(type: K, listener: (ev: CalendarViewEventMap[K]) => any): void {
 		super.addEventListener(type as any, listener)

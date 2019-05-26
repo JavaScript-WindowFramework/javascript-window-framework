@@ -74,7 +74,7 @@ export class Splitter extends Window {
 		splitter.setNoActive(true)
 		super.addChild(splitter)
 
-		let handle: NodeJS.Timer|null = null
+		let handle: number|null = null
 		splitter.getNode().addEventListener("move", (e: any)=> {
 
 			let p = e.params as MovePoint
@@ -100,8 +100,8 @@ export class Splitter extends Window {
 			}
 			this.splitterMoving = true
 			if (handle)
-				clearTimeout(handle)
-			handle = setTimeout(()=> { handle = null; this.splitterMoving = false; this.layout() }, 2000)
+				window.clearTimeout(handle)
+			handle = window.setTimeout(()=> { handle = null; this.splitterMoving = false; this.layout() }, 2000)
 			this.layout()
 
 		})
