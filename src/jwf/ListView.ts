@@ -524,6 +524,7 @@ export class ListView extends Window {
           let column = columns[i];
           if (
             that.overIndex != null &&
+            that.overIndex >= 0 &&
             that.overIndex < column.childElementCount
           ) {
             let node = column.childNodes[that.overIndex] as HTMLElement;

@@ -61,27 +61,22 @@
       }
 
       &[data-jwf-kind="min"] {
-        //min.svg
         background-image: url("images/min.svg");
       }
 
       &[data-jwf-kind="restore"] {
-        //min.svg
         background-image: url("images/min.svg");
       }
 
       &[data-jwf-kind="max"] {
-        //max.svg
         background-image: url("images/max.svg");
       }
 
       &[data-jwf-kind="close"] {
-        //close.svg
         background-image: url("images/close.svg");
       }
 
       &[data-jwf-kind="normal"] {
-        //normal.svg
         background-image: url("images/normal.svg");
       }
     }
@@ -294,24 +289,21 @@
     margin: 2px;
     vertical-align: middle;
     cursor: default;
-    //tclose.svg
+    background-size: 100% 100%;
     background-image: url("images/tclose.svg");
     flex-grow: 0;
     flex-shrink: 0;
   }
 
   [data-kind="TreeItem"][data-stat="close"] > [data-kind="TreeRow"] > [data-kind="TreeIcon"] {
-    //tclose.svg
     background-image: url("images/tclose.svg");
   }
 
   [data-kind="TreeItem"][data-stat="open"] > [data-kind="TreeRow"] > [data-kind="TreeIcon"] {
-    //topen.svg
     background-image: url("images/topen.svg");
   }
 
   [data-kind="TreeItem"][data-stat="alone"] > [data-kind="TreeRow"] > [data-kind="TreeIcon"] {
-    //talone.svg
     background-image: url("images/talone.svg");
   }
 
