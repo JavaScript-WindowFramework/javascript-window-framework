@@ -1,4 +1,4 @@
-import { Window } from "./Window"
+import { Window } from "./Window";
 
 /**
  *テキストボックス
@@ -7,61 +7,63 @@ import { Window } from "./Window"
  * @extends {JSW.Window}
  */
 export class TextBox extends Window {
-	nodeLabel: HTMLElement
-	nodeText: HTMLInputElement
-	constructor(params?: { text?: string, label?: string, type?: string, image?: string }) {
-		super()
+  private nodeLabel: HTMLElement;
+  private nodeText: HTMLInputElement;
+  public constructor(params?: {
+    text?: string;
+    label?: string;
+    type?: string;
+    image?: string;
+  }) {
+    super();
 
-		this.setJwfStyle('TextBox')
-		this.setAutoSize(true)
+    this.setJwfStyle("TextBox");
+    this.setAutoSize(true);
 
-		let node = this.getClient()
-		let img = document.createElement('img')
-		if (params && params.image)
-			img.src = params.image
+    let node = this.getClient();
+    let img = document.createElement("img");
+    if (params && params.image) img.src = params.image;
 
-		node.appendChild(img)
+    node.appendChild(img);
 
-		let textArea = document.createElement('div')
-		node.appendChild(textArea)
+    let textArea = document.createElement("div");
+    node.appendChild(textArea);
 
-		let nodeLabel = document.createElement('div')
-		textArea.appendChild(nodeLabel)
-		this.nodeLabel = nodeLabel
-		if (params && params.label)
-			nodeLabel.textContent = params.label
+    let nodeLabel = document.createElement("div");
+    textArea.appendChild(nodeLabel);
+    this.nodeLabel = nodeLabel;
+    if (params && params.label) nodeLabel.textContent = params.label;
 
-		let nodeText = document.createElement('input')
-		if (params && params.type)
-			nodeText.type = params.type
-		textArea.appendChild(nodeText)
-		this.nodeText = nodeText
+    let nodeText = document.createElement("input");
+    if (params && params.type) nodeText.type = params.type;
+    textArea.appendChild(nodeText);
+    this.nodeText = nodeText;
 
-		nodeText.addEventListener('keydown', (e)=> {
-			if (e.keyCode == 13)
-				this.callEvent('enter', e)
-		})
+    nodeText.addEventListener(
+      "keydown",
+      (e): void => {
+        if (e.keyCode == 13) this.callEvent("enter", e);
+      }
+    );
 
-		if (params && params.text)
-			this.setText(params.text)
+    if (params && params.text) this.setText(params.text);
+  }
 
-	}
-
-	setText(text: string) {
-		let nodeText = this.nodeText
-		nodeText.value = text
-	}
-	getText(): string {
-		return this.nodeText.value
-	}
-	setLabel(text: string) {
-		let node = this.nodeLabel
-		node.textContent = text
-	}
-	getLabel(): string {
-		return this.nodeLabel.textContent||''
-	}
-	getTextNode() {
-		return this.nodeText
-	}
+  public setText(text: string): void {
+    let nodeText = this.nodeText;
+    nodeText.value = text;
+  }
+  public getText(): string {
+    return this.nodeText.value;
+  }
+  public setLabel(text: string): void {
+    let node = this.nodeLabel;
+    node.textContent = text;
+  }
+  public getLabel(): string {
+    return this.nodeLabel.textContent || "";
+  }
+  public getTextNode(): HTMLInputElement {
+    return this.nodeText;
+  }
 }

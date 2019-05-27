@@ -1,61 +1,58 @@
 export function Sleep(timeout: number): Promise<void> {
-	return new Promise((resolv) => {
-		setTimeout(() => {
-			resolv()
-		}, timeout)
-	})
+  return new Promise(
+    (resolv): void => {
+      setTimeout((): void => {
+        resolv();
+      }, timeout);
+    }
+  );
 }
 //---------------------------------------
 //書式付文字列生成
 //	引数	format,・・・
 //	戻り値	生成文字列
-export function sprintf(format: string, ...args:any[]) {
-	if (args[0] == null)
-		return '';
-	var paramIndex = 0;
-	var dest = "";
-	for (var i = 0; format.charAt(i); i++) {
-		if (format.charAt(i) == '%') {
-			var flagZero = false;
-			var num = 0;
-			i++;
-			if (format.charAt(i) == '0') {
-				flagZero = true;
-				i++
-			}
-			for (; format.charAt(i) >= '0' && format.charAt(i) <= '9'; i++) {
-				num *= 10;
-				num += parseInt(format.charAt(i));
-			}
-			switch (format.charAt(i)) {
-				case 's':
-					var work = String(args[paramIndex++]);
-					var len = num - work.length;
-					dest += work;
-					var len = num - work.length;
-					if (len > 0) {
-						for (j = 0; j < len; j++)
-							dest += ' ';
-					}
-					break;
-				case 'd':
-					var work = String(args[paramIndex++]);
-					var len = num - work.length;
-					if (len > 0) {
-						var j;
-						var c;
-						if (flagZero)
-							c = '0';
-						else
-							c = ' ';
-						for (j = 0; j < len; j++)
-							dest += c;
-					}
-					dest += work;
-			}
-		}
-		else
-			dest += format.charAt(i);
-	}
-	return dest;
+export function sprintf(format: string, ...args: unknown[]): string {
+  if (args[0] == null) return "";
+  let paramIndex = 0;
+  let dest = "";
+  for (let i = 0; format.charAt(i); i++) {
+    if (format.charAt(i) == "%") {
+      let flagZero = false;
+      let num = 0;
+      i++;
+      if (format.charAt(i) == "0") {
+        flagZero = true;
+        i++;
+      }
+      for (; format.charAt(i) >= "0" && format.charAt(i) <= "9"; i++) {
+        num *= 10;
+        num += parseInt(format.charAt(i));
+      }
+      let work;
+      let len;
+      switch (format.charAt(i)) {
+        case "s":
+          work = String(args[paramIndex++]);
+          len = num - work.length;
+          dest += work;
+          len = num - work.length;
+          if (len > 0) {
+            for (let j = 0; j < len; j++) dest += " ";
+          }
+          break;
+        case "d":
+          work = String(args[paramIndex++]);
+          len = num - work.length;
+          if (len > 0) {
+            let j;
+            let c;
+            if (flagZero) c = "0";
+            else c = " ";
+            for (j = 0; j < len; j++) dest += c;
+          }
+          dest += work;
+      }
+    } else dest += format.charAt(i);
+  }
+  return dest;
 }

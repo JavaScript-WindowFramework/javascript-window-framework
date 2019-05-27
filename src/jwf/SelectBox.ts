@@ -1,24 +1,24 @@
+import { Window } from "./Window";
+export class SelectBox extends Window {
+  public constructor(option: {
+    label?: string;
+    options: { name: string; value: string | number }[];
+  }) {
+    super();
 
-import { Window } from "./Window"
-export class SelectBox extends Window{
-	select : HTMLSelectElement
-	constructor(option: { label?:string,options: { name: string, value: string | number }[] }) {
-		super()
+    this.setJwfStyle("SelectBox");
+    this.setAutoSize(true);
 
-		this.setJwfStyle('SelectBox')
-		this.setAutoSize(true)
+    let node = this.getClient();
+    let select = document.createElement("select");
 
-		let node = this.getClient()
-		let select = document.createElement('select')
-		this.select = select
-
-		const options = option.options
-		for(const o of options){
-			const opNode = document.createElement('option')
-			opNode.textContent = o.name
-			opNode.value = o.value as string
-			select.appendChild(opNode)
-		}
-		node.appendChild(select)
-	}
+    const options = option.options;
+    for (const o of options) {
+      const opNode = document.createElement("option");
+      opNode.textContent = o.name;
+      opNode.value = o.value as string;
+      select.appendChild(opNode);
+    }
+    node.appendChild(select);
+  }
 }
