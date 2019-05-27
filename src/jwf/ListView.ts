@@ -91,7 +91,11 @@ export class ListView extends Window {
       e.preventDefault();
     });
     client.addEventListener("drop", function(e): void {
-      that.callEvent("itemDrop", { itemIndex: -1, subItemIndex: -1, event: e });
+      that.callEvent("itemDrop", {
+        itemIndex: -1,
+        subItemIndex: -1,
+        event: e
+      });
       e.preventDefault();
     });
   }
@@ -524,6 +528,7 @@ export class ListView extends Window {
           let column = columns[i];
           if (
             that.overIndex != null &&
+            that.overIndex >= 0 &&
             that.overIndex < column.childElementCount
           ) {
             let node = column.childNodes[that.overIndex] as HTMLElement;
@@ -700,9 +705,11 @@ export class ListView extends Window {
     }
     return true;
   }
+
   /**
    *ヘッダに合わせてカラムサイズを調整する
    *基本的には直接呼び出さない
+   * @protected
    * @memberof ListView
    */
   protected resize(): void {
@@ -727,11 +734,25 @@ export class ListView extends Window {
       column.style.width = width + "px";
     }
   }
+  /**
+   *
+   *
+   * @param {boolean} flag
+   * @memberof ListView
+   */
   public onLayout(flag: boolean): void {
     super.onLayout(flag);
     this.resize();
   }
 
+  /**
+   *
+   *
+   * @template K
+   * @param {K} type
+   * @param {(ev: ListViewEventMap[K]) => unknown} listener
+   * @memberof ListView
+   */
   public addEventListener<K extends keyof ListViewEventMap>(
     type: K,
     listener: (ev: ListViewEventMap[K]) => unknown
