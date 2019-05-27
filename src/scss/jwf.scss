@@ -587,15 +587,13 @@ $DRAWER_ITEM_SIZE: 2em;
 
 /* Button用設定 */
 [data-jwf-style="Button"] {
-  display: flex;
   background-color: transparent;
-
+  text-align: center;
   >div {
+    display: inline-block;
     cursor: pointer;
     white-space: nowrap;
     margin: 2px;
-    justify-content: center;
-    align-items: center;
     user-select: none;
     border-width: 1px;
     border-style: solid;
