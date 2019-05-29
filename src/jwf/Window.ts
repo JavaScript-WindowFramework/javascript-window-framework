@@ -772,8 +772,7 @@ export class Window {
     const node = this.getNode();
     if (!node.parentNode) {
       document.body.appendChild(node);
-    }
-    if (this.isVisible() === flag) return;
+    } else if (this.isVisible() === flag) return;
     this.JData.visible = flag;
     if (flag) this.hNode.style.visibility = "";
 
