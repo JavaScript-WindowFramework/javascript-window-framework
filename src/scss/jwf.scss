@@ -684,9 +684,10 @@ $DRAWER_ITEM_SIZE: 2em;
 [data-jwf-style="TableFormView"] {
   display: flex;
   flex-direction: column;
+  background-color: rgba(0, 0, 0, 0.9);
+  color: white;
 
   >div:first-child {
-    padding: 0.5em;
     overflow: auto;
     flex: 1;
     justify-content: space-between;
@@ -697,10 +698,9 @@ $DRAWER_ITEM_SIZE: 2em;
 
     >div {
       width: 100%;
-      padding: 0.3em;
       box-sizing: border-box;
       display: table;
-      border-spacing: 0 0.3em;
+      border-spacing: 0 0.1em;
       border-collapse: separate;
 
       > :hover {
@@ -709,13 +709,14 @@ $DRAWER_ITEM_SIZE: 2em;
 
       >div,
       >label {
-        background: rgba(230, 230, 230, 0.4);
+        margin:0.1em;
+        background: rgba(255, 255, 255, 0.4);
         display: table-row;
 
         >div {
           vertical-align: middle;
           display: table-cell;
-          padding: 0.3em 0.5em;
+          padding: 0.2em 0.3em;
 
           &:first-child {
             white-space: nowrap;
@@ -729,10 +730,13 @@ $DRAWER_ITEM_SIZE: 2em;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding: 0.2em;
+    padding: 0.1em;
   }
 }
 
+/*
+	CalendarView
+*/
 [data-jwf-style="CalendarView"] {
   >table {
     user-select: none;

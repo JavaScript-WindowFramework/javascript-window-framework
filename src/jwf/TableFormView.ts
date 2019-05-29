@@ -5,7 +5,7 @@ import { CalendarView } from "./CalendarView";
 
 export interface ITEM_OPTION {
   label?: string;
-  type?: "date" | "textbox" | "checkbox" | "select" | "submit";
+  type?: "date" | "string" | "number" | "checkbox" | "select" | "submit";
   name?: string;
   value?: string | number | boolean | Date;
   link?: string;
@@ -21,6 +21,13 @@ export interface TableFormViewMap extends WINDOW_EVENT_MAP {
   itemChange: HTMLDivElement;
 }
 
+/**
+ *入力用ウインドウ
+ *
+ * @export
+ * @class TableFormView
+ * @extends {Window}
+ */
 export class TableFormView extends Window {
   private items: HTMLDivElement;
   private footer: HTMLDivElement;
@@ -28,7 +35,6 @@ export class TableFormView extends Window {
     super(params);
     this.setJwfStyle("TableFormView");
     const table = document.createElement("div");
-    //this.table = table;
     this.getClient().appendChild(table);
 
     const items = document.createElement("div");
@@ -102,7 +108,16 @@ export class TableFormView extends Window {
             }
           );
           break;
-        case "textbox":
+        case "number":
+          input = document.createElement("input");
+          input.type = "number";
+          input.name = params.name || "";
+          input.value = params.value
+            ? (parseInt(params.value.toString()).toString() as string)
+            : "";
+          data.appendChild(input);
+          break;
+        case "string":
           input = document.createElement("input");
           input.type = "text";
           input.name = params.name || "";
@@ -175,7 +190,18 @@ export class TableFormView extends Window {
         values[name] = value;
       } else if (v instanceof HTMLInputElement) {
         const name = v.name;
-        const value = v.type == "checkbox" ? v.checked : v.value;
+        let value;
+        switch (v.type) {
+          case "checkbox":
+            value = v.checked;
+            break;
+          case "number":
+            value = parseInt(v.value);
+            break;
+          default:
+            value = v.value;
+            break;
+        }
         values[name] = value;
       }
     }
@@ -190,9 +216,19 @@ export class TableFormView extends Window {
         if (value != null) v.value = value.toString();
       } else if (v instanceof HTMLInputElement) {
         const value = params[v.name];
-        if (value != null)
-          if (v.type === "checkbox") v.checked = value as boolean;
-          else v.value = value.toString();
+        if (value != null) {
+          switch (v.type) {
+            case "checkbox":
+              v.checked = value as boolean;
+              break;
+            case "number":
+              v.value = parseInt(value as string).toString();
+              break;
+            default:
+              v.value = value.toString();
+              break;
+          }
+        }
       }
     }
   }
