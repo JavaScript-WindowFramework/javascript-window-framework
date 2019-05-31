@@ -69,7 +69,6 @@ export class CalendarView extends Window {
         }
       }
     }
-    this.holidays[new Date().toDateString()] = "あいうえ";
     this.redraw();
   }
   public moveMonth(month: number): void {

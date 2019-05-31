@@ -99,10 +99,12 @@ export class TableFormView extends Window {
             "click",
             (): void => {
               const calendar = new CalendarView({ frame: true });
+              calendar.setPos();
               calendar.addEventListener(
                 "date",
                 (e): void => {
                   input.value = e.date.toLocaleDateString();
+                  calendar.close();
                 }
               );
             }

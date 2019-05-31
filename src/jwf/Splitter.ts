@@ -135,7 +135,6 @@ export class Splitter extends Window {
               child1.setChildStyle("client");
               child0.setOrderTop(true);
               this.splitter.setVisible(false);
-              child0.getNode().style.backgroundColor = "rgba(255,255,255,0.8)";
               child0.addEventListener("active", active);
               child0.setAnimation(
                 "show",
@@ -276,9 +275,10 @@ export class Splitter extends Window {
     this.layout();
   }
   /**
-   *動的バーの設定
+   *
    *
    * @param {boolean} flag true:有効 false:無効
+   * @param {number} [size] スライドを開始するサイズ
    * @memberof Splitter
    */
   public setOverlay(flag: boolean, size?: number): void {

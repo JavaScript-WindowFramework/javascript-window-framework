@@ -2,6 +2,7 @@
 import { Window, WINDOW_EVENT_MAP } from "./Window";
 export interface BUTTON_EVENT_ITEM_CLICK {
   event: Event;
+  button: Button;
 }
 export interface ButtonEventMap extends WINDOW_EVENT_MAP {
   buttonClick: BUTTON_EVENT_ITEM_CLICK;
@@ -43,7 +44,8 @@ export class Button extends Window {
       (e): void => {
         if (e.keyCode !== 13)
           this.callEvent("submit", {
-            event: e
+            event: e,
+            button: this
           });
       }
     );
@@ -51,10 +53,12 @@ export class Button extends Window {
       "click",
       (e): void => {
         this.callEvent("buttonClick", {
-          event: e
+          event: e,
+          button: this
         });
         this.callEvent("submit", {
-          event: e
+          event: e,
+          button: this
         });
       }
     );
@@ -62,7 +66,8 @@ export class Button extends Window {
       "dblclick",
       (e): void => {
         this.callEvent("buttonDblClick", {
-          event: e
+          event: e,
+          button: this
         });
       }
     );
