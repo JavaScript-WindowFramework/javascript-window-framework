@@ -8,6 +8,11 @@
     display: none;
   }
 
+  &[data-jwf-type="Frame"] {
+    >[data-jwf-type="client"] {
+      background-color: whitesmoke;
+    }
+  }
   &:not([data-jwf-type="Frame"]) {
     overflow: hidden;
   }
@@ -91,7 +96,6 @@
 [data-jwf-type="client"] {
   position: absolute;
   overflow: hidden;
-  background-color: whitesmoke;
   top: 0px;
   right: 0px;
   bottom: 0px;
@@ -185,14 +189,14 @@
 
   [data-kind="SplitterMenu"] {
     position: absolute;
-    background-color: rgba(255, 255, 255, 0.7);
-    opacity: 0.7;
+    background-color: rgba(255, 255, 255, 0.4);
+    opacity: 0.8;
     background-repeat: no-repeat;
     width: 32px;
     height: 32px;
-    margin: 2px;
+    margin: 24px;
     cursor: pointer;
-    //menu.svg
+    background-size: 100% 100%;
     background-image: url("images/menu.svg");
     flex-grow: 0;
     flex-shrink: 0;

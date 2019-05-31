@@ -757,8 +757,11 @@ export class Window {
    */
   public isVisible(): boolean {
     if (!this.JData.visible) return false;
-    const parent = this.getParent();
-    if (parent) return parent.isVisible();
+    let parent = this.getParent();
+    if (!parent) return false;
+    while ((parent = parent.getParent())) {
+      if (!parent.isVisible()) return false;
+    }
     return true;
   }
 
@@ -772,8 +775,7 @@ export class Window {
     const node = this.getNode();
     if (!node.parentNode) {
       document.body.appendChild(node);
-    } else if (this.isVisible() === flag) return;
-    this.JData.visible = flag;
+    } else if (this.JData.visible === flag) return;
     if (flag) this.hNode.style.visibility = "";
 
     if (flag) {
@@ -811,13 +813,15 @@ export class Window {
       const animation = this.JData.animationEnable
         ? this.JData.animation["close"]
         : "";
-      if (animation) {
+      const parent = this.getParent();
+      if (animation && parent && parent.isVisible()) {
         node.addEventListener("animationend", animationEnd);
         node.style.animation = animation;
       } else {
         animationEnd.bind(node)();
       }
     }
+    this.JData.visible = flag;
     const parent = this.getParent();
     if (parent) parent.layout();
   }
@@ -913,10 +917,10 @@ export class Window {
     }
 
     let client = this.getClient();
-    for (let i = 0; i < client.childNodes.length; i++) {
+    for (let i = 0, length = client.childNodes.length; i < length; i++) {
       let node = client.childNodes[i] as JNode;
       if (node.dataset && node.dataset.jwf === "Window")
-        flag = flag || node.Jwf.onMeasure(flag);
+        flag = node.Jwf.onMeasure(flag) || flag;
     }
     if (!flag && !this.JData.redraw) return false;
     //this.layout()
