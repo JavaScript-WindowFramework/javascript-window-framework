@@ -82,18 +82,23 @@ export class TableFormView extends Window {
       const data = document.createElement("div");
       row.appendChild(data);
 
-      let input: HTMLInputElement | HTMLSelectElement;
+      let input:
+        | HTMLInputElement & {
+            value2?: Date | undefined;
+          }
+        | HTMLSelectElement;
       let tag: HTMLDivElement | HTMLAnchorElement;
       switch (params.type) {
         case "date":
           input = document.createElement("input");
           input.readOnly = true;
           input.type = "text";
-          input.size = 10;
+          input.size = 14;
           input.name = params.name || "";
           input.value = params.value
             ? (params.value as Date).toLocaleDateString()
             : "-";
+          input.value2 = params.value as Date | undefined;
           data.appendChild(input);
           input.addEventListener(
             "click",
@@ -104,6 +109,7 @@ export class TableFormView extends Window {
                 "date",
                 (e): void => {
                   input.value = e.date.toLocaleDateString();
+                  if (input instanceof HTMLInputElement) input.value2 = e.date;
                   calendar.close();
                 }
               );
@@ -181,16 +187,17 @@ export class TableFormView extends Window {
     ) as HTMLElement | null;
     return node;
   }
-  public getParams(): { [key: string]: string | number | boolean } {
-    const values: { [key: string]: string | number | boolean } = {};
+  public getParams(): { [key: string]: string | number | boolean | Date } {
+    const values: { [key: string]: Date | string | number | boolean } = {};
     const nodes = this.items.querySelectorAll("select,input");
     for (let length = nodes.length, i = 0; i < length; ++i) {
-      const v = nodes[i];
+      const v = nodes[i] as HTMLElement;
       if (v instanceof HTMLSelectElement) {
         const name = v.name;
         const value = v.value;
         values[name] = value;
       } else if (v instanceof HTMLInputElement) {
+        const vnode = v as HTMLInputElement & { value2?: typeof values[0] };
         const name = v.name;
         let value;
         switch (v.type) {
@@ -201,7 +208,7 @@ export class TableFormView extends Window {
             value = parseInt(v.value);
             break;
           default:
-            value = v.value;
+            value = vnode.value2 ? vnode.value2 : v.value;
             break;
         }
         values[name] = value;
@@ -227,7 +234,9 @@ export class TableFormView extends Window {
               v.value = parseInt(value as string).toString();
               break;
             default:
-              v.value = value.toString();
+              if (v.readOnly)
+                v.value = new Date(value as string).toLocaleDateString();
+              else v.value = value.toString();
               break;
           }
         }
