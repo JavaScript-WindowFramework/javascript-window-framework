@@ -49,7 +49,7 @@ export class TableFormView extends Window {
     type: K | string,
     listener: (this: Window, ev: TableFormViewMap[K]) => unknown
   ): void {
-    super.addEventListener(type, listener);
+    super.addEventListener(type, listener as (e: unknown) => unknown);
   }
   public addItem(params: ITEM_OPTION | ITEM_OPTION[]): HTMLElement | null {
     //配列ならば分解し再入力

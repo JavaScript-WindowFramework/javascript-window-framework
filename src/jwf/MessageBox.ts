@@ -47,9 +47,9 @@ export class MessageBox extends FrameWindow {
   }
   public addEventListener<K extends keyof MessageBoxEventMap>(
     type: K,
-    listener: (ev: MessageBoxEventMap[K]) => unknown
+    listener: (ev: MessageBoxEventMap[K]) => void
   ): void {
-    super.addEventListener(type, listener);
+    super.addEventListener(type, listener as (e: unknown) => unknown);
   }
   public setText(text: string): void {
     this.label.setText(text);

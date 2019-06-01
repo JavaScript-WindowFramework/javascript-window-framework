@@ -112,7 +112,7 @@ export class Button extends Window {
     type: K,
     listener: (ev: ButtonEventMap[K]) => unknown
   ): void {
-    super.addEventListener(type, listener);
+    super.addEventListener(type, listener as (e: unknown) => unknown);
   }
 }
 export class ImageButton extends Window {
@@ -205,6 +205,6 @@ export class ImageButton extends Window {
     type: K,
     listener: (ev: ButtonEventMap[K]) => unknown
   ): void {
-    super.addEventListener(type, listener);
+    super.addEventListener(type, listener as (e: unknown) => unknown);
   }
 }

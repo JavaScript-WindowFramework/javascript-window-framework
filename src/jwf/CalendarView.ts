@@ -134,7 +134,7 @@ export class CalendarView extends Window {
     type: K,
     listener: (ev: CalendarViewEventMap[K]) => unknown
   ): void {
-    super.addEventListener(type, listener);
+    super.addEventListener(type, listener as (e: unknown) => unknown);
   }
   public callEvent<K extends keyof CalendarViewEventMap>(
     type: K,

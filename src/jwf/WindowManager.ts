@@ -90,13 +90,13 @@ export class WindowManager {
 
   private static createEvent(ename: string, params?: unknown): Event {
     let event: CustomEvent & { params?: unknown };
-    if (!(window as Window & { MSStream: unknown }).MSStream) {
+    try {
+      event = new CustomEvent(ename);
+    } catch (e) {
       event = document.createEvent("CustomEvent");
       event.initCustomEvent(ename, false, false, null);
-    } else {
-      event = new CustomEvent(ename);
     }
-    event.params = params;
+    if (params) event.params = params;
     return event;
   }
   /**
