@@ -22,10 +22,10 @@ export class Label extends Window {
   }
   public setText(text: string): void {
     let nodeText = this.nodeText;
-    nodeText.textContent = text;
+    nodeText.innerText = text;
   }
   public getText(): string | null {
-    return this.nodeText.textContent;
+    return this.nodeText.innerText;
   }
   public getTextNode(): HTMLSpanElement {
     return this.nodeText;
