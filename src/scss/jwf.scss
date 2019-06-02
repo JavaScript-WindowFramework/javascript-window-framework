@@ -589,6 +589,18 @@ $DRAWER_ITEM_SIZE: 2em;
     color: #5c6bb6;
   }
 }
+[data-jwf-style="MessageBox"] {
+  color:white;
+  background-color: rgba(30,30,30,0.8) !important;
+  text-shadow: black 1px 1px 0, black -1px -1px 0, black -1px 1px 0, black 1px -1px 0, black 0px 1px 0, black -1px 0,
+  black -1px 0 0, black 1px 0 0;
+}
+[data-jwf-style="MessageBoxLabel"] {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+}
 
 /* Button用設定 */
 [data-jwf-style="Button"] {
