@@ -757,6 +757,6 @@ export class ListView extends Window {
     type: K,
     listener: (ev: ListViewEventMap[K]) => unknown
   ): void {
-    super.addEventListener(type, listener);
+    super.addEventListener(type, listener as (e: unknown) => unknown);
   }
 }
