@@ -141,7 +141,7 @@ export interface WINDOW_PARAMS {
  * @class Window
  */
 export class Window {
-  private Events = new Map<string, ((e: unknown) => void)[]>();
+  private Events = new Map<string, ((e: unknown) => unknown)[]>();
   private hNode: JNode;
   private JData: JDATA = {
     x: 0,
@@ -188,6 +188,7 @@ export class Window {
     this.hNode = hNode;
     hNode.dataset.jwf = "Window";
     //位置を絶対位置指定
+    hNode.style.zIndex = "10000";
     hNode.style.position = "absolute";
     hNode.style.visibility = "hidden";
     //クライアント領域を作成
@@ -464,7 +465,7 @@ export class Window {
   // eslint-disable-next-line @typescript-eslint/explicit-member-accessibility
   addEventListener<K extends keyof WINDOW_EVENT_MAP>(
     type: K | string,
-    listener: (this: Window, ev: WINDOW_EVENT_MAP[K]) => void
+    listener: (ev: WINDOW_EVENT_MAP[K]) => unknown
   ): void {
     let eventData = this.Events.get(type);
     if (!eventData) {
@@ -474,7 +475,7 @@ export class Window {
     for (let ev of eventData) {
       if (String(ev) === String(listener)) return;
     }
-    eventData.push(listener);
+    eventData.push(listener as (e: unknown) => unknown);
   }
   /**
    *イベントの削除
@@ -519,7 +520,7 @@ export class Window {
     const eventData = this.Events.get(type);
     if (eventData) {
       for (let ev of eventData) {
-        ev(params);
+        ev(params as WINDOW_EVENT_MAP[K]);
       }
     }
   }
@@ -757,8 +758,11 @@ export class Window {
    */
   public isVisible(): boolean {
     if (!this.JData.visible) return false;
-    const parent = this.getParent();
-    if (parent) return parent.isVisible();
+    let parent = this.getParent();
+    if (!parent) return false;
+    while ((parent = parent.getParent())) {
+      if (!parent.isVisible()) return false;
+    }
     return true;
   }
 
@@ -772,9 +776,7 @@ export class Window {
     const node = this.getNode();
     if (!node.parentNode) {
       document.body.appendChild(node);
-    }
-    if (this.isVisible() === flag) return;
-    this.JData.visible = flag;
+    } else if (this.JData.visible === flag) return;
     if (flag) this.hNode.style.visibility = "";
 
     if (flag) {
@@ -812,13 +814,15 @@ export class Window {
       const animation = this.JData.animationEnable
         ? this.JData.animation["close"]
         : "";
-      if (animation) {
+      const parent = this.getParent();
+      if (animation && parent && parent.isVisible()) {
         node.addEventListener("animationend", animationEnd);
         node.style.animation = animation;
       } else {
         animationEnd.bind(node)();
       }
     }
+    this.JData.visible = flag;
     const parent = this.getParent();
     if (parent) parent.layout();
   }
@@ -914,10 +918,10 @@ export class Window {
     }
 
     let client = this.getClient();
-    for (let i = 0; i < client.childNodes.length; i++) {
+    for (let i = 0, length = client.childNodes.length; i < length; i++) {
       let node = client.childNodes[i] as JNode;
       if (node.dataset && node.dataset.jwf === "Window")
-        flag = flag || node.Jwf.onMeasure(flag);
+        flag = node.Jwf.onMeasure(flag) || flag;
     }
     if (!flag && !this.JData.redraw) return false;
     //this.layout()
@@ -1039,12 +1043,11 @@ export class Window {
       }
       win.onLayout(flag);
     }
-    this.JData.redraw = false;
-
     this.orderSort(client);
-    this.callEvent("layouted", {});
+    if (this.JData.redraw || flag) this.callEvent("layouted", {});
+    this.JData.redraw = false;
   }
-  private orderSort(client: HTMLElement): void {
+  private orderSort(client: HTMLElement): boolean {
     let nodes: JNode[] = [];
     for (let i = 0; i < client.childNodes.length; i++) {
       let node = client.childNodes[i] as HTMLElement | JNode;
@@ -1059,15 +1062,26 @@ export class Window {
       if (b.orderTop) return -1;
       let layer = a.orderLayer - b.orderLayer;
       if (layer) return layer;
-      const aIndex = anode.style.zIndex as string;
-      const bIndex = bnode.style.zIndex as string;
-      return parseInt(aIndex) - parseInt(bIndex);
+      const aIndex = anode.style.zIndex ? parseInt(anode.style.zIndex) : 0;
+      const bIndex = bnode.style.zIndex ? parseInt(bnode.style.zIndex) : 0;
+      const aOrder = anode.dataset.order === "true" ? 10000 : 0;
+      const bOrder = bnode.dataset.order === "true" ? 10000 : 0;
+      return aIndex + aOrder - (bIndex + bOrder);
     });
-
+    let flag = false;
     //Zオーダーの再附番
     for (let i = 0; i < nodes.length; i++) {
-      nodes[i].style.zIndex = i.toString();
+      const index = i.toString();
+      const node = nodes[i];
+      node.dataset.order = "";
+      if (node.style.zIndex !== index) {
+        flag = true;
+        node.style.zIndex = index;
+      }
     }
+    //順位が変わったので更新要求
+    if (flag) this.layout();
+    return flag;
   }
   /**
    *ウインドウの表示/非表示
@@ -1077,6 +1091,7 @@ export class Window {
    */
   public show(flag: boolean): void {
     if (flag == null || flag) {
+      this.hNode.style.zIndex = "10000";
       this.JData.reshow = true;
     } else {
       this.hNode.style.visibility = "hidden";
@@ -1097,7 +1112,7 @@ export class Window {
       if ((flag || flag == null) && p.dataset) {
         activeNodes.add(p);
         p.dataset.jwfActive = "true";
-        p.style.zIndex = "1000";
+        p.dataset.order = "true";
         if (p.Jwf) p.Jwf.callEvent("active", { active: true });
       }
       this.orderSort(p);
@@ -1115,8 +1130,6 @@ export class Window {
         }
       }
     }
-    const parent = this.getParent();
-    if (parent) parent.layout();
   }
 
   /**

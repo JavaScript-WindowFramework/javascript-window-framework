@@ -5,7 +5,7 @@ import { CalendarView } from "./CalendarView";
 
 export interface ITEM_OPTION {
   label?: string;
-  type?: "date" | "textbox" | "checkbox" | "select" | "submit";
+  type?: "date" | "string" | "number" | "checkbox" | "select" | "submit";
   name?: string;
   value?: string | number | boolean | Date;
   link?: string;
@@ -18,9 +18,21 @@ export interface ITEM_OPTION {
   }[];
 }
 export interface TableFormViewMap extends WINDOW_EVENT_MAP {
-  itemChange: HTMLDivElement;
+  itemChange: FormInputElement;
 }
 
+export type FormInputElement = (HTMLInputElement | HTMLSelectElement) & {
+  type2?: string;
+  value2?: Date | undefined;
+};
+
+/**
+ *入力用ウインドウ
+ *
+ * @export
+ * @class TableFormView
+ * @extends {Window}
+ */
 export class TableFormView extends Window {
   private items: HTMLDivElement;
   private footer: HTMLDivElement;
@@ -28,7 +40,6 @@ export class TableFormView extends Window {
     super(params);
     this.setJwfStyle("TableFormView");
     const table = document.createElement("div");
-    //this.table = table;
     this.getClient().appendChild(table);
 
     const items = document.createElement("div");
@@ -43,7 +54,7 @@ export class TableFormView extends Window {
     type: K | string,
     listener: (this: Window, ev: TableFormViewMap[K]) => unknown
   ): void {
-    super.addEventListener(type, listener);
+    super.addEventListener(type, listener as (e: unknown) => unknown);
   }
   public addItem(params: ITEM_OPTION | ITEM_OPTION[]): HTMLElement | null {
     //配列ならば分解し再入力
@@ -76,34 +87,53 @@ export class TableFormView extends Window {
       const data = document.createElement("div");
       row.appendChild(data);
 
-      let input: HTMLInputElement | HTMLSelectElement;
+      let input: FormInputElement;
       let tag: HTMLDivElement | HTMLAnchorElement;
+      let date: Date;
       switch (params.type) {
         case "date":
           input = document.createElement("input");
+          input.type2 = params.type;
           input.readOnly = true;
           input.type = "text";
-          input.size = 10;
+          input.size = 14;
           input.name = params.name || "";
-          input.value = params.value
-            ? (params.value as Date).toLocaleDateString()
-            : "-";
+          date = new Date(params.value as string);
+          input.value = params.value ? date.toLocaleDateString() : "-";
+          input.value2 = date;
           data.appendChild(input);
           input.addEventListener(
             "click",
             (): void => {
               const calendar = new CalendarView({ frame: true });
+              calendar.setPos();
+              if (input instanceof HTMLInputElement && input.value2)
+                calendar.setSelect(input.value2, true);
               calendar.addEventListener(
                 "date",
                 (e): void => {
                   input.value = e.date.toLocaleDateString();
+                  if (input instanceof HTMLInputElement) input.value2 = e.date;
+                  calendar.close();
+                  this.callEvent("itemChange", input);
                 }
               );
             }
           );
           break;
-        case "textbox":
+        case "number":
           input = document.createElement("input");
+          input.type2 = params.type;
+          input.type = "number";
+          input.name = params.name || "";
+          input.value = params.value
+            ? (parseInt(params.value.toString()).toString() as string)
+            : "";
+          data.appendChild(input);
+          break;
+        case "string":
+          input = document.createElement("input");
+          input.type2 = params.type;
           input.type = "text";
           input.name = params.name || "";
           input.value = (params.value as string) || "";
@@ -111,6 +141,7 @@ export class TableFormView extends Window {
           break;
         case "checkbox":
           input = document.createElement("input");
+          input.type2 = params.type;
           input.type = "checkbox";
           input.name = params.name || "";
           input.checked = params.value == true;
@@ -118,6 +149,7 @@ export class TableFormView extends Window {
           break;
         case "select":
           input = document.createElement("select");
+          input.type2 = params.type;
           input.name = params.name || "";
           input.addEventListener("change", function(): void {
             that.callEvent("itemChange", this);
@@ -164,18 +196,33 @@ export class TableFormView extends Window {
     ) as HTMLElement | null;
     return node;
   }
-  public getParams(): { [key: string]: string | number | boolean } {
-    const values: { [key: string]: string | number | boolean } = {};
+  public getParams(): { [key: string]: string | number | boolean | undefined } {
+    const values: { [key: string]: string | number | boolean | undefined } = {};
     const nodes = this.items.querySelectorAll("select,input");
     for (let length = nodes.length, i = 0; i < length; ++i) {
-      const v = nodes[i];
+      const v = nodes[i] as FormInputElement;
       if (v instanceof HTMLSelectElement) {
         const name = v.name;
         const value = v.value;
         values[name] = value;
       } else if (v instanceof HTMLInputElement) {
+        const vnode = v as HTMLInputElement & { value2?: typeof values[0] };
         const name = v.name;
-        const value = v.type == "checkbox" ? v.checked : v.value;
+        let value;
+        switch (v.type2) {
+          case "checkbox":
+            value = v.checked;
+            break;
+          case "number":
+            value = parseInt(v.value);
+            break;
+          case "date":
+            if (v.value2) value = new Date(v.value2).toDateString();
+            break;
+          default:
+            value = vnode.value2 ? vnode.value2 : v.value;
+            break;
+        }
         values[name] = value;
       }
     }
@@ -184,15 +231,32 @@ export class TableFormView extends Window {
   public setParams(params: { [key: string]: string | number | boolean }): void {
     const nodes = this.items.querySelectorAll("select,input");
     for (let length = nodes.length, i = 0; i < length; ++i) {
-      const v = nodes[i];
+      const v = nodes[i] as (HTMLInputElement | HTMLSelectElement) & {
+        type2?: string;
+        value2?: Date | undefined;
+      };
       if (v instanceof HTMLSelectElement) {
         const value = params[v.name];
         if (value != null) v.value = value.toString();
       } else if (v instanceof HTMLInputElement) {
         const value = params[v.name];
-        if (value != null)
-          if (v.type === "checkbox") v.checked = value as boolean;
-          else v.value = value.toString();
+        if (value != null) {
+          switch (v.type2) {
+            case "checkbox":
+              v.checked = value as boolean;
+              break;
+            case "number":
+              v.value = parseInt(value as string).toString();
+              break;
+            case "date":
+              v.value = new Date(value.toString()).toLocaleDateString();
+              v.value2 = new Date(value.toString());
+              break;
+            default:
+              v.value = value.toString();
+              break;
+          }
+        }
       }
     }
   }

@@ -18,22 +18,22 @@
     box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.4);
   }
 
-  >[data-jwf-type="border"] {
+  > [data-jwf-type="border"] {
     position: absolute;
     user-select: none;
   }
 
-  &[data-jwf-stat="maximize"]>[data-jwf-type="border"] {
+  &[data-jwf-stat="maximize"] > [data-jwf-type="border"] {
     display: none;
     box-sizing: border-box;
   }
 
-  &[data-jwf-active="true"]>[data-jwf-type="title"] {
+  &[data-jwf-active="true"] > [data-jwf-type="title"] {
     background-color: darken($TITLE_COLOR, 20%);
     color: white;
   }
 
-  >[data-jwf-type="title"] {
+  > [data-jwf-type="title"] {
     border-radius: 10px 10px 0px 0px;
     display: flex;
     position: absolute;
@@ -51,7 +51,7 @@
       white-space: nowrap;
     }
 
-    >[data-jwf-type="icon"] {
+    > [data-jwf-type="icon"] {
       display: inline-block;
       cursor: default;
       background-size: 100% 100%;
@@ -77,7 +77,6 @@
       }
 
       &[data-jwf-kind="normal"] {
-
         background-image: url("images/normal.svg");
       }
     }
@@ -88,10 +87,13 @@
   white-space: normal;
 }
 
+[data-jwf-type="Frame"] > [data-jwf-type="client"] {
+  background: whitesmoke;
+}
 [data-jwf-type="client"] {
+  background: transparent;
   position: absolute;
   overflow: hidden;
-  background-color: whitesmoke;
   top: 0px;
   right: 0px;
   bottom: 0px;
@@ -185,15 +187,16 @@
 
   [data-kind="SplitterMenu"] {
     position: absolute;
-    background-color: rgba(255, 255, 255, 0.7);
-    opacity: 0.7;
+    background-color: rgba(255, 255, 255, 0.4);
+    opacity: 0.8;
     background-repeat: no-repeat;
     width: 32px;
     height: 32px;
-    margin: 2px;
+    margin: 24px;
     cursor: pointer;
-    //menu.svg
+    background-size: 100% 100%;
     background-image: url("images/menu.svg");
+    border-radius: 10%;
     flex-grow: 0;
     flex-shrink: 0;
     z-index: 100;
@@ -250,11 +253,11 @@
     flex-direction: column;
     flex: 1;
 
-    >[data-kind="TreeRow"]:first-child:hover {
+    > [data-kind="TreeRow"]:first-child:hover {
       border-bottom: black 1px solid;
     }
 
-    >[data-kind="TreeRow"][data-drag="over"] {
+    > [data-kind="TreeRow"][data-drag="over"] {
       background-color: rgba(80, 233, 149, 0.2);
     }
 
@@ -279,11 +282,11 @@
     flex: 1;
   }
 
-  [data-kind="TreeItem"]>[data-kind="TreeRow"]:nth-child(2)>[data-kind="TreeChild"] {
+  [data-kind="TreeItem"] > [data-kind="TreeRow"]:nth-child(2) > [data-kind="TreeChild"] {
     overflow: hidden;
   }
 
-  [data-kind="TreeItem"]>div>[data-kind="TreeIcon"] {
+  [data-kind="TreeItem"] > div > [data-kind="TreeIcon"] {
     background-repeat: no-repeat;
     width: 16px;
     height: 16px;
@@ -296,23 +299,23 @@
     flex-shrink: 0;
   }
 
-  [data-kind="TreeItem"][data-stat="close"]>[data-kind="TreeRow"]>[data-kind="TreeIcon"] {
+  [data-kind="TreeItem"][data-stat="close"] > [data-kind="TreeRow"] > [data-kind="TreeIcon"] {
     background-image: url("images/tclose.svg");
   }
 
-  [data-kind="TreeItem"][data-stat="open"]>[data-kind="TreeRow"]>[data-kind="TreeIcon"] {
+  [data-kind="TreeItem"][data-stat="open"] > [data-kind="TreeRow"] > [data-kind="TreeIcon"] {
     background-image: url("images/topen.svg");
   }
 
-  [data-kind="TreeItem"][data-stat="alone"]>[data-kind="TreeRow"]>[data-kind="TreeIcon"] {
+  [data-kind="TreeItem"][data-stat="alone"] > [data-kind="TreeRow"] > [data-kind="TreeIcon"] {
     background-image: url("images/talone.svg");
   }
 
-  [data-kind="TreeItem"]>[data-kind="TreeRow"]:first-child {
+  [data-kind="TreeItem"] > [data-kind="TreeRow"]:first-child {
     cursor: pointer;
   }
 
-  [data-kind="TreeItem"][data-select="true"]>[data-kind="TreeRow"]:first-child {
+  [data-kind="TreeItem"][data-select="true"] > [data-kind="TreeRow"]:first-child {
     background-color: rgba(80, 80, 233, 0.2);
     flex: 1;
   }
@@ -333,24 +336,26 @@
   user-select: none;
   overflow-x: auto !important;
 
-  >[data-kind="ListHeaderBack"] {
+  > [data-kind="ListHeaderBack"] {
     position: absolute;
     height: 30px;
     width: 100%;
     min-width: 100%;
-    background-image: linear-gradient(180deg,
-        rgba(144, 197, 240, 0.9) 0%,
-        rgba(63, 164, 201, 0.9) 50%,
-        rgba(100, 122, 221, 0.9) 100%);
+    background-image: linear-gradient(
+      180deg,
+      rgba(144, 197, 240, 0.9) 0%,
+      rgba(63, 164, 201, 0.9) 50%,
+      rgba(100, 122, 221, 0.9) 100%
+    );
   }
 
-  >[data-kind="ListHeaderArea"] {
+  > [data-kind="ListHeaderArea"] {
     position: relative;
     right: 0px;
     left: 0px;
     height: $HEADER_HEIGHT;
 
-    >[data-kind="ListResizers"] {
+    > [data-kind="ListResizers"] {
       overflow: hidden;
       position: absolute;
       pointer-events: none;
@@ -358,7 +363,7 @@
       width: 100%;
     }
 
-    >[data-kind="ListResizers"] div {
+    > [data-kind="ListResizers"] div {
       position: absolute;
       width: 10px;
       height: 100%;
@@ -366,7 +371,7 @@
       pointer-events: all;
     }
 
-    >[data-kind="ListHeaders"] {
+    > [data-kind="ListHeaders"] {
       display: flex;
       align-items: center;
       height: 100%;
@@ -374,7 +379,7 @@
       flex-shrink: 0;
       overflow-x: visible;
 
-      >div {
+      > div {
         box-sizing: border-box;
         display: flex;
         border: rgb(46, 98, 158) 1px;
@@ -389,21 +394,21 @@
         white-space: nowrap;
       }
 
-      >div:hover {
+      > div:hover {
         background-color: rgba(255, 255, 255, 0.1);
       }
 
-      >div[data-sort="asc"] {
+      > div[data-sort="asc"] {
         border-top: 1px rgba(255, 100, 100, 0.8) double;
       }
 
-      >div[data-sort="desc"] {
+      > div[data-sort="desc"] {
         border-bottom: 1px rgba(255, 100, 100, 0.8) double;
       }
     }
   }
 
-  >[data-kind="ListItemArea"] {
+  > [data-kind="ListItemArea"] {
     white-space: nowrap;
     position: relative;
     display: flex;
@@ -417,7 +422,7 @@
       flex-shrink: 0;
       height: 100%;
 
-      >[data-kind="ListCell"] {
+      > [data-kind="ListCell"] {
         padding: 2px;
         display: flex;
         flex-wrap: nowrap;
@@ -567,14 +572,14 @@ $DRAWER_ITEM_SIZE: 2em;
   padding: 0.5em;
   height: $DRAWER_ITEM_SIZE;
 
-  >[data-kind="DrawerIcon"] {
+  > [data-kind="DrawerIcon"] {
     background-size: 100% 100%;
     height: 100%;
     width: 1.3em;
     margin-right: 0.4em;
   }
 
-  >[data-kind="DrawerText"] {
+  > [data-kind="DrawerText"] {
     flex: 1;
     font-size: $DRAWER_ITEM_SIZE;
   }
@@ -589,7 +594,7 @@ $DRAWER_ITEM_SIZE: 2em;
 [data-jwf-style="Button"] {
   background-color: transparent;
   text-align: center;
-  >div {
+  > div {
     display: inline-block;
     cursor: pointer;
     white-space: nowrap;
@@ -613,13 +618,13 @@ $DRAWER_ITEM_SIZE: 2em;
       border-style: inset;
     }
 
-    >span {
+    > span {
       display: block;
       padding: 2px 8px;
       white-space: nowrap;
     }
 
-    >img {
+    > img {
       height: 100%;
       width: 100%;
     }
@@ -632,7 +637,7 @@ $DRAWER_ITEM_SIZE: 2em;
   overflow: visible;
   background-color: transparent;
 
-  >span {
+  > span {
     white-space: nowrap;
   }
 }
@@ -642,11 +647,11 @@ $DRAWER_ITEM_SIZE: 2em;
   border: inset;
   display: flex;
 
-  >div {
+  > div {
     flex: 1;
     position: relative;
 
-    >input {
+    > input {
       user-select: all;
       position: absolute;
       background-color: rgba(255, 255, 255, 0.8);
@@ -656,14 +661,14 @@ $DRAWER_ITEM_SIZE: 2em;
       width: 100%;
     }
 
-    >div {
+    > div {
       white-space: nowrap;
       position: absolute;
       padding: 0.2em;
     }
   }
 
-  >img {
+  > img {
     height: 100%;
   }
 }
@@ -673,7 +678,7 @@ $DRAWER_ITEM_SIZE: 2em;
   display: flex;
   white-space: nowrap;
 
-  >label:hover {
+  > label:hover {
     background-color: rgba(186, 190, 245, 0.274);
   }
 }
@@ -681,41 +686,42 @@ $DRAWER_ITEM_SIZE: 2em;
 /*
 	TableForm
 */
-[data-jwf-style="TableFormView"] {
+[data-jwf="Window"] > [data-jwf-style="TableFormView"] {
   display: flex;
   flex-direction: column;
+  background-color: rgba(0, 0, 0, 0.9);
+  color: white;
 
-  >div:first-child {
-    padding: 0.5em;
+  > div:first-child {
     overflow: auto;
     flex: 1;
     justify-content: space-between;
 
-    >div:hover {
+    > div:hover {
       cursor: default;
     }
 
-    >div {
+    > div {
       width: 100%;
-      padding: 0.3em;
       box-sizing: border-box;
       display: table;
-      border-spacing: 0 0.3em;
+      border-spacing: 0 0.1em;
       border-collapse: separate;
 
       > :hover {
         background: #aabbee;
       }
 
-      >div,
-      >label {
-        background: rgba(230, 230, 230, 0.4);
+      > div,
+      > label {
+        margin: 0.1em;
+        background: rgba(255, 255, 255, 0.4);
         display: table-row;
 
-        >div {
+        > div {
           vertical-align: middle;
           display: table-cell;
-          padding: 0.3em 0.5em;
+          padding: 0.2em 0.3em;
 
           &:first-child {
             white-space: nowrap;
@@ -725,16 +731,19 @@ $DRAWER_ITEM_SIZE: 2em;
     }
   }
 
-  >div:nth-child(2) {
+  > div:nth-child(2) {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding: 0.2em;
+    padding: 0.1em;
   }
 }
 
+/*
+	CalendarView
+*/
 [data-jwf-style="CalendarView"] {
-  >table {
+  > table {
     user-select: none;
     table-layout: fixed;
     border-collapse: collapse;
