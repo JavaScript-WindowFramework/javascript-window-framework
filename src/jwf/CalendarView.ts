@@ -106,7 +106,6 @@ export class CalendarView extends Window {
       const text = cell.childNodes[1] as HTMLDivElement;
       day.innerText = date.getDate().toString();
       cell.date = new Date(date);
-      date.setDate(date.getDate() + 1);
       cell.dataset.select = this.selects[date.toDateString()] ? "true" : "";
 
       const holiday = this.holidays[date.toDateString()];
@@ -117,6 +116,7 @@ export class CalendarView extends Window {
         text.style.visibility = "hidden";
         text.innerText = "";
       }
+      date.setDate(date.getDate() + 1);
     }
     //getHoliday(dateStart);
   }
@@ -126,6 +126,7 @@ export class CalendarView extends Window {
   public setSelect(date: Date, value: boolean = true): void {
     if (value) this.selects[date.toDateString()] = true;
     else delete this.selects;
+    this.redraw();
   }
   private onCellClick(cell: HTMLDivElement & { date?: Date }): void {
     if (cell.date) this.callEvent("date", { date: cell.date });
