@@ -1,5 +1,8 @@
 import "../scss/jwf.scss";
 import "es6-promise/auto";
+export * from "./Window";
+export * from "./WindowManager";
+
 export * from "./Adapter";
 export * from "./Button";
 export * from "./CalendarView";
@@ -15,5 +18,3 @@ export * from "./Splitter";
 export * from "./TableFormView";
 export * from "./TextBox";
 export * from "./TreeView";
-export * from "./Window";
-export * from "./WindowManager";

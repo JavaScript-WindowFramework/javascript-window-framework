@@ -51,7 +51,7 @@ export class TableFormView extends Window {
     this.getClient().appendChild(footer);
   }
   public addEventListener<K extends keyof TableFormViewMap>(
-    type: K | string,
+    type: K,
     listener: (this: Window, ev: TableFormViewMap[K]) => unknown
   ): void {
     super.addEventListener(type, listener as (e: unknown) => unknown);
