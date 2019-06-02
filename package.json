@@ -1,6 +1,6 @@
 {
   "name": "javascript-window-framework",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "description": "JavaScript Window Framework",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

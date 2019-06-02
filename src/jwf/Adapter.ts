@@ -56,7 +56,7 @@ export class Adapter {
    * @returns {Promise<any>}
    * @memberof Adapter
    */
-  public exec(functions: FunctionData[][]): Promise<unknown>;
+  public exec(functions: FunctionData[][]): Promise<unknown[]>;
   /**
    *単一ファンクションの実行
    *
@@ -66,7 +66,7 @@ export class Adapter {
    * @memberof Adapter
    */
   // eslint-disable-next-line no-dupe-class-members
-  public exec(funcName: string, ...params: unknown[]): Promise<unknown[]>;
+  public exec(funcName: string, ...params: unknown[]): Promise<unknown>;
   // eslint-disable-next-line no-dupe-class-members
   public exec(
     v1: FunctionData[][] | string,
