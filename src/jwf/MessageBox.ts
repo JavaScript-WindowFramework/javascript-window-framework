@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/class-name-casing */
-import { WINDOW_EVENT_MAP } from "./Window";
-import { Label } from "./Label";
+import { WINDOW_EVENT_MAP, Window } from "./Window";
 import { Button } from "./Button";
 import { FrameWindow } from "./FrameWindow";
 export interface MESSAGEBOX_EVENT_ITEM_CLICK {
@@ -10,24 +9,25 @@ export interface MessageBoxEventMap extends WINDOW_EVENT_MAP {
   buttonClick: MESSAGEBOX_EVENT_ITEM_CLICK;
 }
 export class MessageBox extends FrameWindow {
-  private label: Label;
+  private label: Window;
   public constructor(
     title: string,
     msg: string,
     buttons?: { [key: string]: unknown }
   ) {
     super();
+    this.setJwfStyle("MessageBox");
     this.setSize(300, 200);
     this.setPos();
     this.setTitle(title);
     this.active();
     this.setPadding(10, 10, 10, 10);
 
-    const label = new Label(msg);
+    const label = new Window();
     this.label = label;
-    this.addChild(label, "top");
-    label.setAlign("center");
-    label.setMargin(10, 10, 10, 50);
+    label.setJwfStyle("MessageBoxLabel");
+    this.addChild(label, "client");
+    if (msg) label.getClient().innerText = msg;
     const that = this;
     if (!buttons) {
       buttons = { OK: true };
@@ -35,7 +35,7 @@ export class MessageBox extends FrameWindow {
     for (let name in buttons) {
       const b = new Button(name, buttons[name]);
       b.setAlign("center");
-      this.addChild(b, "top");
+      this.addChild(b, "bottom");
       b.addEventListener(
         "buttonClick",
         function(this: Button): void {
@@ -52,6 +52,6 @@ export class MessageBox extends FrameWindow {
     super.addEventListener(type, listener as (e: unknown) => unknown);
   }
   public setText(text: string): void {
-    this.label.setText(text);
+    this.label.getClient().innerText = text;
   }
 }
