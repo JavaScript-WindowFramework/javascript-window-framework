@@ -52,6 +52,8 @@ export class TextBox extends Window {
   public setText(text: string): void {
     let nodeText = this.nodeText;
     nodeText.value = text;
+    const parent = this.getParent();
+    if (parent) parent.layout();
   }
   public getText(): string {
     return this.nodeText.value;
