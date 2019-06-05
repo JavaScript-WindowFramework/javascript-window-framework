@@ -1,0 +1,262 @@
+
+/*ListView用スタイル*/
+[data-jwf-style="ListView"] {
+  $HEADER_HEIGHT: 30px;
+  $ITEM_HEIGHT: 30px;
+  user-select: none;
+  overflow-x: auto !important;
+
+  > [data-kind="ListHeaderBack"] {
+    position: absolute;
+    height: 30px;
+    width: 100%;
+    min-width: 100%;
+    background-image: linear-gradient(
+      180deg,
+      rgba(144, 197, 240, 0.9) 0%,
+      rgba(63, 164, 201, 0.9) 50%,
+      rgba(100, 122, 221, 0.9) 100%
+    );
+  }
+
+  > [data-kind="ListHeaderArea"] {
+    position: relative;
+    right: 0px;
+    left: 0px;
+    height: $HEADER_HEIGHT;
+
+    > [data-kind="ListResizers"] {
+      overflow: hidden;
+      position: absolute;
+      pointer-events: none;
+      height: 100%;
+      width: 100%;
+    }
+
+    > [data-kind="ListResizers"] div {
+      position: absolute;
+      width: 10px;
+      height: 100%;
+      cursor: ew-resize;
+      pointer-events: all;
+    }
+
+    > [data-kind="ListHeaders"] {
+      display: flex;
+      align-items: center;
+      height: 100%;
+      flex-grow: 0;
+      flex-shrink: 0;
+      overflow-x: visible;
+
+      > div {
+        box-sizing: border-box;
+        display: flex;
+        border: rgb(46, 98, 158) 1px;
+        border-style: none solid none solid;
+        justify-content: center;
+        align-items: center;
+
+        width: 80px;
+        flex-grow: 0;
+        flex-shrink: 0;
+        overflow: hidden;
+        white-space: nowrap;
+      }
+
+      > div:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+      }
+
+      > div[data-sort="asc"] {
+        border-top: 1px rgba(255, 100, 100, 0.8) double;
+      }
+
+      > div[data-sort="desc"] {
+        border-bottom: 1px rgba(255, 100, 100, 0.8) double;
+      }
+    }
+  }
+
+  > [data-kind="ListItemArea"] {
+    white-space: nowrap;
+    position: relative;
+    display: flex;
+    height: calc(100% - #{$ITEM_HEIGHT});
+    overflow-y: auto;
+    overflow-x: hidden;
+    width: 100%;
+
+    [data-kind="ListColumn"] {
+      flex-grow: 0;
+      flex-shrink: 0;
+      height: 100%;
+
+      > [data-kind="ListCell"] {
+        padding: 2px;
+        display: flex;
+        flex-wrap: nowrap;
+        align-items: center;
+
+        border: transparent solid 1px;
+        border-left: rgba(158, 155, 153, 0.2) solid 1px;
+        border-bottom: rgba(158, 155, 153, 0.5) solid 1px;
+        height: $ITEM_HEIGHT;
+        overflow: hidden;
+        white-space: nowrap;
+        transition: 0.1s;
+
+        &:nth-child(odd) {
+          background-color: rgba(63, 164, 201, 0.2);
+        }
+
+        &:nth-child(even) {
+          background-color: rgba(63, 201, 183, 0.2);
+        }
+
+        &[data-item-hover="true"],
+        &[data-drag="over"] {
+          &:nth-child(odd) {
+            background-color: rgba(63, 164, 201, 0.4);
+          }
+
+          &:nth-child(even) {
+            background-color: rgba(63, 201, 183, 0.4);
+          }
+        }
+
+        &[data-item-select="true"] {
+          &:nth-child(odd) {
+            background-color: rgba(64, 160, 250, 0.6);
+          }
+
+          &:nth-child(even) {
+            background-color: rgba(58, 180, 200, 0.6);
+          }
+        }
+
+        &[data-item-hover="true"][data-item-select="true"]:nth-child(odd) {
+          background-color: rgba(64, 160, 250, 0.7);
+        }
+
+        &[data-item-hover="true"][data-item-select="true"]:nth-child(even) {
+          background-color: rgba(58, 180, 200, 0.7);
+        }
+      }
+    }
+  }
+}
+
+
+$DRAWER_ITEM_SIZE: 2em;
+
+@keyframes nsDrawerShow {
+  0% {
+    transform: translateY(-100%);
+  }
+
+  100% {
+    transform: translateY(0);
+  }
+}
+
+@keyframes nsDrawerClose {
+  0% {
+    transform: translateY(0);
+  }
+
+  100% {
+    transform: translateY(-100%);
+  }
+}
+
+@keyframes snDrawerShow {
+  0% {
+    transform: translateY(100%);
+  }
+
+  100% {
+    transform: translateY(0);
+  }
+}
+
+@keyframes snDrawerClose {
+  0% {
+    transform: translateY(0);
+  }
+
+  100% {
+    transform: translateY(100%);
+  }
+}
+
+@keyframes weDrawerShow {
+  0% {
+    transform: translateX(-100%);
+  }
+
+  100% {
+    transform: translateX(0);
+  }
+}
+
+@keyframes weDrawerClose {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+@keyframes ewDrawerShow {
+  0% {
+    transform: translateX(100%);
+  }
+
+  100% {
+    transform: translateX(0);
+  }
+}
+
+@keyframes ewDrawerClose {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+[data-kind="Drawer"] {
+  background-color: rgba(240, 240, 240, 0.6);
+}
+
+[data-kind="DrawerItem"] {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  margin: 0.2em;
+  margin-bottom: 0.5em;
+  padding: 0.5em;
+  height: $DRAWER_ITEM_SIZE;
+
+  > [data-kind="DrawerIcon"] {
+    background-size: 100% 100%;
+    height: 100%;
+    width: 1.3em;
+    margin-right: 0.4em;
+  }
+
+  > [data-kind="DrawerText"] {
+    flex: 1;
+    font-size: $DRAWER_ITEM_SIZE;
+  }
+
+  &:hover {
+    background-color: #eeeeee;
+    color: #5c6bb6;
+  }
+}

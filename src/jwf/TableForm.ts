@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/interface-name-prefix */
 import { Window, WINDOW_PARAMS, WINDOW_EVENT_MAP } from "./Window";
 import { CalendarView } from "./CalendarView";
+import "./scss/TableForm.scss";
 
 export interface ITEM_OPTION {
   label?: string;

@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/class-name-casing */
 import { Window, WINDOW_EVENT_MAP } from "./Window";
+import "./scss/Button.scss";
+
 export interface BUTTON_EVENT_ITEM_CLICK {
   event: Event;
   button: Button;
