@@ -535,7 +535,7 @@ export class TreeView extends Window {
    */
 
   public addEventListener<K extends keyof TreeViewEventMap>(
-    type: K,
+    type: K|string,
     listener: (ev: TreeViewEventMap[K]) => unknown
   ): void {
     super.addEventListener(type, listener as (e: unknown) => unknown);
