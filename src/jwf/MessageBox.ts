@@ -2,6 +2,7 @@
 import { WINDOW_EVENT_MAP, Window } from "./Window";
 import { Button } from "./Button";
 import { FrameWindow } from "./FrameWindow";
+import "./scss/MessageBox.scss";
 export interface MESSAGEBOX_EVENT_ITEM_CLICK {
   value: unknown;
 }

@@ -1,5 +1,5 @@
 import { Window } from "./Window";
-
+import "./scss/TextBox.scss";
 /**
  *テキストボックス
  *

@@ -1,4 +1,5 @@
 import { Window } from "./Window";
+
 export class SelectBox extends Window {
   public constructor(option: {
     label?: string;

@@ -1,0 +1,30 @@
+/* TextBox用設定 */
+[data-jwf-style="TextBox"] {
+  border: inset;
+  display: flex;
+
+  > div {
+    flex: 1;
+    position: relative;
+
+    > input {
+      user-select: all;
+      position: absolute;
+      background-color: rgba(255, 255, 255, 0.8);
+      min-height: 2em;
+      padding: 0.2em;
+      border: none;
+      width: 100%;
+    }
+
+    > div {
+      white-space: nowrap;
+      position: absolute;
+      padding: 0.2em;
+    }
+  }
+
+  > img {
+    height: 100%;
+  }
+}

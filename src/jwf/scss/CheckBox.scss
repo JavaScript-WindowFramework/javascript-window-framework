@@ -1,0 +1,9 @@
+/* CheckBox用設定 */
+[data-jwf-style="CheckBox"] {
+  display: flex;
+  white-space: nowrap;
+
+  > label:hover {
+    background-color: rgba(186, 190, 245, 0.274);
+  }
+}
