@@ -1,0 +1,61 @@
+/* Splitter用設定  */
+[data-jwf-style="SplitterView"] {
+  display: flex;
+
+  &[data-splitter-type="ew"] {
+    align-items: center;
+
+    [data-kind="SplitterMenu"] {
+      right: 0;
+    }
+  }
+
+  &[data-splitter-type="we"] {
+    align-items: center;
+  }
+
+  &[data-splitter-type="ns"] {
+    justify-content: center;
+  }
+
+  &[data-splitter-type="sn"] {
+    justify-content: center;
+
+    [data-kind="SplitterMenu"] {
+      bottom: 0;
+    }
+  }
+
+  [data-jwf-style="Splitter"] {
+    background-color: #aaaaaa;
+    border: outset 2px #b8b7b7;
+    user-select: none;
+  }
+
+  [data-kind="SplitterMenu"] {
+    position: absolute;
+    background-color: rgba(255, 255, 255, 0.4);
+    opacity: 0.8;
+    background-repeat: no-repeat;
+    width: 32px;
+    height: 32px;
+    margin: 24px;
+    cursor: pointer;
+    background-size: 100% 100%;
+    background-image: url("images/menu.svg");
+    border-radius: 10%;
+    flex-grow: 0;
+    flex-shrink: 0;
+    z-index: 100;
+  }
+
+  &[data-splitter-type="ns"] [data-jwf-style="Splitter"],
+  &[data-splitter-type="sn"] [data-jwf-style="Splitter"] {
+    cursor: ns-resize;
+  }
+
+  &[data-splitter-type="we"] [data-jwf-style="Splitter"],
+  &[data-splitter-type="ew"] [data-jwf-style="Splitter"] {
+    cursor: ew-resize;
+  }
+}

@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/class-name-casing */
 import { Window, WINDOW_EVENT_MAP, WINDOW_PARAMS } from "./Window";
+import "./scss/TreeView.scss";
 
 export interface TREEVIEW_EVENT_SELECT {
   item: TreeItem;

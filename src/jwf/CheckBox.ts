@@ -1,4 +1,5 @@
 import { Window } from "./Window";
+import "./scss/CheckBox.scss";
 
 export class CheckBox extends Window {
   private nodeText: HTMLSpanElement;

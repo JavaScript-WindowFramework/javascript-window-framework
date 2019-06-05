@@ -1,0 +1,40 @@
+/* Button用設定 */
+[data-jwf-style="Button"] {
+  background-color: transparent;
+  text-align: center;
+  > div {
+    display: inline-block;
+    cursor: pointer;
+    white-space: nowrap;
+    margin: 2px;
+    user-select: none;
+    border-width: 1px;
+    border-style: solid;
+    border-color: gainsboro dimgrey dimgrey gainsboro;
+    border-radius: 10px;
+    color: white;
+
+    background-image: linear-gradient(120deg, rgba(156, 159, 161, 0.9) 0%, #74757a 100%);
+
+    &:hover,
+    &:focus {
+      background-image: linear-gradient(120deg, rgba(108, 155, 194, 0.9) 0%, #6275df 100%);
+      font-weight: bold;
+    }
+
+    &:active {
+      border-style: inset;
+    }
+
+    > span {
+      display: block;
+      padding: 2px 8px;
+      white-space: nowrap;
+    }
+
+    > img {
+      height: 100%;
+      width: 100%;
+    }
+  }
+}

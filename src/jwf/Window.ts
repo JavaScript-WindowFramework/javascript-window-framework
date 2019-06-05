@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/class-name-casing */
 /* eslint-disable no-dupe-class-members */
+import "./scss/Window.scss";
 import { WindowManager } from "./WindowManager";
 
 //各サイズ
@@ -463,7 +464,7 @@ export class Window {
    */
   // eslint-disable-next-line @typescript-eslint/explicit-member-accessibility
   addEventListener<K extends keyof WINDOW_EVENT_MAP>(
-    type: K|string,
+    type: K | string,
     listener: (ev: WINDOW_EVENT_MAP[K]) => unknown
   ): void {
     let eventData = this.Events.get(type);

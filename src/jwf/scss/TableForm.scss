@@ -1,0 +1,55 @@
+/*
+	TableForm
+*/
+[data-jwf="Window"] > [data-jwf-style="TableFormView"] {
+  display: flex;
+  flex-direction: column;
+  background-color: rgba(0, 0, 0, 0.9);
+  color: white;
+
+  > div:first-child {
+    overflow: auto;
+    flex: 1;
+    justify-content: space-between;
+
+    > div:hover {
+      cursor: default;
+    }
+
+    > div {
+      width: 100%;
+      box-sizing: border-box;
+      display: table;
+      border-spacing: 0 0.1em;
+      border-collapse: separate;
+
+      > :hover {
+        background: #aabbee;
+      }
+
+      > div,
+      > label {
+        margin: 0.1em;
+        background: rgba(255, 255, 255, 0.4);
+        display: table-row;
+
+        > div {
+          vertical-align: middle;
+          display: table-cell;
+          padding: 0.2em 0.3em;
+
+          &:first-child {
+            white-space: nowrap;
+          }
+        }
+      }
+    }
+  }
+
+  > div:nth-child(2) {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0.1em;
+  }
+}

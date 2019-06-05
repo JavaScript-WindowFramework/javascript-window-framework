@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/class-name-casing */
 import { Window, WINDOW_PARAMS, WINDOW_EVENT_MAP } from "./Window";
+import "./scss/CalendarView.scss";
 import * as Libs from "./Libs";
 export interface CALENDARVIEW_EVENT_DATE_CLICK {
   date: Date;

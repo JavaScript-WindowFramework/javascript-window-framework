@@ -1,0 +1,152 @@
+//Window用基本スタイル
+[data-jwf="Window"] {
+  $TITLE_COLOR: #aabbee;
+
+  box-sizing: border-box;
+
+  &[data-jwf-visible="false"] {
+    display: none;
+  }
+
+  &:not([data-jwf-type="Frame"]) {
+    overflow: hidden;
+  }
+
+  &[data-jwf-type="Frame"]:not([data-jwf-stat="maximize"]) {
+    border-radius: 10px 10px 0px 0px;
+    border: solid 1px;
+    box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.4);
+  }
+
+  > [data-jwf-type="border"] {
+    position: absolute;
+    user-select: none;
+  }
+
+  &[data-jwf-stat="maximize"] > [data-jwf-type="border"] {
+    display: none;
+    box-sizing: border-box;
+  }
+
+  &[data-jwf-active="true"] > [data-jwf-type="title"] {
+    background-color: darken($TITLE_COLOR, 20%);
+    color: white;
+  }
+
+  > [data-jwf-type="title"] {
+    border-radius: 10px 10px 0px 0px;
+    display: flex;
+    position: absolute;
+    cursor: move;
+    background-color: $TITLE_COLOR;
+    overflow: hidden;
+
+    [data-jwf-type="text"] {
+      flex: 1;
+      overflow: hidden;
+      font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande", "Lucida Sans", Arial, sans-serif;
+      padding: 0px 0.5em;
+      align-items: center;
+      display: flex;
+      white-space: nowrap;
+    }
+
+    > [data-jwf-type="icon"] {
+      display: inline-block;
+      cursor: default;
+      background-size: 100% 100%;
+
+      &:hover {
+        background-color: rgba(0, 0, 0, 0.2);
+      }
+
+      &[data-jwf-kind="min"] {
+        background-image: url("images/min.svg");
+      }
+
+      &[data-jwf-kind="restore"] {
+        background-image: url("images/min.svg");
+      }
+
+      &[data-jwf-kind="max"] {
+        background-image: url("images/max.svg");
+      }
+
+      &[data-jwf-kind="close"] {
+        background-image: url("images/close.svg");
+      }
+
+      &[data-jwf-kind="normal"] {
+        background-image: url("images/normal.svg");
+      }
+    }
+  }
+}
+
+[data-jwf-scale="auto"] {
+  white-space: normal;
+}
+
+[data-jwf-type="Frame"] > [data-jwf-type="client"] {
+  background: whitesmoke;
+}
+[data-jwf-type="client"] {
+  background: transparent;
+  position: absolute;
+  overflow: hidden;
+  top: 0px;
+  right: 0px;
+  bottom: 0px;
+  left: 0px;
+}
+
+@keyframes JWFminimize {
+  100% {
+    height: 0px;
+  }
+}
+
+@keyframes JWFrestore {
+  0% {
+    height: 0px;
+  }
+}
+
+@keyframes JWFmaximize {
+  10% {
+    transform: scale(0);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes JWFmaxrestore {
+  0% {
+    transform: scale(2);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes JWFclose {
+  100% {
+    opacity: 0;
+    transform: scale(0);
+  }
+}
+
+@keyframes JWFFrameShow {
+  0% {
+    opacity: 0;
+    transform: scale(0);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
