@@ -1,5 +1,5 @@
 import { Window, MovePoint, JWFEvent } from "./Window";
-
+import "./scss/Splitter.scss";
 /**
  *分割ウインドウ用クラス
  *

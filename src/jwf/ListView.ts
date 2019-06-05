@@ -8,6 +8,7 @@ import {
   MoveElement
 } from "./Window";
 import { WindowManager } from "./WindowManager";
+import "./scss/ListView.scss";
 
 export interface LISTVIEW_EVENT_ITEM_CLICK {
   itemIndex: number;

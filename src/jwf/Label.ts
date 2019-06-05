@@ -1,5 +1,5 @@
 import { Window } from "./Window";
-
+import "./scss/Label.scss";
 export class Label extends Window {
   private nodeText: HTMLSpanElement;
   public constructor(text?: string) {

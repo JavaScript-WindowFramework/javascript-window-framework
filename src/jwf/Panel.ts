@@ -1,3 +1,4 @@
+import "./scss/Panel.scss";
 import { Window } from "./Window";
 /**
  *パネル用クラス
