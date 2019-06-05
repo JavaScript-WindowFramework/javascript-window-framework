@@ -18,3 +18,6 @@ export * from "./TextArea";
 export * from "./TreeView";
 export * from "./Window";
 export * from "./WindowManager";
+
+const a : HTMLElement = document.createElement('div');
+a.addEventListener("click",()=>{})

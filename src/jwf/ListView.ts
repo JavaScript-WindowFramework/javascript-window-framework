@@ -755,8 +755,8 @@ export class ListView extends Window {
    * @memberof ListView
    */
   public addEventListener<K extends keyof ListViewEventMap>(
-    type: K,
-    listener: (ev: ListViewEventMap[K]) => unknown
+    type: K|string,
+    listener: (this:Window,ev: ListViewEventMap[K]) => unknown
   ): void {
     super.addEventListener(type, listener as (e: unknown) => unknown);
   }
