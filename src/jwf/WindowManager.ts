@@ -16,7 +16,7 @@ export class WindowManager {
   public static moveNode: HTMLElement | null = null;
   public static frame: number | null = null;
   private static layoutForced: boolean;
-  private static layoutHandler: NodeJS.Timeout | number | null;
+  private static layoutHandler: number | null;
 
   /**
    * マウスとタッチイベントの座標取得処理
@@ -138,7 +138,7 @@ export class WindowManager {
     WindowManager.layoutForced = WindowManager.layoutForced || flag;
     if (!WindowManager.layoutHandler) {
       //タイマーによる遅延実行
-      WindowManager.layoutHandler = setTimeout(function(): void {
+      WindowManager.layoutHandler = window.setTimeout(function(): void {
         WindowManager.layoutHandler = null;
         let nodes = document.querySelectorAll("[data-jwf=Window]");
         let count = nodes.length;

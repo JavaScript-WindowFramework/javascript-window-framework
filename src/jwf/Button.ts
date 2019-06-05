@@ -110,11 +110,11 @@ export class Button extends Window {
    * @param {(ev: ButtonEventMap[K]) => unknown} listener
    * @memberof Button
    */
-  public addEventListener<K extends keyof ButtonEventMap>(
-    type: K,
-    listener: (ev: ButtonEventMap[K]) => unknown
+addEventListener<K extends keyof ButtonEventMap>(
+    type: K | string,
+    listener: (this: Window,ev: ButtonEventMap[K]) => unknown
   ): void {
-    super.addEventListener(type, listener as (e: unknown) => unknown);
+    super.addEventListener(type, listener as (this: Window,e: unknown) => unknown);
   }
 }
 export class ImageButton extends Window {
@@ -202,7 +202,7 @@ export class ImageButton extends Window {
    * @memberof Button
    */
   public addEventListener<K extends keyof ButtonEventMap>(
-    type: K,
+    type: K|string,
     listener: (ev: ButtonEventMap[K]) => unknown
   ): void {
     super.addEventListener(type, listener as (e: unknown) => unknown);

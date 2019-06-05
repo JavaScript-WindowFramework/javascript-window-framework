@@ -464,8 +464,8 @@ export class Window {
    */
   // eslint-disable-next-line @typescript-eslint/explicit-member-accessibility
   addEventListener<K extends keyof WINDOW_EVENT_MAP>(
-    type: K|string,
-    listener: (ev: WINDOW_EVENT_MAP[K]) => unknown
+    type: K | string,
+    listener: (this: Window, ev: WINDOW_EVENT_MAP[K]) => unknown
   ): void {
     let eventData = this.Events.get(type);
     if (!eventData) {
