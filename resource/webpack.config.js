@@ -2,15 +2,15 @@ const path = require('path');
 
 module.exports = {
 	mode: 'production',
-	entry: './src/index.ts',
+	entry: './src/public/index.ts',
 	output: {
 		filename: 'bundle.js',
-		path: path.resolve(__dirname, 'dist')
+		path: path.resolve(__dirname, 'dist/public')
 	},
 	devtool: 'source-map',
 	module: {
 		rules: [{
-				test: /\.js$/,
+				test: /\.js\.jsx$/,
 				use: ["source-map-loader"],
 				enforce: "pre"
 			},
@@ -24,18 +24,18 @@ module.exports = {
 					'css-loader',
 					'sass-loader'
 				]
-			}, {
-				test: /\.(jpeg|jpg|png|svg|gif)$/,
-				loaders: 'url-loader'
 			},
+		{
+			test: /\.(jpg|png|svg|gif)$/,
+			loaders: 'url-loader'
+		},
 		]
 	},
 	resolve: {
-		extensions: ['.ts', '.js', '.scss', '.sass', '.jpeg', '.jpg', '.png', '.svg', '.gif'],
 		moduleExtensions: ['node_modules']
 	},
 	devServer: {
-		contentBase: path.join(__dirname, 'dist'),
+		contentBase: path.join(__dirname, 'dist/public'),
 		host: "localhost"
 	},
 };

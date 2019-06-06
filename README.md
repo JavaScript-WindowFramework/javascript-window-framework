@@ -17,7 +17,7 @@ JavaScript 用ウインドウフレームワーク npm モジュール版
 - IE11 で動作するレベルの DOM
 
 ## 更新履歴
-
+- 2019/06/06 0.13 サンプルの構成を変更
 - 2019/06/02 0.12 カレンダーの修正、表示更新タイミングの変更、スタイルの修正
 - 2019/05/27 0.10 ソースコードを TSLint に基づいて修正、ボタンスタイルの修正
 - 2019/05/19 0.08 サンプルを展開するコマンドを追加、サンプルテンプレートの修正
@@ -49,7 +49,7 @@ npm -D i typescript dts-bundle ts-loader node-sass style-loader sass-loader css-
 
 ```
 npx webpack
-dist/index.html をブラウザで開く
+dist/public/index.html をブラウザで開く
 ```
 
 - Server の起動
@@ -61,7 +61,7 @@ http://localhost:8080/ をブラウザで開く
 
 ## 　使用例
 
-```src/index.ts
+```src/public/index.ts
 import * as JWF from 'javascript-window-framework'
 
 //ページ読み込み時に実行する処理を設定
