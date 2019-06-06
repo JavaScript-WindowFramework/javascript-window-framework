@@ -1,6 +1,6 @@
 {
   "name": "javascript-window-framework",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "description": "JavaScript Window Framework",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -10,8 +10,8 @@
     "watch": "npx webpack -w --config ./src/webpack.config.js",
     "build-none-module": "npx webpack --config ./src/none-module-webpack.config.js"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": ["JWF","Front-end","Framework"],
+  "author": "SoraKumo",
   "license": "MIT",
   "bin": {
     "init-jwf": "bin/init-jwf.js"
