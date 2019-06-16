@@ -56,7 +56,7 @@ export class Adapter {
    * @returns {Promise<any>}
    * @memberof Adapter
    */
-  public exec(functions: FunctionData[][]): Promise<unknown[]>;
+  public exec(functions: FunctionData[][]): Promise<never[]>;
   /**
    *単一ファンクションの実行
    *
@@ -66,12 +66,9 @@ export class Adapter {
    * @memberof Adapter
    */
   // eslint-disable-next-line no-dupe-class-members
-  public exec(funcName: string, ...params: unknown[]): Promise<unknown>;
+  public exec(funcName: string, ...params: unknown[]): Promise<never>;
   // eslint-disable-next-line no-dupe-class-members
-  public exec(
-    v1: FunctionData[][] | string,
-    ...v2: unknown[]
-  ): Promise<unknown> {
+  public exec(v1: FunctionData[][] | string, ...v2: unknown[]): Promise<never> {
     let functionSet: FunctionSet;
     if (Array.isArray(v1)) {
       const functions: FunctionData[] = [];
@@ -102,7 +99,7 @@ export class Adapter {
     );
     this.functionSet.push(functionSet);
     this.callSend();
-    return promise;
+    return promise as Promise<never>;
   }
   private callSend(): void {
     if (!this.handle) {
@@ -238,5 +235,82 @@ export class Adapter {
       }
     }
     req.send(data == null ? null : JSON.stringify(data));
+  }
+  public upload(buffer: Blob,funcName: string,  ...params: unknown[]) {
+    return new Promise((resolve, reject) => {
+      //ハッシュデータの読み出し
+      const globalHash = localStorage.getItem(this.keyName);
+      const sessionHash = sessionStorage.getItem(this.keyName);
+      const adapterFormat: AdapterFormat = {
+        globalHash: globalHash,
+        sessionHash: sessionHash,
+        functions: [
+          {
+            function: funcName,
+            params
+          }
+        ]
+      };
+      const proc = (res: {
+        globalHash: string;
+        sessionHash: string;
+        results: AdapterResult[];
+      }) => {
+        if (res == null) {
+          // eslint-disable-next-line no-console
+          console.error("通信エラー");
+          reject("通信エラー");
+        } else {
+          if (res.globalHash)
+            localStorage.setItem(this.keyName, res.globalHash);
+          if (res.sessionHash)
+            sessionStorage.setItem(this.keyName, res.sessionHash);
+          if(res.results && res.results.length){
+            resolve(res.results[0]);
+          }else{
+            resolve(null);
+          }
+        }
+      };
+      //ファイルデータの送信
+      Adapter.sendFile(this.scriptUrl + "?cmd=upload", buffer, proc, {
+        params: JSON.stringify(adapterFormat)
+      });
+    });
+  }
+  public static sendFile(
+    url: string,
+    buffer: Blob,
+    proc: (result: never) => void,
+    params: { [key: string]: string | number }
+  ) {
+    //GETパラメータの構築
+    let urlParam = "";
+    if (params) {
+      for (const key of Object.keys(params)) {
+        if (urlParam.length) urlParam += "&";
+        urlParam +=
+          encodeURIComponent(key) + "=" + encodeURIComponent(params[key]);
+      }
+      url += url.indexOf("?") >= 0 ? "&" : "?";
+      url += urlParam;
+    }
+    //データ送信
+    const req = new XMLHttpRequest();
+    try {
+      req.open("POST", url, true);
+      req.setRequestHeader("Content-Type", "application/octet-stream");
+      req.send(buffer);
+    } catch (e) {
+      alert(e);
+      return null;
+    }
+    req.onreadystatechange = () => {
+      if (req.readyState == 4) {
+        proc(JSON.parse(req.response) as never);
+      }
+    };
+
+    return req;
   }
 }

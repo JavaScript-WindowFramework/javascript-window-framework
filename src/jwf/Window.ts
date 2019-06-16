@@ -2,6 +2,7 @@
 /* eslint-disable no-dupe-class-members */
 import "./scss/Window.scss";
 import { WindowManager } from "./WindowManager";
+import { FrameWindow } from "./FrameWindow";
 
 //各サイズ
 const FRAME_SIZE = 10; //フレーム枠のサイズ
@@ -107,6 +108,7 @@ export interface JDATA {
   animationEnable: boolean;
   noActive: boolean;
   autoSizeNode: HTMLElement | null;
+  instructionSize: { width: number; height: number };
 }
 
 export interface WINDOW_EVENT_MAP {
@@ -170,7 +172,8 @@ export class Window {
     noActive: false,
     animation: {},
     animationEnable: true,
-    autoSizeNode: null
+    autoSizeNode: null,
+    instructionSize: { width: -1, height: -1 }
   };
   /**
    * Creates an instance of Window.
@@ -557,21 +560,34 @@ export class Window {
    */
   public setPos(x?: number, y?: number): void {
     if (x == null) {
-      let parentWidth = this.getParentWidth();
+      let parentWidth = this.getParentWidth2();
       let width = this.getWidth();
       if (parentWidth < width) x = 0;
       else x = (parentWidth - width) / 2;
+      const parent = this.getParent();
+      if (this.getNode().style.position === "fixed" && parent)
+        x += parent.getPosX();
     }
     if (y == null) {
-      let parentHeight = this.getParentHeight();
+      let parentHeight = this.getParentHeight2();
       let height = this.getHeight();
       if (parentHeight < height) y = 0;
       else y = (parentHeight - height) / 2;
+      const parent = this.getParent();
+      if (this.getNode().style.position === "fixed" && parent)
+        y += parent.getPosY();
     }
     if (this.JData.x === x && this.JData.y === y) return;
     this.JData.x = x;
     this.JData.y = y;
     this.layout();
+  }
+  public getNearFrame(): FrameWindow | null {
+    let win: FrameWindow | null = this;
+    do {
+      if (win.hNode.dataset.jwfType === "Frame") return win;
+    } while ((win = win.getParent() as FrameWindow));
+    return null;
   }
   /**
    *X座標の設定
@@ -883,6 +899,11 @@ export class Window {
     if (parent.Jwf) return parent.Jwf.getWidth();
     return parent.offsetWidth;
   }
+  public getParentWidth2(): number {
+    let parent = this.getParent();
+    if (parent) return parent.getWidth();
+    return window.innerWidth;
+  }
   /**
    *親のクライアント領域を返す
    *
@@ -896,6 +917,11 @@ export class Window {
     if (parent.Jwf) return parent.Jwf.getHeight();
     return parent.offsetHeight;
   }
+  public getParentHeight2(): number {
+    let parent = this.getParent();
+    if (parent) return parent.getHeight();
+    return window.innerHeight;
+  }
   /**
    *子ウインドウのサイズを再計算
    *
@@ -904,41 +930,78 @@ export class Window {
    * @memberof Window
    */
   public onMeasure(flag: boolean): boolean {
+    const jdata = this.JData;
     //表示状態の更新
-    if (this.JData.reshow) {
-      this.JData.reshow = false;
-      if (this.JData.visible) {
+    if (jdata.reshow) {
+      jdata.reshow = false;
+      if (jdata.visible) {
         this.hNode.style.visibility = "";
 
-        const animation = this.JData.animationEnable
-          ? this.JData.animation["show"]
-          : "";
+        const animation = jdata.animationEnable ? jdata.animation["show"] : "";
         if (animation) this.hNode.style.animation = animation;
       }
     }
 
     let client = this.getClient();
-    for (let i = 0, length = client.childNodes.length; i < length; i++) {
-      let node = client.childNodes[i] as JNode;
-      if (node.dataset && node.dataset.jwf === "Window")
-        flag = node.Jwf.onMeasure(flag) || flag;
-    }
-    if (!flag && !this.JData.redraw) return false;
-    //this.layout()
+    // for (let i = 0, length = client.childNodes.length; i < length; i++) {
+    //   let node = client.childNodes[i] as JNode;
+    //   if (node.dataset && node.dataset.jwf === "Window")
+    //     flag = node.Jwf.onMeasure(flag) || flag;
+    // }
+    // if (!flag && !jdata.redraw) return false;
+
     if (!this.isAutoSize()) return false;
 
     this.callEvent("measure", {});
-    const width = this.getClient().scrollWidth;
-    const height = this.getClient().scrollHeight;
-    if (width === this.getClientWidth() && height === this.getClientHeight())
-      return false;
-    this.setClientSize(width, height);
+    //client.style.position = "static";
+    if (jdata.instructionSize.width >= 0)
+      client.style.width = jdata.instructionSize.width + "px";
+    else client.style.removeProperty("widht");
+    if (jdata.instructionSize.height >= 0)
+      client.style.height = jdata.instructionSize.height + "px";
+    else client.style.removeProperty("height");
 
-    this.JData.redraw = true;
-    //if (this.getParent())
-    //	this.getParent().layout()
-    //this.layout()
-    return true;
+    let width = 0;
+    let height = 0;
+    const childNodes = client.childNodes;
+    for (let i = childNodes.length - 1; i >= 0; i--) {
+      const child = childNodes[i] as HTMLElement;
+      const style = window.getComputedStyle(child);
+      width = Math.max(
+        width,
+        child.offsetLeft +
+          child.offsetWidth +
+          parseInt(style.marginRight as string)
+      );
+      height = Math.max(
+        height,
+        child.offsetTop +
+          child.offsetHeight +
+          parseInt(style.marginBottom as string)
+      );
+    }
+
+    const clientWidth = this.getClientWidth();
+    const clientHeight = this.getClientHeight();
+
+    //client.style.position = "absolute";
+
+    if (
+      (jdata.instructionSize.width !== -1 && width > clientWidth) ||
+      (jdata.instructionSize.height !== -1 && height > clientHeight) ||
+      (jdata.instructionSize.width === -1 && width !== clientWidth) ||
+      (jdata.instructionSize.height === -1 && height !== clientHeight)
+    ) {
+      this.setClientSize(width, height);
+      // console.log("0 %d/%d %d/%d", width, clientWidth, height, clientHeight);
+      // this.setClientSize(width, height);
+      // const clientWidth2 = this.getClientWidth();
+      // const clientHeight2 = this.getClientHeight();
+      //  console.log("1 %d/%d %d/%d", width, clientWidth2, height, clientHeight2);
+      return true;
+    }
+
+    return false;
   }
   /**
    *位置やサイズの確定処理
@@ -961,7 +1024,7 @@ export class Window {
         if (JData.y + JData.height > pheight) JData.y = pheight - JData.height;
       }
 
-      //this.onMeasure(true)			//直下の子リスト
+      //this.onMeasure(false); //直下の子リスト
       if (this.hNode.dataset.jwfStat == "maximize") {
         this.setPos(0, 0);
         this.setSize(this.getParentWidth(), this.getParentHeight());
@@ -997,52 +1060,67 @@ export class Window {
       const b = bnode.Jwf.JData.style as string;
       return priority[b] - priority[a];
     });
-
+    let retry;
+    //do {
+    retry = false;
     const padding = this.JData.padding;
     let width = this.getClientWidth();
     let height = this.getClientHeight();
     let x1 = padding.x1;
     let y1 = padding.y1;
-    let x2 = x1 + width - padding.x2;
-    let y2 = y1 + height - padding.y2;
+    let x2 = x1 + width;
+    let y2 = y1 + height;
 
     for (let i = 0; i < count; i++) {
       let child: JNode = nodes[i];
       let win = child.Jwf;
       if (child.dataset.visible === "false") continue;
-      const margin = win.JData.margin;
+
+      const jdata = win.JData;
+      const margin = jdata.margin;
       let px1 = x1 + margin.x1;
       let py1 = y1 + margin.y1;
       let px2 = x2 - margin.x2;
       let py2 = y2 - margin.y2;
-      switch (child.Jwf.JData.style) {
+      let width = -1;
+      let height = -1;
+      switch (jdata.style) {
         case "top":
+          width = px2 - px1;
           win.setPos(px1, py1);
-          win.setWidth(px2 - px1);
+          win.setWidth(width);
           y1 += win.getHeight() + margin.y1 + margin.y2;
           break;
         case "bottom":
+          width = px2 - px1;
           win.setPos(px1, py2 - win.getHeight());
-          win.setWidth(px2 - px1);
+          win.setWidth(width);
           y2 = py2 - win.getHeight() - margin.y1;
           break;
         case "left":
+          height = y2 - y1;
           win.setPos(px1, py1);
-          win.setHeight(y2 - y1 - margin.y1 - margin.y2);
+          win.setHeight(height);
           x1 += win.getWidth() + margin.x1 + margin.x2;
           break;
         case "right":
+          height = py2 - py1;
           win.setPos(px2 - win.getWidth(), py1);
-          win.setHeight(py2 - py1);
+          win.setHeight(height);
           x2 = px2 - win.getWidth() - margin.x2;
           break;
         case "client":
+          width = px2 - px1;
+          height = py2 - py1;
           win.setPos(px1, py1);
-          win.setSize(px2 - px1, py2 - py1);
+          win.setSize(width, height);
           break;
       }
+      jdata.instructionSize = { width, height };
+      if (win.onMeasure(false)) retry = true;
       win.onLayout(flag);
     }
+    //} while (retry);
     this.orderSort(client);
     if (this.JData.redraw || flag) this.callEvent("layouted", {});
     this.JData.redraw = false;
@@ -1220,8 +1298,6 @@ export class Window {
 
   /**
    *クライアントノードを返す
-   *WindowクラスはgetNode()===getClient()
-   *FrameWindowはgetNode()!==getClient()
    * @returns {HTMLElement}
    * @memberof Window
    */
@@ -1262,9 +1338,9 @@ export class Window {
         this.JData.padding.x1 +
         this.JData.padding.x2,
       height +
-        this.JData.frameSize +
+        this.JData.frameSize * 2 +
         this.JData.padding.y1 +
-        this.JData.padding.y2 * 2 +
+        this.JData.padding.y2 +
         this.JData.titleSize
     );
   }
@@ -1292,9 +1368,9 @@ export class Window {
   public setClientHeight(height: number): void {
     this.setWidth(
       height +
-        this.JData.frameSize +
+        this.JData.frameSize * 2 +
         this.JData.padding.y1 +
-        this.JData.padding.y2 * 2 +
+        this.JData.padding.y2 +
         this.JData.titleSize
     );
   }
@@ -1335,6 +1411,13 @@ export class Window {
    * @param {('left' | 'right' | 'top' | 'bottom' | 'client' | null)} [style] ドッキング位置
    * @memberof Window
    */
+  public addFrameChild(
+    child: Window,
+    style?: "left" | "right" | "top" | "bottom" | "client" | null
+  ) {
+    const frame = this.getNearFrame();
+    if (frame) frame.addChild(child, style);
+  }
   public addChild(
     child: Window,
     style?: "left" | "right" | "top" | "bottom" | "client" | null

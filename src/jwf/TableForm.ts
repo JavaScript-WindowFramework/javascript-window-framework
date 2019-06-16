@@ -6,7 +6,7 @@ import "./scss/TableForm.scss";
 
 export interface ITEM_OPTION {
   label?: string;
-  type?: "date" | "string" | "number" | "checkbox" | "select" | "submit";
+  type?: "date" | "string" |"password"| "number" | "checkbox" | "select" | "submit";
   name?: string;
   value?: string | number | boolean | Date;
   link?: string;
@@ -40,8 +40,12 @@ export class TableFormView extends Window {
   public constructor(params?: WINDOW_PARAMS) {
     super(params);
     this.setJwfStyle("TableFormView");
+
+    const clientArea = document.createElement("div");
+    this.getClient().appendChild(clientArea);
+
     const table = document.createElement("div");
-    this.getClient().appendChild(table);
+    clientArea.appendChild(table);
 
     const items = document.createElement("div");
     this.items = items;
@@ -49,7 +53,7 @@ export class TableFormView extends Window {
 
     const footer = document.createElement("div");
     this.footer = footer;
-    this.getClient().appendChild(footer);
+    clientArea.appendChild(footer);
   }
   public addEventListener<K extends keyof TableFormViewMap>(
     type: K|string,
@@ -133,9 +137,10 @@ export class TableFormView extends Window {
           data.appendChild(input);
           break;
         case "string":
+        case "password":
           input = document.createElement("input");
           input.type2 = params.type;
-          input.type = "text";
+          input.type = params.type==="string"?"text":"password";
           input.name = params.name || "";
           input.value = (params.value as string) || "";
           data.appendChild(input);

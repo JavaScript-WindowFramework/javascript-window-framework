@@ -110,7 +110,7 @@ export class TreeItem {
     icon.addEventListener(
       "click",
       (e): void => {
-        this.openItem(!this.opened);
+        this.openItem(!this.opened, true);
         e.preventDefault();
         e.stopPropagation();
       }
@@ -130,7 +130,10 @@ export class TreeItem {
     child.dataset.kind = "TreeChild";
     row2.appendChild(child);
 
-    this.openItem(opened ? true : false);
+    this.openItem(opened?true:false);
+  }
+  public isOpened(): boolean {
+    return this.opened;
   }
   /**
    *アイテムのノードを返す
@@ -225,7 +228,7 @@ export class TreeItem {
    * @memberof TreeItem
    */
   public getChildCount(): number {
-    return this.childNode.childElementCount;
+    return this.childNode.childNodes.length;
   }
   /**
    *アイテムに関連付ける値を設定
@@ -321,26 +324,31 @@ export class TreeItem {
    * @memberof TreeItem
    */
   public openItem(opened: boolean, anime?: boolean): void {
+    const hNode = this.hNode;
     let flag = this.opened !== opened;
     this.opened = opened;
-    if (this.getChildCount() == 0) this.hNode.dataset.stat = "alone";
-    else {
+    if (this.getChildCount() == 0) {
+      hNode.dataset.stat = "alone";
+    } else {
       this.hNode.dataset.stat = opened ? "open" : "close";
       if (opened) {
-        const items = this.hNode.querySelectorAll(
+        const items = hNode.querySelectorAll(
           "[data-kind=TreeItem][data-stat=open] > [data-kind=TreeRow]:nth-child(2) > [data-kind=TreeChild] > [data-kind=TreeItem]"
         );
         for (let i = 0; i < items.length; i++) {
           const n = items[i] as HTMLElement;
-          n.style.animation = "treeOpen 0.3s ease 0s 1 normal";
+          n.style.animation =
+            anime && flag ? "treeOpen 0.3s ease 0s 1 normal" : "";
           n.style.display = "block";
         }
       } else {
         const items = this.childNode.querySelectorAll("[data-kind=TreeItem]");
         for (let i = 0; i < items.length; i++) {
           const n = items[i] as HTMLElement;
-          if (anime === false) n.style.animation = "treeClose forwards";
-          else n.style.animation = "treeClose 0.8s ease 0s 1 forwards";
+          n.style.animation =
+            anime && flag
+              ? "treeClose 0.8s ease 0s 1 forwards"
+              : "treeClose forwards";
         }
       }
     }
@@ -467,11 +475,12 @@ export class TreeView extends Window {
       item.getNode().dataset.select = "true";
       this.mSelectItem = item;
 
-      item.openItem(true);
       let parent: TreeItem | null = item;
       while ((parent = parent.getParentItem())) {
-        parent.openItem(true);
+        parent.openItem(true, true);
       }
+      item.openItem(true, true);
+
       if (scroll) {
         this.getClient().scrollTo(
           0,
@@ -511,7 +520,29 @@ export class TreeView extends Window {
     if (!this.mSelectItem) return null;
     return this.mSelectItem.getItemValue();
   }
-
+  public getTreeStat() {
+    const treeStat: { [key: string]: boolean } = {};
+    const getStat = (item: TreeItem) => {
+      if (item.getItemValue() != null)
+        treeStat[
+          (item.getItemValue() as string | number | object).toString()
+        ] = item.isOpened();
+      const count = item.getChildCount();
+      for (let i = 0; i < count; i++) {
+        getStat(item.getChildItem(i));
+      }
+    };
+    getStat(this.getRootItem());
+    return treeStat;
+  }
+  public setTreeStat(treeStat: { [key: string]: boolean }) {
+    for (const value of Object.keys(treeStat)) {
+      const item = this.findItemFromValue(value);
+      if (item) {
+        item.openItem(treeStat[value], false);
+      }
+    }
+  }
   /**
    *アイテムツリーが展開されら発生する
    *
@@ -535,7 +566,7 @@ export class TreeView extends Window {
    */
 
   public addEventListener<K extends keyof TreeViewEventMap>(
-    type: K|string,
+    type: K | string,
     listener: (ev: TreeViewEventMap[K]) => unknown
   ): void {
     super.addEventListener(type, listener as (e: unknown) => unknown);

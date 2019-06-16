@@ -10,17 +10,21 @@ export class CheckBox extends Window {
     this.setJwfStyle("CheckBox");
     this.setAutoSize(true);
 
-    let node = this.getClient();
-    let textArea = document.createElement("label");
+    const client = this.getClient();
+
+    const node = document.createElement("div");
+    client.appendChild(node);
+
+    const textArea = document.createElement("label");
     node.appendChild(textArea);
 
-    let nodeCheck = document.createElement("input");
+    const nodeCheck = document.createElement("input");
     this.nodeCheck = nodeCheck;
     nodeCheck.type = "checkbox";
     textArea.appendChild(nodeCheck);
     if (params && params.checked != null) nodeCheck.checked = params.checked;
 
-    let nodeText = document.createElement("span");
+    const nodeText = document.createElement("span");
     this.nodeText = nodeText;
     textArea.appendChild(nodeText);
 

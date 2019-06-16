@@ -443,6 +443,20 @@ export class ListView extends Window {
     return null;
   }
   /**
+   *全てのアイテムの値を取得する
+   *
+   * @returns {unknown[]}
+   * @memberof ListView
+   */
+  public getItemValues(): unknown[] {
+    const count = this.getItemCount();
+    let values = [];
+    for (let i=0;i<count;i++) {
+      values.push(this.getCell(i, 0));
+    }
+    return values;
+  }
+  /**
    *アイテムのテキスト内容を取得
    *
    * @param {number} row 行
@@ -480,6 +494,7 @@ export class ListView extends Window {
     }
     return values;
   }
+
   /**
    *指定行のセルノードを返す
    *
@@ -699,7 +714,8 @@ export class ListView extends Window {
     if (r == null) return false;
     if (!(value instanceof HTMLElement)) {
       var item = document.createElement("div");
-      item.textContent = value.toString();
+      if(value != null)
+        item.textContent = value.toString();
       r.appendChild(item);
     } else {
       r.appendChild(value);
