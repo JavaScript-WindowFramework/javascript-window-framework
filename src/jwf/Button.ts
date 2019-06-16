@@ -25,11 +25,16 @@ export class Button extends Window {
    * @param {string} [text] ボタンに設定するテキスト
    * @memberof Button
    */
-  public constructor(text?: string, value?: unknown) {
+  public constructor(
+    ...params:
+      | [string]
+      | [string, unknown]
+      | [{ label?: string; value?: unknown; event?: () =>void }]
+  ) {
     super();
     this.setAutoSize(true);
     this.setJwfStyle("Button");
-    this.nodeValue = value;
+
     //this.setAlign('center')
 
     const button = document.createElement("div");
@@ -39,7 +44,22 @@ export class Button extends Window {
     let nodeText = document.createElement("span");
     button.appendChild(nodeText);
     this.nodeText = nodeText;
-    if (text) this.setText(text);
+
+    if (params) {
+      if (typeof params[0] === "string") {
+        this.setText(params[0] as string);
+        this.nodeValue = params[1];
+      }else{
+        const p = params[0];
+        if(p.label){
+          this.setText(p.label);
+        }
+        this.nodeValue = p.value;
+        if(p.event){
+          button.addEventListener("click",p.event);
+        }
+      }
+    }
 
     button.addEventListener(
       "keypress",
@@ -110,11 +130,14 @@ export class Button extends Window {
    * @param {(ev: ButtonEventMap[K]) => unknown} listener
    * @memberof Button
    */
-addEventListener<K extends keyof ButtonEventMap>(
+  addEventListener<K extends keyof ButtonEventMap>(
     type: K | string,
-    listener: (this: Window,ev: ButtonEventMap[K]) => unknown
+    listener: (this: Window, ev: ButtonEventMap[K]) => unknown
   ): void {
-    super.addEventListener(type, listener as (this: Window,e: unknown) => unknown);
+    super.addEventListener(type, listener as (
+      this: Window,
+      e: unknown
+    ) => unknown);
   }
 }
 export class ImageButton extends Window {
@@ -202,7 +225,7 @@ export class ImageButton extends Window {
    * @memberof Button
    */
   public addEventListener<K extends keyof ButtonEventMap>(
-    type: K|string,
+    type: K | string,
     listener: (ev: ButtonEventMap[K]) => unknown
   ): void {
     super.addEventListener(type, listener as (e: unknown) => unknown);

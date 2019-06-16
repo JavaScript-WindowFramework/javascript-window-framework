@@ -1,10 +1,12 @@
 /* Label用設定 */
 [data-jwf-style="Label"] {
-  display: flex;
-  overflow: visible;
-  background-color: transparent;
+  > div {
+    display: flex;
+    overflow: visible;
+    background-color: transparent;
 
-  > span {
-    white-space: nowrap;
+    > span {
+      white-space: nowrap;
+    }
   }
 }

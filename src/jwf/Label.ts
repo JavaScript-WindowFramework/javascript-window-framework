@@ -5,7 +5,10 @@ export class Label extends Window {
   public constructor(text?: string) {
     super();
     this.setJwfStyle("Label");
-    let node = this.getClient();
+    const client = this.getClient();
+    const node = document.createElement("div");
+    client.appendChild(node);
+
 
     let nodeText = document.createElement("span");
     node.appendChild(nodeText);

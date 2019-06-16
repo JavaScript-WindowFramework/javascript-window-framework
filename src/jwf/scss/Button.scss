@@ -3,10 +3,11 @@
   background-color: transparent;
   text-align: center;
   > div {
+    margin: 2px;
     display: inline-block;
     cursor: pointer;
     white-space: nowrap;
-    margin: 2px;
+
     user-select: none;
     border-width: 1px;
     border-style: solid;

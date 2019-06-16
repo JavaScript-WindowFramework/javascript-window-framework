@@ -19,8 +19,10 @@ export class TextBox extends Window {
 
     this.setJwfStyle("TextBox");
     this.setAutoSize(true);
+    let client = this.getClient();
+    let node = document.createElement('div');
+    client.appendChild(node);
 
-    let node = this.getClient();
     let img = document.createElement("img");
     if (params && params.image) img.src = params.image;
 
@@ -47,6 +49,7 @@ export class TextBox extends Window {
     );
 
     if (params && params.text) this.setText(params.text);
+
   }
 
   public setText(text: string): void {
@@ -68,4 +71,8 @@ export class TextBox extends Window {
   public getTextNode(): HTMLInputElement {
     return this.nodeText;
   }
+  public focus(){
+    this.nodeText.focus();
+  }
+
 }

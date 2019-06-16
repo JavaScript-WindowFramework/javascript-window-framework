@@ -6,6 +6,10 @@
   user-select: none;
   overflow-x: auto !important;
 
+  img{
+    height:90%;
+  }
+
   > [data-kind="ListHeaderBack"] {
     position: absolute;
     height: 30px;

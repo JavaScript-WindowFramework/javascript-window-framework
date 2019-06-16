@@ -3,18 +3,16 @@ import { WINDOW_EVENT_MAP, Window } from "./Window";
 import { Button } from "./Button";
 import { FrameWindow } from "./FrameWindow";
 import "./scss/MessageBox.scss";
-export interface MESSAGEBOX_EVENT_ITEM_CLICK {
-  value: unknown;
-}
+
 export interface MessageBoxEventMap extends WINDOW_EVENT_MAP {
-  buttonClick: MESSAGEBOX_EVENT_ITEM_CLICK;
+  buttonClick: unknown;
 }
 export class MessageBox extends FrameWindow {
   private label: Window;
   public constructor(
     title: string,
     msg: string,
-    buttons?: { [key: string]: unknown }
+    buttons?: [string,unknown][]
   ) {
     super();
     this.setJwfStyle("MessageBox");
@@ -31,10 +29,11 @@ export class MessageBox extends FrameWindow {
     if (msg) label.getClient().innerText = msg;
     const that = this;
     if (!buttons) {
-      buttons = { OK: true };
+      buttons = [[ "OK",true ]];
     }
-    for (let name in buttons) {
-      const b = new Button(name, buttons[name]);
+    for (let i=buttons.length-1;i>=0;i--) {
+      const buttonData = buttons[i];
+      const b = new Button(buttonData[0], buttonData[1]);
       b.setAlign("center");
       this.addChild(b, "bottom");
       b.addEventListener(
