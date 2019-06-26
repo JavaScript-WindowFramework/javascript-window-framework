@@ -1,6 +1,6 @@
 {
   "name": "javascript-window-framework",
-  "version": "0.0.15",
+  "version": "0.0.16",
   "description": "JavaScript Window Framework",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -28,11 +28,11 @@
     "sass-loader": "^7.1.0",
     "source-map-loader": "^0.2.4",
     "style-loader": "^0.23.1",
-    "ts-loader": "^6.0.2",
+    "ts-loader": "^6.0.4",
     "typescript": "^3.5.2",
-    "url-loader": "^2.0.0",
-    "webpack": "^4.34.0",
-    "webpack-cli": "^3.3.4"
+    "url-loader": "^2.0.1",
+    "webpack": "^4.35.0",
+    "webpack-cli": "^3.3.5"
   },
   "repository": {
     "type": "git",
