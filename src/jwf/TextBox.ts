@@ -20,7 +20,7 @@ export class TextBox extends Window {
     this.setJwfStyle("TextBox");
     this.setAutoSize(true);
     let client = this.getClient();
-    let node = document.createElement('div');
+    let node = document.createElement("div");
     client.appendChild(node);
 
     let img = document.createElement("img");
@@ -41,15 +41,11 @@ export class TextBox extends Window {
     textArea.appendChild(nodeText);
     this.nodeText = nodeText;
 
-    nodeText.addEventListener(
-      "keydown",
-      (e): void => {
-        if (e.keyCode == 13) this.callEvent("enter", e);
-      }
-    );
+    nodeText.addEventListener("keydown", (e): void => {
+      if (e.keyCode == 13) this.callEvent("enter", e);
+    });
 
     if (params && params.text) this.setText(params.text);
-
   }
 
   public setText(text: string): void {
@@ -71,8 +67,7 @@ export class TextBox extends Window {
   public getTextNode(): HTMLInputElement {
     return this.nodeText;
   }
-  public focus(){
+  public focus(): void {
     this.nodeText.focus();
   }
-
 }

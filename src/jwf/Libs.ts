@@ -1,11 +1,27 @@
 export function Sleep(timeout: number): Promise<void> {
-  return new Promise(
-    (resolv): void => {
-      setTimeout((): void => {
-        resolv();
-      }, timeout);
+  return new Promise((resolv): void => {
+    setTimeout((): void => {
+      resolv();
+    }, timeout);
+  });
+}
+export class TimerProc {
+  private proc: () => void;
+  private handle?: number;
+  private timeout: number;
+  public constructor(proc: () => void, timeout: number) {
+    this.proc = proc;
+    this.timeout = timeout;
+  }
+  public call(timeout?: number): void {
+    if (this.handle) {
+      window.clearTimeout(this.handle);
     }
-  );
+    this.handle = window.setTimeout((): void => {
+      this.handle = 0;
+      this.proc();
+    }, timeout || this.timeout);
+  }
 }
 //---------------------------------------
 //書式付文字列生成

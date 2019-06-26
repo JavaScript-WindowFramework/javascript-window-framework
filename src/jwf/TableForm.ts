@@ -6,7 +6,15 @@ import "./scss/TableForm.scss";
 
 export interface ITEM_OPTION {
   label?: string;
-  type?: "date" | "string" |"password"| "number" | "checkbox" | "select" | "submit";
+  type?:
+    | "date"
+    | "string"
+    | "password"
+    | "number"
+    | "checkbox"
+    | "select"
+    | "submit"
+    | "image";
   name?: string;
   value?: string | number | boolean | Date;
   link?: string;
@@ -19,10 +27,14 @@ export interface ITEM_OPTION {
   }[];
 }
 export interface TableFormViewMap extends WINDOW_EVENT_MAP {
-  itemChange: FormInputElement;
+  itemChange: [FormInputElement];
 }
 
-export type FormInputElement = (HTMLInputElement | HTMLSelectElement) & {
+export type FormInputElement = (
+  | HTMLInputElement
+  | HTMLSelectElement
+  | HTMLImageElement) & {
+  value?: string;
   type2?: string;
   value2?: Date | undefined;
 };
@@ -34,7 +46,7 @@ export type FormInputElement = (HTMLInputElement | HTMLSelectElement) & {
  * @class TableFormView
  * @extends {Window}
  */
-export class TableFormView extends Window {
+export class TableFormView extends Window<TableFormViewMap> {
   private items: HTMLDivElement;
   private footer: HTMLDivElement;
   public constructor(params?: WINDOW_PARAMS) {
@@ -54,12 +66,6 @@ export class TableFormView extends Window {
     const footer = document.createElement("div");
     this.footer = footer;
     clientArea.appendChild(footer);
-  }
-  public addEventListener<K extends keyof TableFormViewMap>(
-    type: K|string,
-    listener: (this: Window, ev: TableFormViewMap[K]) => unknown
-  ): void {
-    super.addEventListener(type, listener as (e: unknown) => unknown);
   }
   public addItem(params: ITEM_OPTION | ITEM_OPTION[]): HTMLElement | null {
     //配列ならば分解し再入力
@@ -91,6 +97,13 @@ export class TableFormView extends Window {
       if (params.label) label.innerText = params.label;
       const data = document.createElement("div");
       row.appendChild(data);
+
+      if (params.events) {
+        const events = params.events;
+        for (const key in events) {
+          data.addEventListener(key, events[key]);
+        }
+      }
 
       let input: FormInputElement;
       let tag: HTMLDivElement | HTMLAnchorElement;
@@ -136,11 +149,19 @@ export class TableFormView extends Window {
             : "";
           data.appendChild(input);
           break;
+        case "image":
+          input = document.createElement("img");
+          if (params.image) input.src = params.image;
+          input.type2 = params.type;
+          input.name = params.name || "";
+          if (params.image_width) input.style.width = params.image_width;
+          data.appendChild(input);
+          break;
         case "string":
         case "password":
           input = document.createElement("input");
           input.type2 = params.type;
-          input.type = params.type==="string"?"text":"password";
+          input.type = params.type === "string" ? "text" : "password";
           input.name = params.name || "";
           input.value = (params.value as string) || "";
           data.appendChild(input);
@@ -204,7 +225,7 @@ export class TableFormView extends Window {
   }
   public getParams(): { [key: string]: string | number | boolean | undefined } {
     const values: { [key: string]: string | number | boolean | undefined } = {};
-    const nodes = this.items.querySelectorAll("select,input");
+    const nodes = this.items.querySelectorAll("select,input,img");
     for (let length = nodes.length, i = 0; i < length; ++i) {
       const v = nodes[i] as FormInputElement;
       if (v instanceof HTMLSelectElement) {
@@ -230,6 +251,8 @@ export class TableFormView extends Window {
             break;
         }
         values[name] = value;
+      }else if(v instanceof HTMLImageElement){
+        values[v.name] = v.value;
       }
     }
     return values;

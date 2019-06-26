@@ -9,7 +9,6 @@ export class Label extends Window {
     const node = document.createElement("div");
     client.appendChild(node);
 
-
     let nodeText = document.createElement("span");
     node.appendChild(nodeText);
     this.nodeText = nodeText;

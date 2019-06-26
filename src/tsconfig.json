@@ -1,24 +1,24 @@
 {
-	"compilerOptions": {
-		"sourceMap": true,
-		"inlineSources": true,
-		"target": "es5",
-		"module": "amd",
-		"composite": true,
-		"declaration": true,
-		"strict": true,
-		"outDir": "../dist",
-		"rootDir": "./jwf",
-		"lib": [
-			"es2017",
-			"dom"
-		]
-	},
-	"typedocOptions": {
-		"name": "JWF",
-		"json": "../doc/document.json",
-		"mode": "file",
-		"includeDeclarations": false,
-		"hideGenerator": false
-	}
+  "compilerOptions": {
+    "sourceMap": true,
+    "inlineSources": true,
+    "target": "es5",
+    "module": "amd",
+    "composite": true,
+    "declaration": true,
+    "strict": true,
+    "outDir": "../dist",
+    "rootDir": "./jwf",
+    "lib": [
+      "es2017",
+      "dom"
+    ]
+  },
+  "typedocOptions": {
+    "name": "JWF",
+    "json": "../doc/document.json",
+    "mode": "file",
+    "includeDeclarations": false,
+    "hideGenerator": false
+  }
 }

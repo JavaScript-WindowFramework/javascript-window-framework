@@ -32,75 +32,68 @@
 [data-jwf-style="TreeView"] {
   overflow: auto !important;
   user-select: none;
+  > [data-kind="TreeItem"] {
+    padding-left: 0em;
+  }
+}
 
-  [data-kind="TreeItem"] {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-
-    > [data-kind="TreeRow"]:first-child:hover {
-      border-bottom: black 1px solid;
-    }
-
-    > [data-kind="TreeRow"][data-drag="over"] {
-      background-color: rgba(80, 233, 149, 0.2);
-    }
-
-    [data-kind="TreeItem"] {
-      padding-left: 1em;
-    }
+[data-kind="TreeRow"] {
+  display: flex;
+  &:first-child:hover {
+    border-bottom: black 1px solid;
   }
 
-  [data-kind="TreeRow"]:first-child {
+  &[data-drag="over"] {
+    background-color: rgba(80, 233, 149, 0.2);
+  }
+
+  &:first-child {
     cursor: pointer;
   }
-
-  [data-kind="TreeRow"] {
-    display: flex;
-  }
-
-  [data-kind="TreeChild"] {
-    flex: 1;
-  }
-
-  [data-kind="TreeBody"] {
-    flex: 1;
-  }
-
-  [data-kind="TreeItem"] > [data-kind="TreeRow"]:nth-child(2) > [data-kind="TreeChild"] {
+  &:nth-child(2) > [data-kind="TreeChild"] {
     overflow: hidden;
   }
 
-  [data-kind="TreeItem"] > div > [data-kind="TreeIcon"] {
-    background-repeat: no-repeat;
-    width: 16px;
-    height: 16px;
-    margin: 2px;
-    vertical-align: middle;
-    cursor: default;
-    background-size: 100% 100%;
+}
+
+[data-kind="TreeChild"] {
+  flex: 1;
+}
+
+[data-kind="TreeBody"] {
+  flex: 1;
+}
+
+[data-kind="TreeIcon"] {
+  background-repeat: no-repeat;
+  width: 16px;
+  height: 16px;
+  margin: 2px;
+  vertical-align: middle;
+  cursor: default;
+  background-size: 100% 100%;
+  background-image: url("images/tclose.svg");
+  flex-grow: 0;
+  flex-shrink: 0;
+}
+
+[data-kind="TreeItem"] {
+  padding-left: 1em;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  &[data-stat="close"] > [data-kind="TreeRow"] > [data-kind="TreeIcon"] {
     background-image: url("images/tclose.svg");
-    flex-grow: 0;
-    flex-shrink: 0;
   }
 
-  [data-kind="TreeItem"][data-stat="close"] > [data-kind="TreeRow"] > [data-kind="TreeIcon"] {
-    background-image: url("images/tclose.svg");
-  }
-
-  [data-kind="TreeItem"][data-stat="open"] > [data-kind="TreeRow"] > [data-kind="TreeIcon"] {
+  &[data-stat="open"] > [data-kind="TreeRow"] > [data-kind="TreeIcon"] {
     background-image: url("images/topen.svg");
   }
 
-  [data-kind="TreeItem"][data-stat="alone"] > [data-kind="TreeRow"] > [data-kind="TreeIcon"] {
+  &[data-stat="alone"] > [data-kind="TreeRow"] > [data-kind="TreeIcon"] {
     background-image: url("images/talone.svg");
   }
-
-  [data-kind="TreeItem"] > [data-kind="TreeRow"]:first-child {
-    cursor: pointer;
-  }
-
-  [data-kind="TreeItem"][data-select="true"] > [data-kind="TreeRow"]:first-child {
+  &[data-select="true"] > [data-kind="TreeRow"]:first-child {
     background-color: rgba(80, 80, 233, 0.2);
     flex: 1;
   }

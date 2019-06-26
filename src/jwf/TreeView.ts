@@ -4,9 +4,11 @@ import "./scss/TreeView.scss";
 
 export interface TREEVIEW_EVENT_SELECT {
   item: TreeItem;
+  user: boolean;
 }
 export interface TREEVIEW_EVENT_DROP {
   item: TreeItem;
+  srcValue?: unknown;
   event: DragEvent;
 }
 export interface TREEVIEW_EVENT_DRAG_START {
@@ -18,11 +20,12 @@ export interface TREEVIEW_EVENT_OPEN {
   opened: boolean;
 }
 export interface TreeViewEventMap extends WINDOW_EVENT_MAP {
-  itemOpen: TREEVIEW_EVENT_OPEN;
-  itemSelect: TREEVIEW_EVENT_SELECT;
-  itemDblClick: TREEVIEW_EVENT_SELECT;
-  itemDrop: TREEVIEW_EVENT_DROP;
-  itemDragStart: TREEVIEW_EVENT_DRAG_START;
+  itemOver: [{ event: MouseEvent; item: TreeItem }];
+  itemOpen: [TREEVIEW_EVENT_OPEN];
+  itemSelect: [TREEVIEW_EVENT_SELECT];
+  itemDblClick: [TREEVIEW_EVENT_SELECT];
+  itemDrop: [TREEVIEW_EVENT_DROP];
+  itemDragStart: [TREEVIEW_EVENT_DRAG_START];
 }
 type TreeItemElement = HTMLDivElement & {
   treeItem?: TreeItem;
@@ -57,22 +60,30 @@ export class TreeItem {
     row1.addEventListener(
       "click",
       (): void => {
-        this.selectItem();
+        this.selectItem(false, true);
       }
     );
     row1.addEventListener(
       "dblclick",
       (): void => {
         const treeView = this.getTreeView();
-        if (treeView) treeView.callEvent("itemDblClick", { item: this });
+        if (treeView)
+          treeView.callEvent("itemDblClick", { item: this, user: true });
       }
     );
     row1.addEventListener(
       "dragstart",
       (e): void => {
         const treeView = this.getTreeView();
-        if (treeView)
+        if (treeView) {
+          if (e.dataTransfer) {
+            e.dataTransfer.setData(
+              "text/plain",
+              JSON.stringify({ itemValue: this.getItemValue() })
+            );
+          }
           treeView.callEvent("itemDragStart", { item: this, event: e });
+        }
       }
     );
     row1.addEventListener(
@@ -89,9 +100,15 @@ export class TreeItem {
       }
     );
     row1.addEventListener(
+      "mouseover",
+      (e): void => {
+        const treeView = this.getTreeView();
+        if (treeView) treeView.callEvent("itemOver", { event: e, item: this });
+      }
+    );
+    row1.addEventListener(
       "dragover",
       (e): void => {
-        //row1.dataset.drag = 'over'
         e.preventDefault();
       }
     );
@@ -99,7 +116,23 @@ export class TreeItem {
       "drop",
       (e): void => {
         const treeView = this.getTreeView();
-        if (treeView) treeView.callEvent("itemDrop", { event: e, item: this });
+        if (treeView) {
+          let value: unknown = undefined;
+          if (e.dataTransfer) {
+            try {
+              const v = JSON.parse(e.dataTransfer.getData("text/plain"));
+              if (v && v.itemValue) value = v.itemValue;
+            } catch (e) {
+              //
+            }
+          }
+
+          treeView.callEvent("itemDrop", {
+            event: e,
+            item: this,
+            srcValue: value
+          });
+        }
         row1.dataset.drag = "";
         e.preventDefault();
       }
@@ -117,6 +150,7 @@ export class TreeItem {
     );
 
     let body = document.createElement("div");
+    body.dataset.kind = "TreeBody";
     this.body = body;
     row1.appendChild(body);
     body.textContent = label != null ? label : "";
@@ -130,7 +164,7 @@ export class TreeItem {
     child.dataset.kind = "TreeChild";
     row2.appendChild(child);
 
-    this.openItem(opened?true:false);
+    this.openItem(opened ? true : false);
   }
   public isOpened(): boolean {
     return this.opened;
@@ -220,6 +254,25 @@ export class TreeItem {
     let treeView = this.getTreeView();
     if (treeView && this !== treeView.getRootItem() && this.hNode.parentNode)
       this.hNode.parentNode.removeChild(this.hNode);
+  }
+  public moveItem(vector: number): boolean {
+    const parent = this.getParentItem();
+    if (parent === null) return false;
+    const childs = parent.childNode.childNodes as NodeListOf<TreeItemElement>;
+    var count = childs.length;
+    for (var i = 0; i < count; i++) {
+      if (childs[i].treeItem === this) {
+        if (vector < 0) {
+          if (i === 0) return false;
+          parent.childNode.insertBefore(this.getNode(), childs[i - 1]);
+        } else {
+          if (i === childs.length - 1) return false;
+          parent.childNode.insertBefore(childs[i + 1], this.getNode());
+        }
+        break;
+      }
+    }
+    return true;
   }
   /**
    *子アイテムの数を返す
@@ -337,18 +390,22 @@ export class TreeItem {
         );
         for (let i = 0; i < items.length; i++) {
           const n = items[i] as HTMLElement;
-          n.style.animation =
-            anime && flag ? "treeOpen 0.3s ease 0s 1 normal" : "";
+          if (anime) {
+            n.style.animation = flag ? "treeOpen 0.3s ease 0s 1 normal" : "";
+          } else {
+            n.style.animation = "";
+          }
           n.style.display = "block";
         }
       } else {
         const items = this.childNode.querySelectorAll("[data-kind=TreeItem]");
         for (let i = 0; i < items.length; i++) {
           const n = items[i] as HTMLElement;
-          n.style.animation =
-            anime && flag
-              ? "treeClose 0.8s ease 0s 1 forwards"
-              : "treeClose forwards";
+          if (anime) {
+            n.style.animation = flag ? "treeClose 0.8s ease 0s 1 forwards" : "";
+          } else {
+            n.style.display = "none";
+          }
         }
       }
     }
@@ -363,9 +420,9 @@ export class TreeItem {
    *
    * @memberof TreeItem
    */
-  public selectItem(scroll?: boolean): void {
+  public selectItem(scroll?: boolean, user?: boolean): void {
     let treeView = this.getTreeView();
-    if (treeView) treeView.selectItem(this, scroll);
+    if (treeView) treeView.selectItem(this, scroll, user);
   }
   /**
    *所属先のTreeViewを返す
@@ -392,7 +449,9 @@ export class TreeItem {
  * @class TreeView
  * @extends {Window}
  */
-export class TreeView extends Window {
+export class TreeView<
+  T extends TreeViewEventMap = TreeViewEventMap
+> extends Window<T> {
   private mRootItem: TreeItem;
   private mSelectItem: TreeItem | null = null;
   /**
@@ -461,13 +520,14 @@ export class TreeView extends Window {
    * @param {TreeItem} item 選択するアイテム
    * @memberof TreeView
    */
-  public selectItem(item: TreeItem, scroll?: boolean): void {
+  public selectItem(item: TreeItem, scroll?: boolean, user?: boolean): void {
     const that = this;
     function animationEnd(this: HTMLElement): void {
       this.removeEventListener("animationend", animationEnd);
-      that
-        .getClient()
-        .scrollTo(0, item.getNode().offsetTop - that.getClientHeight() / 2);
+      const client = that.getClient();
+      const scrollTop = item.getNode().offsetTop - that.getClientHeight() / 2;
+      if (client.scrollTo) client.scrollTo({top:scrollTop,behavior: "smooth"});
+      else client.scrollTop = scrollTop;
     }
 
     if (this.mSelectItem !== item) {
@@ -477,19 +537,19 @@ export class TreeView extends Window {
 
       let parent: TreeItem | null = item;
       while ((parent = parent.getParentItem())) {
-        parent.openItem(true, true);
+        parent.openItem(true, user);
       }
-      item.openItem(true, true);
-
-      if (scroll) {
-        this.getClient().scrollTo(
-          0,
-          item.getNode().offsetTop - this.getClientHeight() / 2
-        );
-        item.getNode().addEventListener("animationend", animationEnd);
-      }
+      item.openItem(true, user);
     }
-    this.callEvent("itemSelect", { item: item });
+    if (scroll) {
+      const client = that.getClient();
+      client.scrollIntoView({behavior: "smooth"});
+      const scrollTop = item.getNode().offsetTop - that.getClientHeight() / 2;
+      if (client.scrollTo) client.scrollTo({top:scrollTop,behavior: "smooth"});
+      else client.scrollTop = scrollTop;
+      item.getNode().addEventListener("animationend", animationEnd);
+    }
+    this.callEvent("itemSelect", { item, user: !!user });
   }
   /**
    * 設定されている値を条件にアイテムを選択
@@ -497,9 +557,13 @@ export class TreeView extends Window {
    * @param {*} value
    * @memberof TreeView
    */
-  public selectItemFromValue(value: unknown): void {
+  public selectItemFromValue(
+    value: unknown,
+    scroll?: boolean,
+    user?: boolean
+  ): void {
     let item = this.mRootItem.findItemFromValue(value);
-    if (item) item.selectItem();
+    if (item) item.selectItem(scroll, user);
   }
   /**
    *選択されているアイテムを返す
@@ -520,9 +584,11 @@ export class TreeView extends Window {
     if (!this.mSelectItem) return null;
     return this.mSelectItem.getItemValue();
   }
-  public getTreeStat() {
+  public getTreeStat(): {
+    [key: string]: boolean;
+  } {
     const treeStat: { [key: string]: boolean } = {};
-    const getStat = (item: TreeItem) => {
+    const getStat = (item: TreeItem): void => {
       if (item.getItemValue() != null)
         treeStat[
           (item.getItemValue() as string | number | object).toString()
@@ -535,40 +601,12 @@ export class TreeView extends Window {
     getStat(this.getRootItem());
     return treeStat;
   }
-  public setTreeStat(treeStat: { [key: string]: boolean }) {
+  public setTreeStat(treeStat: { [key: string]: boolean }): void {
     for (const value of Object.keys(treeStat)) {
       const item = this.findItemFromValue(value);
       if (item) {
         item.openItem(treeStat[value], false);
       }
     }
-  }
-  /**
-   *アイテムツリーが展開されら発生する
-   *
-   * @param {'itemOpen'} type
-   * @param {(event:TREEVIEW_EVENT_OPEN)=>void} callback
-   * @memberof TreeView
-   */
-  /**
-   *アイテムが選択されたら発生
-   *
-   * @param {'itemSelect'} type
-   * @param {(event:TREEVIEW_EVENT_SELECT)=>void} callback
-   * @memberof TreeView
-   */
-  /**
-   *アイテムにドラッグドロップされたら発生
-   *
-   * @param {'itemDrop'} type
-   * @param {(event: TREEVIEW_EVENT_DROP) => void} callback
-   * @memberof TreeView
-   */
-
-  public addEventListener<K extends keyof TreeViewEventMap>(
-    type: K | string,
-    listener: (ev: TreeViewEventMap[K]) => unknown
-  ): void {
-    super.addEventListener(type, listener as (e: unknown) => unknown);
   }
 }

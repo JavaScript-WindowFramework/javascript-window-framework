@@ -17,6 +17,8 @@ JavaScript 用ウインドウフレームワーク npm モジュール版
 - IE11 で動作するレベルの DOM
 
 ## 更新履歴
+
+- 2019/06/26 0.14 イベント系の処理方法を変更
 - 2019/06/06 0.13 サンプルの構成を変更
 - 2019/06/02 0.12 カレンダーの修正、表示更新タイミングの変更、スタイルの修正
 - 2019/05/27 0.10 ソースコードを TSLint に基づいて修正、ボタンスタイルの修正
@@ -29,46 +31,46 @@ JavaScript 用ウインドウフレームワーク npm モジュール版
 
 - インストール
 
-```
+```.sh
 npm i javascript-window-framework
 ```
 
 - サンプルテンプレートのインストール
 
-```
+```.sh
 npx init-jwf
 ```
 
 - サンプルテンプレートに必要な WebPack 類のインストール
 
-```
+```.sh
 npm -D i typescript dts-bundle ts-loader node-sass style-loader sass-loader css-loader url-loader source-map-loader webpack webpack-cli webpack-dev-server
 ```
 
 - サンプルのビルドと確認
 
-```
+```.sh
 npx webpack
 dist/public/index.html をブラウザで開く
 ```
 
 - Server の起動
 
-```
+```.sh
 npx webpack-dev-server
 http://localhost:8080/ をブラウザで開く
 ```
 
-## 　使用例
+## 使用例
 
 ```src/public/index.ts
 import * as JWF from 'javascript-window-framework'
 
 //ページ読み込み時に実行する処理を設定
 addEventListener("DOMContentLoaded", ()=>{
-	const win = new JWF.FrameWindow()	//フレームウインドウの作成
-	win.setTitle('サンプルウインドウ')	//タイトルの設定
-	win.setPos()				//位置を中心に設定
+  const win = new JWF.FrameWindow()	//フレームウインドウの作成
+  win.setTitle('サンプルウインドウ')	//タイトルの設定
+  win.setPos()				//位置を中心に設定
 })
 ```
 

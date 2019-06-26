@@ -2,16 +2,16 @@ import { Window } from "./Window";
 import "./scss/SelectBox.scss";
 
 export class SelectBox extends Window {
-  select:HTMLSelectElement
+  private select: HTMLSelectElement;
   public constructor(option: {
     name?: string;
-    options: { label: string; value: string | number |boolean}[];
-    event?:{[key:string]:()=>void};
+    options: { label: string; value: string | number | boolean }[];
+    event?: { [key: string]: () => void };
   }) {
     super();
 
     this.setJwfStyle("SelectBox");
-    this.setSize(80,0)
+    this.setSize(80, 0);
     this.setAutoSize(true);
 
     let node = this.getClient();
@@ -28,14 +28,14 @@ export class SelectBox extends Window {
     }
     node.appendChild(select);
     const event = option.event;
-    if(event){
-      for(const key of Object.keys(event)){
+    if (event) {
+      for (const key of Object.keys(event)) {
         const proc = event[key as keyof typeof event];
-        select.addEventListener(key,proc);
+        select.addEventListener(key, proc);
       }
     }
   }
-  public getValue(){
+  public getValue() {
     return this.select.value;
   }
 }

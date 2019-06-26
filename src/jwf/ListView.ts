@@ -21,9 +21,9 @@ export interface LISTVIEW_EVENT_DRAG_START {
   event: DragEvent;
 }
 export interface ListViewEventMap extends WINDOW_EVENT_MAP {
-  itemClick: LISTVIEW_EVENT_ITEM_CLICK;
-  itemDblClick: LISTVIEW_EVENT_ITEM_CLICK;
-  itemDragStart: LISTVIEW_EVENT_DRAG_START;
+  itemClick: [LISTVIEW_EVENT_ITEM_CLICK];
+  itemDblClick: [LISTVIEW_EVENT_ITEM_CLICK];
+  itemDragStart: [LISTVIEW_EVENT_DRAG_START];
 }
 /**
  *ListView用クラス
@@ -32,7 +32,7 @@ export interface ListViewEventMap extends WINDOW_EVENT_MAP {
  * @class ListView
  * @extends {Window}
  */
-export class ListView extends Window {
+export class ListView extends Window<ListViewEventMap> {
   private headers: HTMLElement;
   private resizers: HTMLElement;
   private itemArea: HTMLElement;
@@ -451,7 +451,7 @@ export class ListView extends Window {
   public getItemValues(): unknown[] {
     const count = this.getItemCount();
     let values = [];
-    for (let i=0;i<count;i++) {
+    for (let i = 0; i < count; i++) {
       values.push(this.getCell(i, 0));
     }
     return values;
@@ -714,8 +714,7 @@ export class ListView extends Window {
     if (r == null) return false;
     if (!(value instanceof HTMLElement)) {
       var item = document.createElement("div");
-      if(value != null)
-        item.textContent = value.toString();
+      if (value != null) item.textContent = value.toString();
       r.appendChild(item);
     } else {
       r.appendChild(value);
@@ -760,20 +759,5 @@ export class ListView extends Window {
   public onLayout(flag: boolean): void {
     super.onLayout(flag);
     this.resize();
-  }
-
-  /**
-   *
-   *
-   * @template K
-   * @param {K} type
-   * @param {(ev: ListViewEventMap[K]) => unknown} listener
-   * @memberof ListView
-   */
-  public addEventListener<K extends keyof ListViewEventMap>(
-    type: K|string,
-    listener: (this:Window,ev: ListViewEventMap[K]) => unknown
-  ): void {
-    super.addEventListener(type, listener as (e: unknown) => unknown);
   }
 }

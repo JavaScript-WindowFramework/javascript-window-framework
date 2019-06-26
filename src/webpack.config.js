@@ -33,7 +33,7 @@ module.exports = {
         enforce: "pre"
       },
       {
-        test: /\.scss/,
+        test: /\.(scss|css)$/,
         use: ["style-loader", "css-loader", "sass-loader"]
       },
       {
@@ -43,7 +43,7 @@ module.exports = {
     ]
   },
   resolve: {
-    extensions: [".ts", ".js", ".scss", ".svg"]
+    extensions: [".ts", ".js", ".scss", "css", ".svg"]
   },
   devtool: "source-map",
   plugins: [

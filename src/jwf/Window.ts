@@ -112,11 +112,13 @@ export interface JDATA {
 }
 
 export interface WINDOW_EVENT_MAP {
-  active: { active: boolean };
-  closed: {};
-  layout: {};
-  layouted: {};
-  visibled: { visible: boolean };
+  [key: string]: unknown[];
+  active: [{ active: boolean }];
+  measure: [];
+  closed: [];
+  layout: [];
+  layouted: [];
+  visibled: [{ visible: boolean }];
 }
 
 /**
@@ -135,15 +137,20 @@ export interface WINDOW_PARAMS {
   overlap?: boolean;
   visible?: boolean;
 }
-
+export interface WindowRemover{
+  remove:()=>void;
+}
 /**
  *ウインドウ基本クラス
  *
  * @export
  * @class Window
  */
-export class Window {
-  private Events = new Map<string, ((e: unknown) => unknown)[]>();
+export class Window<T extends WINDOW_EVENT_MAP = WINDOW_EVENT_MAP> {
+  private removers:WindowRemover[] = [];
+  private listeners: {
+    [key: string]: unknown[];
+  } = {};
   private hNode: JNode;
   private JData: JDATA = {
     x: 0,
@@ -227,12 +234,9 @@ export class Window {
       }
     }
 
-    hNode.addEventListener(
-      "animationend",
-      (): void => {
-        this.layout();
-      }
-    );
+    hNode.addEventListener("animationend", (): void => {
+      this.layout();
+    });
 
     //移動に備えて、必要な情報を収集
     hNode.addEventListener("touchstart", this.onMouseDown.bind(this), {
@@ -458,6 +462,15 @@ export class Window {
       }
     }
   }
+  public addRemover(...remover:WindowRemover[]):void{
+    if(!remover)
+      return;
+    const removers = this.removers;
+    for(const r of remover){
+      if(removers.indexOf(r) === -1)
+        removers.push(r);
+    }
+  }
   /**
    *イベントの受け取り
    *
@@ -466,20 +479,19 @@ export class Window {
    * @memberof Window
    */
   // eslint-disable-next-line @typescript-eslint/explicit-member-accessibility
-  addEventListener<K extends keyof WINDOW_EVENT_MAP>(
-    type: K | string,
-    listener: (this: Window, ev: WINDOW_EVENT_MAP[K]) => unknown
+  addEventListener<K extends keyof T>(
+    name: K,
+    proc: (...params: T[K]) => void
   ): void {
-    let eventData = this.Events.get(type);
-    if (!eventData) {
-      eventData = [];
-      this.Events.set(type, eventData);
+    const listener = this.listeners[name as string];
+    if (!listener) {
+      this.listeners[name as string] = [proc];
+      return;
     }
-    for (let ev of eventData) {
-      if (String(ev) === String(listener)) return;
-    }
-    eventData.push(listener as (e: unknown) => unknown);
+    if (listener.indexOf(proc) >= 0) return;
+    listener.push(proc);
   }
+
   /**
    *イベントの削除
    *
@@ -489,26 +501,21 @@ export class Window {
    * @memberof Window
    */
   // eslint-disable-next-line @typescript-eslint/explicit-member-accessibility
-  removeEventListener<K extends keyof WINDOW_EVENT_MAP>(
-    type: K | string,
-    listener?: (this: Window, ev: WINDOW_EVENT_MAP[K]) => void
+  removeEventListener<K extends keyof T>(
+    name: K & string,
+    proc: (...params: T[K]) => void
   ): void {
-    if (listener == null) {
-      this.Events.delete(type);
+    const listener = this.listeners[name];
+    if (!listener) {
+      this.listeners[name as string] = [proc];
       return;
     }
-
-    let eventData = this.Events.get(type);
-    if (!eventData) {
-      eventData = [];
-      this.Events.set(type, eventData);
-    }
-    for (let index in eventData) {
-      if (String(eventData[index]) === String(listener)) {
-        eventData.splice(parseInt(index), 1);
-      }
-    }
+    const index = listener.indexOf(proc);
+    if (index < 0) return;
+    listener.splice(index, 1);
   }
+
+  //
   /**
    *イベントの要求
    *
@@ -516,14 +523,11 @@ export class Window {
    * @param {*} params パラメータ
    * @memberof Window
    */
-  public callEvent<K extends keyof WINDOW_EVENT_MAP>(
-    type: K | string,
-    params: WINDOW_EVENT_MAP[K] | unknown
-  ): void {
-    const eventData = this.Events.get(type);
-    if (eventData) {
-      for (let ev of eventData) {
-        ev(params as WINDOW_EVENT_MAP[K]);
+  public callEvent<K extends keyof T>(name: K, ...params: T[K]): void {
+    const listener = this.listeners[name as string];
+    if (listener) {
+      for (const proc of listener) {
+        (proc as ((...params: T[K]) => unknown))(...params);
       }
     }
   }
@@ -932,7 +936,7 @@ export class Window {
   public onMeasure(flag: boolean): boolean {
     const jdata = this.JData;
     //表示状態の更新
-    if (jdata.reshow) {
+    if (jdata.reshow || flag) {
       jdata.reshow = false;
       if (jdata.visible) {
         this.hNode.style.visibility = "";
@@ -952,7 +956,7 @@ export class Window {
 
     if (!this.isAutoSize()) return false;
 
-    this.callEvent("measure", {});
+    this.callEvent("measure");
     //client.style.position = "static";
     if (jdata.instructionSize.width >= 0)
       client.style.width = jdata.instructionSize.width + "px";
@@ -1035,7 +1039,7 @@ export class Window {
       this.hNode.style.width = this.JData.width + "px";
       this.hNode.style.height = this.JData.height + "px";
       flag = true;
-      this.callEvent("layout", {});
+      this.callEvent("layout");
     }
 
     let client = this.getClient();
@@ -1060,9 +1064,9 @@ export class Window {
       const b = bnode.Jwf.JData.style as string;
       return priority[b] - priority[a];
     });
-    let retry;
+    //let retry;
     //do {
-    retry = false;
+    //retry = false;
     const padding = this.JData.padding;
     let width = this.getClientWidth();
     let height = this.getClientHeight();
@@ -1117,12 +1121,13 @@ export class Window {
           break;
       }
       jdata.instructionSize = { width, height };
-      if (win.onMeasure(false)) retry = true;
+      win.onMeasure(false);
+      //if (win.onMeasure(false)) retry = true;
       win.onLayout(flag);
     }
     //} while (retry);
     this.orderSort(client);
-    if (this.JData.redraw || flag) this.callEvent("layouted", {});
+    if (this.JData.redraw || flag) this.callEvent("layouted");
     this.JData.redraw = false;
   }
   private orderSort(client: HTMLElement): boolean {
@@ -1245,7 +1250,12 @@ export class Window {
       }
       if (this.parentNode) this.parentNode.removeChild(this);
       this.removeEventListener("animationend", animationEnd);
-      that.callEvent("closed", {});
+      //終了処理のコールバック
+      const remoers = that.removers;
+      for(const remover of remoers){
+        remover.remove();
+      }
+      that.callEvent("closed");
     }
     const animation = this.JData.animationEnable
       ? this.JData.animation["close"]
@@ -1414,7 +1424,7 @@ export class Window {
   public addFrameChild(
     child: Window,
     style?: "left" | "right" | "top" | "bottom" | "client" | null
-  ) {
+  ): void {
     const frame = this.getNearFrame();
     if (frame) frame.addChild(child, style);
   }

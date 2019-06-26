@@ -4,11 +4,11 @@ import "./scss/Button.scss";
 
 export interface BUTTON_EVENT_ITEM_CLICK {
   event: Event;
-  button: Button;
+  button: Button | ImageButton;
 }
 export interface ButtonEventMap extends WINDOW_EVENT_MAP {
-  buttonClick: BUTTON_EVENT_ITEM_CLICK;
-  buttonDblClick: BUTTON_EVENT_ITEM_CLICK;
+  buttonClick: [BUTTON_EVENT_ITEM_CLICK];
+  buttonDblClick: [BUTTON_EVENT_ITEM_CLICK];
 }
 /**
  *ボタン用クラス
@@ -17,7 +17,7 @@ export interface ButtonEventMap extends WINDOW_EVENT_MAP {
  * @class Button
  * @extends {Window}
  */
-export class Button extends Window {
+export class Button extends Window<ButtonEventMap> {
   private nodeText: HTMLElement;
   private nodeValue: unknown;
   /**
@@ -29,7 +29,7 @@ export class Button extends Window {
     ...params:
       | [string]
       | [string, unknown]
-      | [{ label?: string; value?: unknown; event?: () =>void }]
+      | [{ label?: string; value?: unknown; event?: () => void }]
   ) {
     super();
     this.setAutoSize(true);
@@ -49,50 +49,41 @@ export class Button extends Window {
       if (typeof params[0] === "string") {
         this.setText(params[0] as string);
         this.nodeValue = params[1];
-      }else{
+      } else {
         const p = params[0];
-        if(p.label){
+        if (p.label) {
           this.setText(p.label);
         }
         this.nodeValue = p.value;
-        if(p.event){
-          button.addEventListener("click",p.event);
+        if (p.event) {
+          button.addEventListener("click", p.event);
         }
       }
     }
 
-    button.addEventListener(
-      "keypress",
-      (e): void => {
-        if (e.keyCode !== 13)
-          this.callEvent("submit", {
-            event: e,
-            button: this
-          });
-      }
-    );
-    button.addEventListener(
-      "click",
-      (e): void => {
-        this.callEvent("buttonClick", {
-          event: e,
-          button: this
-        });
+    button.addEventListener("keypress", (e): void => {
+      if (e.keyCode !== 13)
         this.callEvent("submit", {
           event: e,
           button: this
         });
-      }
-    );
-    button.addEventListener(
-      "dblclick",
-      (e): void => {
-        this.callEvent("buttonDblClick", {
-          event: e,
-          button: this
-        });
-      }
-    );
+    });
+    button.addEventListener("click", (e): void => {
+      this.callEvent("buttonClick", {
+        event: e,
+        button: this
+      });
+      this.callEvent("submit", {
+        event: e,
+        button: this
+      });
+    });
+    button.addEventListener("dblclick", (e): void => {
+      this.callEvent("buttonDblClick", {
+        event: e,
+        button: this
+      });
+    });
   }
   /**
    *ボタンに対してテキストを設定する
@@ -121,26 +112,8 @@ export class Button extends Window {
   public getValue(): unknown {
     return this.nodeValue;
   }
-  /**
-   *イベントの設定
-   * 'buttonClick','buttonDblClick'
-   *
-   * @template K
-   * @param {K} type
-   * @param {(ev: ButtonEventMap[K]) => unknown} listener
-   * @memberof Button
-   */
-  addEventListener<K extends keyof ButtonEventMap>(
-    type: K | string,
-    listener: (this: Window, ev: ButtonEventMap[K]) => unknown
-  ): void {
-    super.addEventListener(type, listener as (
-      this: Window,
-      e: unknown
-    ) => unknown);
-  }
 }
-export class ImageButton extends Window {
+export class ImageButton extends Window<ButtonEventMap> {
   private nodeImg: HTMLImageElement;
   /**
    *Creates an instance of Button.
@@ -162,35 +135,24 @@ export class ImageButton extends Window {
     button.appendChild(nodeImg);
     this.nodeImg = nodeImg;
     if (alt) nodeImg.alt = alt;
-    nodeImg.addEventListener(
-      "load",
-      (): void => {
-        this.layout();
-      }
-    );
+    nodeImg.addEventListener("load", (): void => {
+      this.layout();
+    });
     nodeImg.src = image;
 
-    button.addEventListener(
-      "keypress",
-      (e): void => {
-        if (e.keyCode !== 13) this.callEvent("submit", { event: e });
-      }
-    );
-    button.addEventListener(
-      "click",
-      (e): void => {
-        this.callEvent("buttonClick", { event: e });
-        this.callEvent("submit", { event: e });
-      }
-    );
-    button.addEventListener(
-      "dblclick",
-      (e): void => {
-        this.callEvent("buttonDblClick", {
-          event: e
-        });
-      }
-    );
+    button.addEventListener("keypress", (e): void => {
+      if (e.keyCode !== 13) this.callEvent("submit", { event: e });
+    });
+    button.addEventListener("click", (e): void => {
+      this.callEvent("buttonClick", { event: e, button: this });
+      this.callEvent("submit", { event: e });
+    });
+    button.addEventListener("dblclick", (e): void => {
+      this.callEvent("buttonDblClick", {
+        event: e,
+        button: this
+      });
+    });
   }
   /**
    *ボタンに対してテキストを設定する
@@ -214,20 +176,5 @@ export class ImageButton extends Window {
   public setAlign(style: string): void {
     let node = this.getClient();
     node.style.justifyContent = style;
-  }
-  /**
-   *イベントの設定
-   * 'buttonClick','buttonDblClick'
-   *
-   * @template K
-   * @param {K} type
-   * @param {(ev: ButtonEventMap[K]) => unknown} listener
-   * @memberof Button
-   */
-  public addEventListener<K extends keyof ButtonEventMap>(
-    type: K | string,
-    listener: (ev: ButtonEventMap[K]) => unknown
-  ): void {
-    super.addEventListener(type, listener as (e: unknown) => unknown);
   }
 }

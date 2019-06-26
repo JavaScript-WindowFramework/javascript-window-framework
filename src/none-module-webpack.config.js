@@ -5,7 +5,6 @@ class DtsBundlePlugin {
     this.p = p;
   }
   apply(compiler) {
-
     compiler.hooks.afterEmit.tap("DtsBundlePlugin", () => {
       var dts = require("dts-bundle");
       dts.bundle(this.p);
@@ -53,10 +52,10 @@ module.exports = {
       main: path.resolve(__dirname, "../dist/javascript-window-framework.d.ts"),
       out: path.resolve(__dirname, "../dist-jwf/jwf.d.ts"),
       removeSource: false,
-      referenceExternals:RegExp,
-      exclude:/\.scss/,
-      emitOnNoIncludedFileNotFound:true,
-      emitONIncludedFileNotFound:true,
+      referenceExternals: RegExp,
+      exclude: /\.scss/,
+      emitOnNoIncludedFileNotFound: true,
+      emitONIncludedFileNotFound: true,
       outputAsModuleFolder: false
     })
   ]
