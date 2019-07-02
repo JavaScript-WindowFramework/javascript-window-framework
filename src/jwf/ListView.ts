@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/class-name-casing */
 import {
-  Window,
+  BaseView,
   JWFEvent,
   MovePoint,
   WINDOW_PARAMS,
   WINDOW_EVENT_MAP,
   MoveElement
-} from "./Window";
+} from "./BaseView";
 import { WindowManager } from "./WindowManager";
 import "./scss/ListView.scss";
 
@@ -30,9 +30,9 @@ export interface ListViewEventMap extends WINDOW_EVENT_MAP {
  *
  * @export
  * @class ListView
- * @extends {Window}
+ * @extends {BaseView}
  */
-export class ListView extends Window<ListViewEventMap> {
+export class ListView extends BaseView<ListViewEventMap> {
   private headers: HTMLElement;
   private resizers: HTMLElement;
   private itemArea: HTMLElement;

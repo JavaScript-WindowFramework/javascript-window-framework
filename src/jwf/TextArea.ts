@@ -1,4 +1,4 @@
-import { Window, WINDOW_PARAMS, WINDOW_EVENT_MAP } from "./Window";
+import { BaseView, WINDOW_PARAMS, WINDOW_EVENT_MAP } from "./BaseView";
 import "./scss/TextArea.scss";
 
 export interface CustomEvent extends WINDOW_EVENT_MAP {
@@ -10,9 +10,9 @@ export interface CustomEvent extends WINDOW_EVENT_MAP {
  *
  * @export
  * @class TextArea
- * @extends {Window}
+ * @extends {BaseView}
  */
-export class TextArea extends Window<CustomEvent> {
+export class TextArea extends BaseView<CustomEvent> {
   private textArea: HTMLTextAreaElement;
   public constructor(params?: WINDOW_PARAMS) {
     super(params);

@@ -1,4 +1,4 @@
-import { MovePoint, JNode, Point } from "./Window";
+import { MovePoint, JNode, Point } from "./BaseView";
 
 /**
  * ウインドウ等総合管理クラス

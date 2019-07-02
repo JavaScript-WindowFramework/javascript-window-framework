@@ -1,12 +1,11 @@
 /*
 	TableForm
 */
-[data-jwf="Window"] > [data-jwf-style="TableFormView"] {
+[data-jwf-style="TableFormView"] {
   >div {
     display: flex;
     flex-direction: column;
 
-    color: white;
     width: 100%;
 
     > div:first-child {
@@ -32,7 +31,7 @@
         > div,
         > label {
           margin: 0.1em;
-          background: rgba(255, 255, 255, 0.4);
+          background: rgba(100, 100, 100, 0.5);
           display: table-row;
 
           > div {
@@ -43,6 +42,7 @@
             &:first-child {
               white-space: nowrap;
             }
+            textarea,input{min-width:95%;}
           }
         }
       }

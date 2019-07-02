@@ -1,24 +1,24 @@
-import { Window, MovePoint, JWFEvent } from "./Window";
+import { BaseView, MovePoint, JWFEvent } from "./BaseView";
 import "./scss/Splitter.scss";
 /**
  *分割ウインドウ用クラス
  *
  * @export
  * @class Splitter
- * @extends {Window}
+ * @extends {BaseView}
  */
 
 export declare var SPLIT_TYPE: "ns" | "sn" | "ew" | "we";
 
-export class Splitter extends Window {
+export class Splitter extends BaseView {
   private drawerMode = false;
   private drawerModeNow = false;
   private splitterMoving = false;
   private splitterThick = 10;
   private splitterPos = 100;
   private splitterType: string = "we";
-  private splitter: Window;
-  private childList: Window[] = [];
+  private splitter: BaseView;
+  private childList: BaseView[] = [];
   private drawerWidth = 0;
   private pos = 0;
   private type: typeof SPLIT_TYPE = "we";
@@ -40,7 +40,7 @@ export class Splitter extends Window {
     }
     const client = this.getClient();
     client.dataset.splitterType = this.splitterType;
-    this.childList = [new Window(), new Window()];
+    this.childList = [new BaseView(), new BaseView()];
     super.addChild(this.childList[0]);
     super.addChild(this.childList[1]);
 
@@ -62,7 +62,7 @@ export class Splitter extends Window {
       icon.style.display = "none";
     });
 
-    let splitter = new Window();
+    let splitter = new BaseView();
     this.splitter = splitter;
     splitter.setJwfStyle("Splitter");
     splitter.setOrderTop(true);
@@ -209,26 +209,26 @@ export class Splitter extends Window {
    *子ウインドウの追加
    *
    * @param {number} index 追加位置
-   * @param {Window} child 追加ウインドウ
+   * @param {BaseView} child 追加ウインドウ
    * @param {('left' | 'right' | 'top' | 'bottom' | 'client' | null)} [arrgement] ドッキングタイプ
    * @memberof Splitter
    */
   public addChild(
-    index: number | Window,
-    child: Window | unknown,
+    index: number | BaseView,
+    child: BaseView | unknown,
     arrgement?: "left" | "right" | "top" | "bottom" | "client" | null
   ): void {
-    if (child instanceof Window)
+    if (child instanceof BaseView)
       this.childList[index as number].addChild(child, arrgement);
   }
   /**
    *子ウインドウを切り離す
    *
    * @param {number} index 削除位置
-   * @param {Window} [child] 削除ウインドウ
+   * @param {BaseView} [child] 削除ウインドウ
    * @memberof Splitter
    */
-  public removeChild(index: number | Window, child?: Window): void {
+  public removeChild(index: number | BaseView, child?: BaseView): void {
     if (child == null) return;
     this.childList[index as number].removeChild(child);
   }
@@ -280,10 +280,10 @@ export class Splitter extends Window {
    *子ウインドウの取得
    *
    * @param {number} index 位置
-   * @returns {Window} 子ウインドウ
+   * @returns {BaseView} 子ウインドウ
    * @memberof Splitter
    */
-  public getChild(index: number): Window {
+  public getChild(index: number): BaseView {
     return this.childList[index];
   }
 }

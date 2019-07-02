@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/class-name-casing */
-import { Window, WINDOW_PARAMS, WINDOW_EVENT_MAP } from "./Window";
+import { BaseView, WINDOW_PARAMS, WINDOW_EVENT_MAP } from "./BaseView";
 import "./scss/CalendarView.scss";
 import * as Libs from "./Libs";
 export interface CALENDARVIEW_EVENT_DATE_CLICK {
@@ -8,7 +8,7 @@ export interface CALENDARVIEW_EVENT_DATE_CLICK {
 export interface CalendarViewEventMap extends WINDOW_EVENT_MAP {
   date: [CALENDARVIEW_EVENT_DATE_CLICK];
 }
-export class CalendarView extends Window<CalendarViewEventMap> {
+export class CalendarView extends BaseView<CalendarViewEventMap> {
   private titleCell: HTMLTableDataCellElement;
   private dateCells: (HTMLTableDataCellElement & { date?: Date })[];
   private calendarDate: Date = new Date();

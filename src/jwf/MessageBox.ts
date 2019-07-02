@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/class-name-casing */
-import { WINDOW_EVENT_MAP, Window } from "./Window";
+import { WINDOW_EVENT_MAP, BaseView } from "./BaseView";
 import { Button } from "./Button";
 import { FrameWindow } from "./FrameWindow";
 import "./scss/MessageBox.scss";
@@ -8,7 +8,7 @@ export interface MessageBoxEventMap extends WINDOW_EVENT_MAP {
   buttonClick: [unknown];
 }
 export class MessageBox extends FrameWindow<MessageBoxEventMap> {
-  private label: Window;
+  private label: BaseView;
   public constructor(
     title: string,
     msg: string,
@@ -22,7 +22,7 @@ export class MessageBox extends FrameWindow<MessageBoxEventMap> {
     this.active();
     this.setPadding(10, 10, 10, 10);
 
-    const label = new Window();
+    const label = new BaseView();
     this.label = label;
     label.setJwfStyle("MessageBoxLabel");
     this.addChild(label, "client");

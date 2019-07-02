@@ -1,13 +1,13 @@
 import "./scss/Panel.scss";
-import { Window } from "./Window";
+import { BaseView } from "./BaseView";
 /**
  *パネル用クラス
  *
  * @export
  * @class Panel
- * @extends {Window}
+ * @extends {BaseView}
  */
-export class Panel extends Window {
+export class Panel extends BaseView {
   public constructor() {
     super();
     this.setJwfStyle("Panel");

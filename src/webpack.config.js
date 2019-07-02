@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const path = require("path");
+const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
 class DtsBundlePlugin {
   constructor(p) {
     this.p = p;
@@ -12,8 +13,9 @@ class DtsBundlePlugin {
   }
 }
 
-module.exports = {
-  mode: "production",
+const config = {
+  mode: "development",
+  //mode: "production",
   entry: [path.resolve(__dirname, "jwf/javascript-window-framework.ts")],
   output: {
     library: "javascript-window-framework",
@@ -53,6 +55,11 @@ module.exports = {
       out: path.resolve(__dirname, "../dist/index.d.ts"),
       removeSource: true,
       outputAsModuleFolder: false
-    })
+    }),
+    new HardSourceWebpackPlugin()
   ]
 };
+if (config.mode === "development") {
+  config.devtool = 'source-map';
+}
+module.exports = config;

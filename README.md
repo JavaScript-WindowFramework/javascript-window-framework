@@ -18,7 +18,7 @@ JavaScript 用ウインドウフレームワーク npm モジュール版
 
 ## 更新履歴
 
-- 2019/06/26 0.16 イベント系の処理方法を変更、テンプレートリソースの修正
+- 2019/06/26 0.15 イベント系の処理方法を変更
 - 2019/06/06 0.13 サンプルの構成を変更
 - 2019/06/02 0.12 カレンダーの修正、表示更新タイミングの変更、スタイルの修正
 - 2019/05/27 0.10 ソースコードを TSLint に基づいて修正、ボタンスタイルの修正
@@ -68,9 +68,9 @@ import * as JWF from 'javascript-window-framework'
 
 //ページ読み込み時に実行する処理を設定
 addEventListener("DOMContentLoaded", ()=>{
-  const win = new JWF.FrameWindow()	//フレームウインドウの作成
-  win.setTitle('サンプルウインドウ')	//タイトルの設定
-  win.setPos()				//位置を中心に設定
+  const win = new JWF.FrameWindow()  //フレームウインドウの作成
+  win.setTitle('サンプルウインドウ')  //タイトルの設定
+  win.setPos()  //位置を中心に設定
 })
 ```
 

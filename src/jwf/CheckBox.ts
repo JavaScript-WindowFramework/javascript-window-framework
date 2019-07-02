@@ -1,7 +1,7 @@
-import { Window } from "./Window";
+import { BaseView } from "./BaseView";
 import "./scss/CheckBox.scss";
 
-export class CheckBox extends Window {
+export class CheckBox extends BaseView {
   private nodeText: HTMLSpanElement;
   private nodeCheck: HTMLInputElement;
   public constructor(params?: { text?: string; checked?: boolean }) {

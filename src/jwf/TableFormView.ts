@@ -1,14 +1,15 @@
 /* eslint-disable @typescript-eslint/class-name-casing */
 /* eslint-disable @typescript-eslint/interface-name-prefix */
-import { Window, WINDOW_PARAMS, WINDOW_EVENT_MAP } from "./Window";
+import { BaseView, WINDOW_PARAMS, WINDOW_EVENT_MAP } from "./BaseView";
 import { CalendarView } from "./CalendarView";
-import "./scss/TableForm.scss";
+import "./scss/TableFormView.scss";
 
 export interface ITEM_OPTION {
   label?: string;
   type?:
     | "date"
     | "string"
+    | "textarea"
     | "password"
     | "number"
     | "checkbox"
@@ -20,6 +21,7 @@ export interface ITEM_OPTION {
   link?: string;
   image?: string;
   image_width?: string;
+  styles?: { [key: string]: string };
   events?: { [key: string]: () => void };
   options?: {
     name: string;
@@ -31,6 +33,7 @@ export interface TableFormViewMap extends WINDOW_EVENT_MAP {
 }
 
 export type FormInputElement = (
+  | HTMLTextAreaElement
   | HTMLInputElement
   | HTMLSelectElement
   | HTMLImageElement) & {
@@ -44,9 +47,9 @@ export type FormInputElement = (
  *
  * @export
  * @class TableFormView
- * @extends {Window}
+ * @extends {BaseView}
  */
-export class TableFormView extends Window<TableFormViewMap> {
+export class TableFormView extends BaseView<TableFormViewMap> {
   private items: HTMLDivElement;
   private footer: HTMLDivElement;
   public constructor(params?: WINDOW_PARAMS) {
@@ -157,6 +160,19 @@ export class TableFormView extends Window<TableFormViewMap> {
           if (params.image_width) input.style.width = params.image_width;
           data.appendChild(input);
           break;
+        case "textarea":
+          input = document.createElement("textarea");
+          input.type2 = params.type;
+          input.name = params.name || "";
+          input.value = (params.value as string) || "";
+          if (params.styles) {
+            const styles = params.styles;
+            for (const key of Object.keys(styles)) {
+              input.style.setProperty(key,styles[key]);
+            }
+          }
+          data.appendChild(input);
+          break;
         case "string":
         case "password":
           input = document.createElement("input");
@@ -225,7 +241,7 @@ export class TableFormView extends Window<TableFormViewMap> {
   }
   public getParams(): { [key: string]: string | number | boolean | undefined } {
     const values: { [key: string]: string | number | boolean | undefined } = {};
-    const nodes = this.items.querySelectorAll("select,input,img");
+    const nodes = this.items.querySelectorAll("select,input,img,textarea");
     for (let length = nodes.length, i = 0; i < length; ++i) {
       const v = nodes[i] as FormInputElement;
       if (v instanceof HTMLSelectElement) {
@@ -251,20 +267,22 @@ export class TableFormView extends Window<TableFormViewMap> {
             break;
         }
         values[name] = value;
-      }else if(v instanceof HTMLImageElement){
+      } else if (v instanceof HTMLImageElement) {
+        values[v.name] = v.value;
+      } else if (v instanceof HTMLTextAreaElement) {
         values[v.name] = v.value;
       }
     }
     return values;
   }
   public setParams(params: { [key: string]: string | number | boolean }): void {
-    const nodes = this.items.querySelectorAll("select,input");
+    const nodes = this.items.querySelectorAll("select,input,textarea");
     for (let length = nodes.length, i = 0; i < length; ++i) {
-      const v = nodes[i] as (HTMLInputElement | HTMLSelectElement) & {
+      const v = nodes[i] as (HTMLInputElement | HTMLSelectElement|HTMLTextAreaElement) & {
         type2?: string;
         value2?: Date | undefined;
       };
-      if (v instanceof HTMLSelectElement) {
+      if (v instanceof HTMLSelectElement || v instanceof HTMLTextAreaElement) {
         const value = params[v.name];
         if (value != null) v.value = value.toString();
       } else if (v instanceof HTMLInputElement) {

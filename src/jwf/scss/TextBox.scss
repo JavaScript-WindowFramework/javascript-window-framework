@@ -16,14 +16,16 @@
       > input {
         user-select: all;
         position: absolute;
-        background-color: rgba(255, 255, 255, 0.8);
+        background-color: rgba(219, 238, 253, 0.5);
+        color:black;
         min-height: 2em;
         padding: 0.2em;
-        border: none;
+        border: solid 1px;
         width: 100%;
       }
 
       > div {
+        color:rgba(0,0,0,0.8);
         white-space: nowrap;
         position: absolute;
         padding: 0.2em;

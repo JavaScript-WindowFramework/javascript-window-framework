@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/class-name-casing */
-import { Window, WINDOW_EVENT_MAP, WINDOW_PARAMS } from "./Window";
+import { BaseView, WINDOW_EVENT_MAP, WINDOW_PARAMS } from "./BaseView";
 import "./scss/TreeView.scss";
 
 export interface TREEVIEW_EVENT_SELECT {
@@ -447,11 +447,11 @@ export class TreeItem {
  *
  * @export
  * @class TreeView
- * @extends {Window}
+ * @extends {BaseView}
  */
 export class TreeView<
   T extends TreeViewEventMap = TreeViewEventMap
-> extends Window<T> {
+> extends BaseView<T> {
   private mRootItem: TreeItem;
   private mSelectItem: TreeItem | null = null;
   /**

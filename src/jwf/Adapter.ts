@@ -49,6 +49,59 @@ export class Adapter {
   public getKeyName(): string {
     return this.keyName;
   }
+  /**
+   *サーバに対して命令を単独実行
+   *呼び出し内容をまとめない
+   * @param {string} funcName ファンクション名(className.functionName)
+   * @param {...unknown[]} params パラメータ
+   * @returns {Promise<never>}
+   * @memberof Adapter
+   */
+  public execAlone(funcName: string, ...params: unknown[]): Promise<never> {
+    const functionSet: FunctionSet = {
+      functions: [
+        {
+          name: funcName,
+          params: params
+        }
+      ],
+      promise: {},
+      array: false
+    };
+    const promise = new Promise((resolve, reject): void => {
+      functionSet.promise.resolve = resolve;
+      functionSet.promise.reject = reject;
+    });
+    this.send([functionSet]);
+    return promise as Promise<never>;
+  }
+
+  /**
+   *戻り値をバイナリとして受け取る(ファイルダウンロード用)
+   *命令は単独実行される
+   * @param {string} funcName
+   * @param {...unknown[]} params
+   * @returns {Promise<never>}
+   * @memberof Adapter
+   */
+  public execBinary(funcName: string, ...params: unknown[]): Promise<never> {
+    const functionSet: FunctionSet = {
+      functions: [
+        {
+          name: funcName,
+          params: params
+        }
+      ],
+      promise: {},
+      array: false
+    };
+    const promise = new Promise((resolve, reject): void => {
+      functionSet.promise.resolve = resolve;
+      functionSet.promise.reject = reject;
+    });
+    this.send([functionSet], true);
+    return promise as Promise<never>;
+  }
 
   /**
    *複数のファンクションの実行
@@ -100,24 +153,41 @@ export class Adapter {
     this.callSend();
     return promise as Promise<never>;
   }
+
+  /**
+   *同じタイミングで発生した複数命令をプールして同時に実行する
+   *
+   * @private
+   * @memberof Adapter
+   */
   private callSend(): void {
     if (!this.handle) {
       this.handle = window.setTimeout((): void => {
-        this.send();
+        this.handle = null;
+        this.send(this.functionSet);
       }, 0);
     }
   }
-  private send(): void {
-    this.handle = null;
+
+  /**
+   *命令の実行と受け取り処理
+   *
+   * @private
+   * @param {FunctionSet[]} functionSet
+   * @param {boolean} [binary]
+   * @returns
+   * @memberof Adapter
+   */
+  private async send(functionSet: FunctionSet[], binary?: boolean) {
     const globalHash = localStorage.getItem(this.keyName);
     const sessionHash = sessionStorage.getItem(this.keyName);
-    const functionSet = this.functionSet;
-    this.functionSet = [];
     const params: AdapterFormat = {
       globalHash: globalHash,
       sessionHash: sessionHash,
       functions: []
     };
+
+    this.functionSet = [];
     for (let funcs of functionSet) {
       for (let func of funcs.functions)
         params.functions.push({
@@ -125,69 +195,115 @@ export class Adapter {
           params: func.params
         });
     }
-    Adapter.sendJson(
+
+    const res = (await Adapter.sendJsonAsync(
       this.scriptUrl + "?cmd=exec",
       params,
-      (res: {
-        globalHash: string;
-        sessionHash: string;
-        results: AdapterResult[];
-      }): void => {
-        if (res == null) {
-          for (let funcs of functionSet) {
-            // eslint-disable-next-line no-console
-            console.error("通信エラー");
-            funcs.promise.reject("通信エラー");
-          }
-        } else {
-          if (res.globalHash)
-            localStorage.setItem(this.keyName, res.globalHash);
-          if (res.sessionHash)
-            sessionStorage.setItem(this.keyName, res.sessionHash);
-          const results = res.results;
-          let index = 0;
-          for (let funcs of functionSet) {
-            const length = funcs.functions.length;
-            if (funcs.array) {
-              const values = [];
-              for (let i = index; i < length; i++) {
-                if (results[i].error) {
-                  // eslint-disable-next-line no-console
-                  console.error(results[i].error);
-                  funcs.promise.reject(results[i].error);
-                  break;
-                }
-                values.push(results[i].value);
-              }
-              funcs.promise.resolve(values);
-            } else {
-              const result = results[index];
-              // eslint-disable-next-line no-console
-              if (result.error) console.error(result.error);
-              else funcs.promise.resolve(result.value);
-            }
-            index += length;
-          }
-        }
+      undefined,
+      binary
+    )) as {
+      globalHash: string;
+      sessionHash: string;
+      results: AdapterResult[];
+    } | null;
+
+    if (res === null) {
+      for (let funcs of functionSet) {
+        // eslint-disable-next-line no-console
+        console.error("通信エラー");
+        funcs.promise.reject("通信エラー");
       }
-    );
+      return;
+    }
+    //バイナリデータはそのまま返却
+    if (binary) {
+      for (let funcs of functionSet) {
+        funcs.promise.resolve(res);
+      }
+      return;
+    }
+    //セッションキーの更新
+    if (res.globalHash) localStorage.setItem(this.keyName, res.globalHash);
+    if (res.sessionHash) sessionStorage.setItem(this.keyName, res.sessionHash);
+
+    const results = res.results;
+    let index = 0;
+    for (let funcs of functionSet) {
+      const length = funcs.functions.length;
+      if (funcs.array) {
+        const values = [];
+        for (let i = index; i < length; i++) {
+          if (results[i].error) {
+            // eslint-disable-next-line no-console
+            console.error(results[i].error);
+            funcs.promise.reject(results[i].error);
+            break;
+          }
+          values.push(results[i].value);
+        }
+        funcs.promise.resolve(values);
+      } else {
+        const result = results[index];
+        // eslint-disable-next-line no-console
+        if (result.error) console.error(result.error);
+        else funcs.promise.resolve(result.value);
+      }
+      index += length;
+    }
   }
+
+  /**
+   *Jsonデータ送受信とPromise化
+   *
+   * @static
+   * @param {string} url
+   * @param {unknown} [data]
+   * @param {{ [key: string]: string }} [headers]
+   * @param {boolean} [binary]
+   * @returns {Promise<unknown>}
+   * @memberof Adapter
+   */
   public static sendJsonAsync(
     url: string,
     data?: unknown,
-    headers?: { [key: string]: string }
+    headers?: { [key: string]: string },
+    binary?: boolean
   ): Promise<unknown> {
     return new Promise((resolve): void => {
-      Adapter.sendJson(
-        url,
-        data,
-        (value: unknown): void => {
-          resolve(value);
-        },
-        headers
-      );
+      if (binary) {
+        Adapter.sendJsonToBinary(
+          url,
+          data,
+          (value: unknown): void => {
+            resolve(value);
+          },
+          headers
+        );
+      } else {
+        Adapter.sendJson(
+          url,
+          data,
+          (value: unknown): void => {
+            resolve(value);
+          },
+          headers
+        );
+      }
     });
   }
+
+  /**
+   *Jsonデータの送受信
+   *
+   * @private
+   * @static
+   * @param {string} url
+   * @param {unknown} data
+   * @param {Function} proc
+   * @param {{ [key: string]: string }} [headers]
+   * @returns {void}
+   * @memberof Adapter
+   */
   private static sendJson(
     url: string,
     data: unknown,
@@ -233,6 +349,58 @@ export class Adapter {
     }
     req.send(data == null ? null : JSON.stringify(data));
   }
+
+  /**
+   *Jsonデータの送信とblobの受け取り
+   *
+   * @private
+   * @static
+   * @param {string} url
+   * @param {unknown} data
+   * @param {Function} proc
+   * @param {{ [key: string]: string }} [headers]
+   * @returns {void}
+   * @memberof Adapter
+   */
+  private static sendJsonToBinary(
+    url: string,
+    data: unknown,
+    proc: Function,
+    headers?: { [key: string]: string }
+  ): void {
+    const req = new XMLHttpRequest();
+    req.responseType = "blob";
+    if (proc == null) {
+      req.open("POST", url, false);
+      return JSON.parse(req.responseText);
+    } else {
+      req.onreadystatechange = function(): void {
+        if (req.readyState == 4) {
+          proc(req.response);
+        }
+      };
+    }
+    req.open("POST", url, true);
+    req.setRequestHeader("Content-Type", "application/json");
+    if (headers) {
+      for (let index in headers) {
+        const value = sessionStorage.getItem(headers[index]);
+        if (value) req.setRequestHeader(index, value);
+      }
+    }
+    req.send(data == null ? null : JSON.stringify(data));
+  }
+
+  /**
+   *ファイルのアップロード
+   *パラメータはURLに設定される
+   *
+   * @param {Blob} buffer
+   * @param {string} funcName
+   * @param {...unknown[]} params
+   * @returns
+   * @memberof Adapter
+   */
   public upload(buffer: Blob, funcName: string, ...params: unknown[]) {
     return new Promise((resolve, reject) => {
       //ハッシュデータの読み出し
@@ -277,6 +445,18 @@ export class Adapter {
       });
     });
   }
+
+  /**
+   *ファイル送信
+   *
+   * @static
+   * @param {string} url
+   * @param {Blob} buffer
+   * @param {(result: never) => void} proc
+   * @param {({ [key: string]: string | number })} params
+   * @returns
+   * @memberof Adapter
+   */
   public static sendFile(
     url: string,
     buffer: Blob,

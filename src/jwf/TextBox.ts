@@ -1,4 +1,4 @@
-import { Window } from "./Window";
+import { BaseView } from "./BaseView";
 import "./scss/TextBox.scss";
 /**
  *テキストボックス
@@ -6,7 +6,7 @@ import "./scss/TextBox.scss";
  * @class TextBox
  * @extends {JSW.Window}
  */
-export class TextBox extends Window {
+export class TextBox extends BaseView {
   private nodeLabel: HTMLElement;
   private nodeText: HTMLInputElement;
   public constructor(params?: {

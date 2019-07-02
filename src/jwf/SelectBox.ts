@@ -1,7 +1,7 @@
-import { Window } from "./Window";
+import { BaseView } from "./BaseView";
 import "./scss/SelectBox.scss";
 
-export class SelectBox extends Window {
+export class SelectBox extends BaseView {
   private select: HTMLSelectElement;
   public constructor(option: {
     name?: string;

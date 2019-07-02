@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/class-name-casing */
-import { Window, WINDOW_EVENT_MAP } from "./Window";
+import { BaseView, WINDOW_EVENT_MAP } from "./BaseView";
 import "./scss/Button.scss";
 
 export interface BUTTON_EVENT_ITEM_CLICK {
@@ -15,9 +15,9 @@ export interface ButtonEventMap extends WINDOW_EVENT_MAP {
  *
  * @export
  * @class Button
- * @extends {Window}
+ * @extends {BaseView}
  */
-export class Button extends Window<ButtonEventMap> {
+export class Button extends BaseView<ButtonEventMap> {
   private nodeText: HTMLElement;
   private nodeValue: unknown;
   /**
@@ -113,7 +113,7 @@ export class Button extends Window<ButtonEventMap> {
     return this.nodeValue;
   }
 }
-export class ImageButton extends Window<ButtonEventMap> {
+export class ImageButton extends BaseView<ButtonEventMap> {
   private nodeImg: HTMLImageElement;
   /**
    *Creates an instance of Button.

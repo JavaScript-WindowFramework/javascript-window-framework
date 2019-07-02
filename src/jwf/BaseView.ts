@@ -72,7 +72,7 @@ export declare class MoveElement extends HTMLDivElement {
  * @extends {HTMLElement}
  */
 export declare interface JNode extends MoveElement {
-  Jwf: Window; //ノードを保持しているWindow
+  Jwf: BaseView; //ノードを保持しているWindow
 }
 
 /**
@@ -88,7 +88,7 @@ export interface JDATA {
   frameSize: number;
   titleSize: number;
   redraw: boolean;
-  parent: Window | null;
+  parent: BaseView | null;
   orderTop: boolean;
   orderLayer: number;
   layoutFlag: boolean;
@@ -146,7 +146,7 @@ export interface WindowRemover{
  * @export
  * @class Window
  */
-export class Window<T extends WINDOW_EVENT_MAP = WINDOW_EVENT_MAP> {
+export class BaseView<T extends WINDOW_EVENT_MAP = WINDOW_EVENT_MAP> {
   private removers:WindowRemover[] = [];
   private listeners: {
     [key: string]: unknown[];
@@ -273,6 +273,7 @@ export class Window<T extends WINDOW_EVENT_MAP = WINDOW_EVENT_MAP> {
   }
   //フレーム追加処理
   private addFrame(titleFlag: boolean): void {
+    this.getClient().dataset.jwfClient="true";
     this.hNode.dataset.jwfType = "Frame";
     //タイトルの設定
     this.JData.titleSize = titleFlag ? TITLE_SIZE : 0;
@@ -497,7 +498,7 @@ export class Window<T extends WINDOW_EVENT_MAP = WINDOW_EVENT_MAP> {
    *
    * @template K
    * @param {(K | string)} type イベントタイプ
-   * @param {(this: Window, ev: WINDOW_EVENT_MAP[K]) => unknown} listener コールバックリスナー
+   * @param {(this: BaseView, ev: WINDOW_EVENT_MAP[K]) => unknown} listener コールバックリスナー
    * @memberof Window
    */
   // eslint-disable-next-line @typescript-eslint/explicit-member-accessibility
@@ -618,10 +619,10 @@ export class Window<T extends WINDOW_EVENT_MAP = WINDOW_EVENT_MAP> {
   /**
    *親ウインドウの取得
    *
-   * @returns {Window} 親ウインドウ
+   * @returns {BaseView} 親ウインドウ
    * @memberof Window
    */
-  public getParent(): Window | null {
+  public getParent(): BaseView | null {
     return this.JData.parent;
   }
   /**
@@ -1285,7 +1286,7 @@ export class Window<T extends WINDOW_EVENT_MAP = WINDOW_EVENT_MAP> {
    */
   public getAbsX(): number {
     let px = this.JData.x;
-    let parent: Window | null = this;
+    let parent: BaseView | null = this;
     while ((parent = parent.getParent())) {
       px += this.getClient().offsetLeft + parent.getClientX() + parent.JData.x;
     }
@@ -1299,7 +1300,7 @@ export class Window<T extends WINDOW_EVENT_MAP = WINDOW_EVENT_MAP> {
    */
   public getAbsY(): number {
     var py = this.JData.y;
-    var parent: Window | null = this;
+    var parent: BaseView | null = this;
     while ((parent = parent.getParent())) {
       py += this.getClient().offsetTop + parent.getClientX() + parent.JData.y;
     }
@@ -1417,19 +1418,19 @@ export class Window<T extends WINDOW_EVENT_MAP = WINDOW_EVENT_MAP> {
   /**
    *子ノードの追加
    *
-   * @param {Window} child 子ウインドウ
+   * @param {BaseView} child 子ウインドウ
    * @param {('left' | 'right' | 'top' | 'bottom' | 'client' | null)} [style] ドッキング位置
    * @memberof Window
    */
   public addFrameChild(
-    child: Window,
+    child: BaseView,
     style?: "left" | "right" | "top" | "bottom" | "client" | null
   ): void {
     const frame = this.getNearFrame();
     if (frame) frame.addChild(child, style);
   }
   public addChild(
-    child: Window,
+    child: BaseView,
     style?: "left" | "right" | "top" | "bottom" | "client" | null
   ): void {
     if (style) child.setChildStyle(style);
@@ -1472,11 +1473,11 @@ export class Window<T extends WINDOW_EVENT_MAP = WINDOW_EVENT_MAP> {
   /**
    *子ウインドウを切り離す
    *
-   * @param {Window} child
+   * @param {BaseView} child
    * @returns
    * @memberof Window
    */
-  public removeChild(child: Window): void {
+  public removeChild(child: BaseView): void {
     if (child.getParent() !== this) return;
     child.JData.parent = null;
     this.getClient().removeChild(child.hNode);
