@@ -1,6 +1,5 @@
 const path = require('path');
 const glob = require("glob");
-const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const config = {
   mode: 'production',
@@ -53,9 +52,6 @@ const config = {
       })
     ]
   },
-  plugins: [
-    new HardSourceWebpackPlugin()
-  ],
   devServer: {
     contentBase: path.join(__dirname, 'dist/public'),
     host: "localhost"

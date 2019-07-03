@@ -1,80 +1,85 @@
 # javascript-window-framework
 
-JavaScript 用ウインドウフレームワーク npm モジュール版
+Front end framework
+JavaScript Window Framework (npm module version)
 
-## 動作画面
+## screen
 
 ![screenshot](https://raw.githubusercontent.com/JavaScript-WindowFramework/javascript-window-framework/ScreenShot/ScreenShot.gif)
 
-## 関連リンク
+## link
 
-- [リファレンス&ドキュメント](https://javascript-windowframework.github.io/TypeDocViewer/dist/)
-- [サンプルプログラム](https://github.com/JavaScript-WindowFramework/jwf_sample01)
+- [source code](https://github.com/JavaScript-WindowFramework/javascript-window-framework)
+- [document](https://javascript-windowframework.github.io/TypeDocViewer/dist/)
+- [sample](https://github.com/JavaScript-WindowFramework/jwf_sample01)
 
-## ターゲット
+## target
 
 - TypeScript+ES5(JavaScript)
-- IE11 で動作するレベルの DOM
+- IE11 or later
 
-## 更新履歴
+## history
 
-- 2019/07/02 0.1.00 クラス名の変更、スタイル構成の変更
-- 2019/06/26 0.0.16 イベント系の処理方法を変更、テンプレートリソースの修正
-- 2019/06/06 0.0.13 サンプルの構成を変更
-- 2019/06/02 0.0.12 カレンダーの修正、表示更新タイミングの変更、スタイルの修正
-- 2019/05/27 0.0.10 ソースコードを TSLint に基づいて修正、ボタンスタイルの修正
-- 2019/05/19 0.0.08 サンプルを展開するコマンドを追加、サンプルテンプレートの修正
-- 2019/05/14 0.0.05 ts コードを strict に対応
-- 2019/05/13 0.0.02 モジュールの形式を変更
-- 2019/05/09 0.0.01 公開バージョン
+-2019/07/02 0.1.02 Change of class name, change of style composition
+-2019/06/26 0.0.16 Changed the processing method of the event system, fixed the template resource
+-2019/06/06 0.0.13 Changed the configuration of the sample
+-2019/06/02 0.0.12 Calendar correction, display update timing change, style correction
+-2019/05/27 0.0.10 Modify source code based on TSLint, modify button style
+-2019/05/19 0.0.08 Add command to expand sample, modify sample template
+-2019/05/14 0.0.05 ts code corresponds to strict
+-2019/05/13 0.0.02 Changed the module format
+-2019/05/09 0.0.01 Published version
 
 ## 使い方
 
-- インストール
+- install
 
 ```.sh
 npm i javascript-window-framework
 ```
 
-- サンプルテンプレートのインストール
+- install template
 
 ```.sh
 npx init-jwf
 ```
 
-- サンプルテンプレートに必要な WebPack 類のインストール
-
-```.sh
-npm -D i typescript dts-bundle ts-loader node-sass style-loader sass-loader css-loader url-loader source-map-loader webpack webpack-cli webpack-dev-server
-```
-
-- サンプルのビルドと確認
+- build sample
 
 ```.sh
 npx webpack
-dist/public/index.html をブラウザで開く
 ```
 
-- Server の起動
+- result file
+
+```.sh
+dist/public/js/bundle.js 
+```
+
+- Confirm in browser
+
+```.sh
+dist/public/index.html
+```
+
+- Use server
 
 ```.sh
 npx webpack-dev-server
-http://localhost:8080/ をブラウザで開く
 ```
 
-## 使用例
+## Sample
 
 ```src/public/index.ts
 import * as JWF from 'javascript-window-framework'
 
-//ページ読み込み時に実行する処理を設定
 addEventListener("DOMContentLoaded", ()=>{
-  const win = new JWF.FrameWindow()  //フレームウインドウの作成
-  win.setTitle('サンプルウインドウ')  //タイトルの設定
-  win.setPos()     //位置を中心に設定
-})
+  const win = new JWF.FrameWindow();
+  win.setTitle('SampleWindow') ;
+  win.setPos();
+});
 ```
 
-## ライセンス
+## License
 
 - [MIT License](https://opensource.org/licenses/mit-license.php)
