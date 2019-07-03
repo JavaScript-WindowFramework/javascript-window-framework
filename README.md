@@ -19,7 +19,7 @@ JavaScript Window Framework (npm module version)
 - IE11 or later
 
 ## history
-
+-2019/07/03 0.1.03 Template update
 -2019/07/02 0.1.02 Change of class name, change of style composition
 -2019/06/26 0.0.16 Changed the processing method of the event system, fixed the template resource
 -2019/06/06 0.0.13 Changed the configuration of the sample
@@ -53,7 +53,7 @@ npx webpack
 - result file
 
 ```.sh
-dist/public/js/bundle.js 
+dist/public/js/bundle.js
 ```
 
 - Confirm in browser
