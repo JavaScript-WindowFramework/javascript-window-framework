@@ -1,6 +1,6 @@
 {
   "name": "javascript-window-framework",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "JavaScript Window Framework",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -27,7 +27,6 @@
     "css-loader": "^3.0.0",
     "dts-bundle": "^0.7.3",
     "es6-promise": "^4.2.8",
-    "install": "^0.12.2",
     "node-sass": "^4.12.0",
     "sass-loader": "^7.1.0",
     "source-map-loader": "^0.2.4",

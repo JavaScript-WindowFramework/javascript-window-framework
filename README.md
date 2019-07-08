@@ -19,16 +19,18 @@ JavaScript Window Framework (npm module version)
 - IE11 or later
 
 ## history
--2019/07/03 0.1.03 Template update
--2019/07/02 0.1.02 Change of class name, change of style composition
--2019/06/26 0.0.16 Changed the processing method of the event system, fixed the template resource
--2019/06/06 0.0.13 Changed the configuration of the sample
--2019/06/02 0.0.12 Calendar correction, display update timing change, style correction
--2019/05/27 0.0.10 Modify source code based on TSLint, modify button style
--2019/05/19 0.0.08 Add command to expand sample, modify sample template
--2019/05/14 0.0.05 ts code corresponds to strict
--2019/05/13 0.0.02 Changed the module format
--2019/05/09 0.0.01 Published version
+
+- 2019/07/03 0.1.04 Change of MessageBox style
+- 2019/07/03 0.1.03 Template update
+- 2019/07/02 0.1.02 Change of class name, change of style composition
+- 2019/06/26 0.0.16 Changed the processing method of the event system, fixed the template resource
+- 2019/06/06 0.0.13 Changed the configuration of the sample
+- 2019/06/02 0.0.12 Calendar correction, display update timing change, style correction
+- 2019/05/27 0.0.10 Modify source code based on TSLint, modify button style
+- 2019/05/19 0.0.08 Add command to expand sample, modify sample template
+- 2019/05/14 0.0.05 ts code corresponds to strict
+- 2019/05/13 0.0.02 Changed the module format
+- 2019/05/09 0.0.01 Published version
 
 ## 使い方
 
