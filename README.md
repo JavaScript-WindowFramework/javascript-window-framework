@@ -20,7 +20,7 @@ JavaScript Window Framework (npm module version)
 
 ## history
 
-- 2019/07/03 0.1.04 Change of MessageBox style
+- 2019/07/08 0.1.04 Change of MessageBox style
 - 2019/07/03 0.1.03 Template update
 - 2019/07/02 0.1.02 Change of class name, change of style composition
 - 2019/06/26 0.0.16 Changed the processing method of the event system, fixed the template resource
