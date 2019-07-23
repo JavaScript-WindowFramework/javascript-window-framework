@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const path = require("path");
-const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
 class DtsBundlePlugin {
   constructor(p) {
     this.p = p;
@@ -55,8 +54,7 @@ const config = {
       out: path.resolve(__dirname, "../dist/index.d.ts"),
       removeSource: true,
       outputAsModuleFolder: false
-    }),
-    new HardSourceWebpackPlugin()
+    })
   ]
 };
 if (config.mode === "development") {

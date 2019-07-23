@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const path = require("path");
+const DtsModuleFilter = require("./DtsModuleFilter").DtsModuleFilter;
 class DtsBundlePlugin {
   constructor(p) {
     this.p = p;
@@ -8,13 +9,17 @@ class DtsBundlePlugin {
     compiler.hooks.afterEmit.tap("DtsBundlePlugin", () => {
       var dts = require("dts-bundle");
       dts.bundle(this.p);
+      DtsModuleFilter({
+        src: this.p.out,
+        namespace: "JWF"
+});
     });
   }
 }
 module.exports = {
   mode: "production",
   //mode: 'development',
-  entry: [path.resolve(__dirname, "jwf/javascript-window-framework.ts")],
+  entry: ["es6-promise/auto",path.resolve(__dirname, "jwf/javascript-window-framework.ts")],
   output: {
     library: "JWF",
     libraryTarget: "global",

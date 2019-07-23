@@ -331,6 +331,19 @@ export class TreeItem {
     return node.treeItem as TreeItem;
   }
   /**
+   *階層の深さを返す
+   *
+   * @returns
+   * @memberof TreeItem
+   */
+  public getTreeLevel(){
+    let parent:TreeItem|null = this;
+    let i = 0;
+    while((parent = parent.getParentItem()))
+      i++;
+    return i;
+  }
+  /**
    *親アイテムを取得
    *
    * @returns {TreeItem}
