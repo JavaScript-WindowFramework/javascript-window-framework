@@ -1,25 +1,25 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const path = require("path");
-const DtsModuleFilter = require("./DtsModuleFilter").DtsModuleFilter;
+
 class DtsBundlePlugin {
-  constructor(p) {
-    this.p = p;
+  constructor(params) {
+    this.params = params;
   }
   apply(compiler) {
     compiler.hooks.afterEmit.tap("DtsBundlePlugin", () => {
-      var dts = require("dts-bundle");
-      dts.bundle(this.p);
-      DtsModuleFilter({
-        src: this.p.out,
-        namespace: "JWF"
-});
+      const params = this.params;
+      require("dts-bundle").bundle(params);
+      require("dts-module-filter").DtsModuleFilter({
+        src: params.out,
+        namespace: params.name
+      });
     });
   }
 }
 module.exports = {
   mode: "production",
   //mode: 'development',
-  entry: ["es6-promise/auto",path.resolve(__dirname, "jwf/javascript-window-framework.ts")],
+  entry: ["es6-promise/auto", path.resolve(__dirname, "jwf/javascript-window-framework.ts")],
   output: {
     library: "JWF",
     libraryTarget: "global",
@@ -56,12 +56,6 @@ module.exports = {
       name: "JWF",
       main: path.resolve(__dirname, "../dist/javascript-window-framework.d.ts"),
       out: path.resolve(__dirname, "../dist-jwf/jwf.d.ts"),
-      removeSource: false,
-      referenceExternals: RegExp,
-      exclude: /\.scss/,
-      emitOnNoIncludedFileNotFound: true,
-      emitONIncludedFileNotFound: true,
-      outputAsModuleFolder: false
     })
   ]
 };

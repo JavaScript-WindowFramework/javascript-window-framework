@@ -1,5 +1,3 @@
-//import "es6-promise/auto";
-
 export * from "./Adapter";
 export * from "./Button";
 export * from "./CalendarView";

@@ -1,13 +1,17 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const path = require("path");
 class DtsBundlePlugin {
-  constructor(p) {
-    this.p = p;
+  constructor(params) {
+    this.params = params;
   }
   apply(compiler) {
     compiler.hooks.afterEmit.tap("DtsBundlePlugin", () => {
-      var dts = require("dts-bundle");
-      dts.bundle(this.p);
+      const params = this.params;
+      require("dts-bundle").bundle(params);
+      require("dts-module-filter").DtsModuleFilter({
+        src: params.out,
+        removeImport:/\.(scss|css)$/
+      });
     });
   }
 }
