@@ -1,0 +1,42 @@
+[data-jwf-style="ColorPickerWindow"] [data-jwf-style="ColorSelector"] {
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  > [data-type=colors] {
+    border:solid 1px;
+    margin:0.1em;
+    display: flex;
+    overflow: auto;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+
+    >div{
+      display: flex;
+      cursor: pointer;
+      padding:1px;
+      margin:0.1em;
+      width:1.2em;
+      height:1.2em;
+      border:solid 2px;
+
+      &[data-active=true]{
+        border-color: red;
+      }
+      >div{
+        flex:1;
+      }
+    }
+
+  }
+
+  > div {
+    flex-direction: row;
+    display: flex;
+    justify-content: space-between;
+    > input {
+      flex-grow: 1;
+      width: 3ex;
+      margin:0.1em;
+    }
+  }
+}

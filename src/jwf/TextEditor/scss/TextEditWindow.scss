@@ -1,0 +1,57 @@
+[data-jwf-style="TextEditWindow"] {
+  background-color: rgba(255, 255, 255, 0.8) !important;
+
+  [data-jwf-style="Panel"] {
+    display: flex;
+    padding: 0.2em;
+    align-items: center;
+
+    > * {
+      height: 100%;
+      border-radius: 0.3em;
+      display: flex;
+      align-items: center;
+    }
+  }
+  label[data-edit-control] {
+    margin: 0.1em;
+    box-sizing: border-box;
+    padding: 0.2em;
+    background-color: rgba(255, 255, 255, 0.8);
+  }
+  .code,
+  .code2 {
+    background-color: rgba(0, 100, 0, 0.1);
+    overflow: auto;
+    display: block;
+    border: dashed rgba(0, 0, 0, 0.05);
+    font-size: 110%;
+    font-weight: bold;
+    padding: 0.5em !important;
+    white-space: nowrap;
+    font-family: MeiryoKe_Gothic, "Ricty Diminished", "Osaka－等幅", "Osaka-等幅", Osaka-mono, "ＭＳ ゴシック",
+      "MS Gothic", "Courier New", Courier, Monaco, Menlo, Consolas, "Lucida Console", monospace;
+  }
+}
+[data-jwf-style="EditableView"] {
+  display: flex;
+  flex-direction: column;
+  //padding: 0.2em;
+  > :nth-child(1) {
+    display: flex;
+    flex-wrap: wrap;
+    background-color: rgba(0, 0, 0, 0.2);
+    * {
+      box-sizing: border-box;
+      height: 2.5em;
+      border-radius: 0.3em;
+      display: flex;
+      align-items: center;
+    }
+  }
+  > :nth-child(2) {
+    flex: 1;
+    overflow: auto;
+    padding: 0.2em;
+  }
+}

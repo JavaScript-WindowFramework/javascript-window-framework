@@ -16,3 +16,6 @@ export * from "./TextArea";
 export * from "./TreeView";
 export * from "./BaseView";
 export * from "./WindowManager";
+export * from "./ColorPickerView";
+export * from "./TextEditor/TextEditWindow";
+export * from "./TextEditor/PanelControl";

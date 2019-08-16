@@ -137,8 +137,8 @@ export interface WINDOW_PARAMS {
   overlap?: boolean;
   visible?: boolean;
 }
-export interface WindowRemover{
-  remove:()=>void;
+export interface WindowRemover {
+  remove: () => void;
 }
 /**
  *ウインドウ基本クラス
@@ -147,7 +147,7 @@ export interface WindowRemover{
  * @class Window
  */
 export class BaseView<T extends WINDOW_EVENT_MAP = WINDOW_EVENT_MAP> {
-  private removers:WindowRemover[] = [];
+  private removers: WindowRemover[] = [];
   private listeners: {
     [key: string]: unknown[];
   } = {};
@@ -197,6 +197,7 @@ export class BaseView<T extends WINDOW_EVENT_MAP = WINDOW_EVENT_MAP> {
     hNode.Jwf = this;
     this.hNode = hNode;
     hNode.dataset.jwf = "Window";
+    hNode.dataset.jwfWindowName = this.constructor.name;
     //位置を絶対位置指定
     hNode.style.zIndex = "10000";
     hNode.style.position = "absolute";
@@ -234,9 +235,12 @@ export class BaseView<T extends WINDOW_EVENT_MAP = WINDOW_EVENT_MAP> {
       }
     }
 
-    hNode.addEventListener("animationend", (): void => {
-      this.layout();
-    });
+    hNode.addEventListener(
+      "animationend",
+      (): void => {
+        this.layout();
+      }
+    );
 
     //移動に備えて、必要な情報を収集
     hNode.addEventListener("touchstart", this.onMouseDown.bind(this), {
@@ -271,9 +275,39 @@ export class BaseView<T extends WINDOW_EVENT_MAP = WINDOW_EVENT_MAP> {
   public getJwfStyle(): string | null {
     return this.getNode().dataset.jwfStyle || null;
   }
+  public setWindowId(id: string) {
+    this.getNode().dataset.jwfId = id;
+  }
+
+  // public static findWindow<T extends BaseView>(
+  //   win: {new ():T}
+  // ): T | undefined {
+  //   const windows = this.findWindows(win.name);
+  //   if (windows.length) return windows[0] as T;
+  //   return undefined;
+  // }
+
+
+  public static findWindow(windowName:string):BaseView|undefined{
+    const windows = this.findWindows(windowName);
+    if(windows.length)
+      return windows[0];
+    return undefined;
+  }
+  public static findWindows(windowName: string): BaseView[] {
+    const elements = document.querySelectorAll(
+      `[data-jwf=Window][data-jwf-window-name=${windowName}]`
+    ) as NodeListOf<JNode>;
+    const views: BaseView[] = [];
+    for (let length = elements.length, i = 0; i < length; i++) {
+      const node = elements[i];
+      views.push(node.Jwf);
+    }
+    return views;
+  }
   //フレーム追加処理
   private addFrame(titleFlag: boolean): void {
-    this.getClient().dataset.jwfClient="true";
+    this.getClient().dataset.jwfClient = "true";
     this.hNode.dataset.jwfType = "Frame";
     //タイトルの設定
     this.JData.titleSize = titleFlag ? TITLE_SIZE : 0;
@@ -463,13 +497,11 @@ export class BaseView<T extends WINDOW_EVENT_MAP = WINDOW_EVENT_MAP> {
       }
     }
   }
-  public addRemover(...remover:WindowRemover[]):void{
-    if(!remover)
-      return;
+  public addRemover(...remover: WindowRemover[]): void {
+    if (!remover) return;
     const removers = this.removers;
-    for(const r of remover){
-      if(removers.indexOf(r) === -1)
-        removers.push(r);
+    for (const r of remover) {
+      if (removers.indexOf(r) === -1) removers.push(r);
     }
   }
   /**
@@ -1253,7 +1285,7 @@ export class BaseView<T extends WINDOW_EVENT_MAP = WINDOW_EVENT_MAP> {
       this.removeEventListener("animationend", animationEnd);
       //終了処理のコールバック
       const remoers = that.removers;
-      for(const remover of remoers){
+      for (const remover of remoers) {
         remover.remove();
       }
       that.callEvent("closed");

@@ -20,6 +20,7 @@ JavaScript Window Framework (npm module version)
 
 ## history
 
+- 2019/08/16 0.1.06 add findWindow
 - 2019/07/25 0.1.05 Modification of d.ts
 - 2019/07/08 0.1.04 Change of MessageBox style
 - 2019/07/03 0.1.03 Template update
